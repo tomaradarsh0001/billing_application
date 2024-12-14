@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   // Function to fetch configuration data
   Future<Map<String, dynamic>> fetchConfiguration() async {
-    final response = await http.get(Uri.parse('http://192.168.10.4:8000/api/configuration/2'));
+    final response = await http.get(Uri.parse('http://172.232.108.54/api/configuration/3'));
 
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON
@@ -84,11 +84,12 @@ class _SplashScreenState extends State<SplashScreen> {
                     // Display image fetched from the API
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
-                        'http://192.168.10.4:8000/storage/${data['app_logo']}', // Correct string interpolation
-                        height: 200.0,
-                        width: 200.0,
-                        fit: BoxFit.cover,
+                      child: FittedBox(
+                        fit: BoxFit.contain, // Ensures the image fits without cropping
+                        child: Image.network(
+                          'http://172.232.108.54//storage/${data['app_logo']}',
+                          height: 160.0, // Set only the height (width will adjust)
+                        ),
                       ),
                     ),
                     const SizedBox(height: 20),
