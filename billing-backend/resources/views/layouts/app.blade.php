@@ -24,6 +24,7 @@
 <link rel="stylesheet" href="{{ asset('assets/css/style1.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/css/colors/default.css') }}" id="colorSkinCSS">
 
+
 </head>
 <body class="crm_body_bg">
     
@@ -57,6 +58,7 @@
             </a>
             <ul>
             <li><a href="{{ route('configuration.create') }}">Add Configuration</a></li>
+            <li><a href="{{ route('configuration.index') }}">View Configuration</a></li>
             <!-- <li><a href="editor.html">editor</a></li>
               <li><a href="mail_box.html">Mail Box</a></li>
               <li><a href="chat.html">Chat</a></li>
@@ -572,5 +574,6 @@
 <script src="{{ asset('assets/vendors/chart_am/chart-custom.js') }}"></script>
 <script src="{{ asset('assets/js/dashboard_init.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
