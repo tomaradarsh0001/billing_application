@@ -1,487 +1,576 @@
-<!doctype html>
-<html lang="en">
- 
+<!DOCTYPE html>
+<html lang="zxx">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css')}}">
-    <link href="{{ asset('assets/vendor/fonts/circular-std/style.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/libs/css/style.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/fontawesome/css/fontawesome-all.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/charts/chartist-bundle/chartist.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/charts/morris-bundle/morris.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/charts/c3charts/c3.css')}}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/flag-icon-css/flag-icon.min.css')}}">
-    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
-</head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Sales</title>
+    <!-- CSS Links -->
+<link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/themefy_icon/themify-icons.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/niceselect/css/nice-select.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/owl_carousel/css/owl.carousel.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/gijgo/gijgo.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/font_awesome/css/all.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/tagsinput/tagsinput.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/datepicker/date-picker.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/vectormap-home/vectormap-2.0.2.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/scroll/scrollable.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/datatable/css/jquery.dataTables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/datatable/css/responsive.dataTables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/datatable/css/buttons.dataTables.min.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/text_editor/summernote-bs4.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/morris/morris.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/vendors/material_icon/material-icons.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/metisMenu.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/style1.css') }}" />
+<link rel="stylesheet" href="{{ asset('assets/css/colors/default.css') }}" id="colorSkinCSS">
 
-<body>
-    <!-- ============================================================== -->
-    <div class="dashboard-main-wrapper">
-        <!-- ============================================================== -->
-        <!-- navbar -->
-        <!-- ============================================================== -->
-        <div class="dashboard-header">
-            <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="index.html">Concept</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto navbar-right-top">
-                        <li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
+</head>
+<body class="crm_body_bg">
+    
+<nav class="sidebar vertical-scroll  ps-container ps-theme-default ps-active-y">
+    <div class="logo d-flex justify-content-between">
+        <a href="index.html"><img src="{{ asset('assets/img/logo.png')}}" alt=""></a>
+        <div class="sidebar_close_icon d-lg-none">
+            <i class="ti-close"></i>
+        </div>
+    </div>
+    <ul id="sidebar_menu">
+        <li class="mm-active">
+          <a class="has-arrow"  href="#"  aria-expanded="false">
+          <div class="icon_menu">
+              <img src="{{ asset('assets/img/menu-icon/dashboard.svg')}}" alt="">
+        </div>
+            <span>Dashboard</span>
+          </a>
+          <ul>
+            <li><a class="active" href="index.html">Sales</a></li>
+            <li><a  href="index_2.html">Default</a></li>
+            <li><a  href="index_3.html">Dark Menu</a></li>
+          </ul>
+        </li>
+        <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/2.svg')}}" alt="">
+              </div>
+              <span>Apps</span>
+            </a>
+            <ul>
+              <li><a href="editor.html">editor</a></li>
+              <li><a href="mail_box.html">Mail Box</a></li>
+              <li><a href="chat.html">Chat</a></li>
+              <li><a href="faq.html">FAQ</a></li>
+            </ul>
+          </li>
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/3.svg')}}" alt="">
+            </div>
+            <span>UI Kits</span>
+          </a>
+          <ul>
+            <li><a href="colors.html">colors</a></li>
+            <li><a href="Alerts.html">Alerts</a></li>
+            <li><a href="buttons.html">Buttons</a></li>
+            <li><a href="modal.html">modal</a></li>
+            <li><a href="dropdown.html">Droopdowns</a></li>
+            <li><a href="Badges.html">Badges</a></li>
+            <li><a href="Loading_Indicators.html">Loading Indicators</a></li>
+            <li><a href="State_color.html">State color</a></li>
+            <li><a href="typography.html">Typography</a></li>
+            <li><a href="datepicker.html">Date Picker</a></li>
+          </ul>
+        </li>
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/4.svg')}}" alt="">
+            </div>
+            <span>forms</span>
+          </a>
+          <ul>
+            <li><a href="Basic_Elements.html">Basic Elements</a></li>
+            <li><a href="Groups.html">Groups</a></li>
+            <li><a href="Max_Length.html">Max Length</a></li>
+            <li><a href="Layouts.html">Layouts</a></li>
+          </ul>
+        </li>
+        <li class="">
+            <a href="Board.html" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/5.svg')}}" alt="">
+              </div>
+              <span>Board</span>
+            </a>
+        </li>
+        <li class="">
+            <a  href="invoice.html" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/6.svg')}}" alt="">
+              </div>
+              <span>Invoice</span>
+            </a>
+        </li>
+        <li class="">
+            <a  href="calender.html" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/7.svg')}}" alt="">
+              </div>
+              <span>Calander</span>
+            </a>
+        </li>
+        
+        <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/8.svg')}}" alt="">
+              </div>
+              <span>Products</span>
+            </a>
+            <ul>
+              <li><a href="Products.html">Products</a></li>
+              <li><a href="Product_Details.html">Product Details</a></li>
+              <li><a href="Cart.html">Cart</a></li>
+              <li><a href="Checkout.html">Checkout</a></li>
+            </ul>
+          </li>
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/8.svg')}}" alt="">
+            </div>
+            <span>Icons</span>
+          </a>
+          <ul>
+            <li><a href="Fontawesome_Icon.html">Fontawesome Icon</a></li>
+            <li><a href="themefy_icon.html">themefy icon</a></li>
+          </ul>
+        </li>
+
+        <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/9.svg')}}" alt="">
+              </div>
+              <span>Animations</span>
+            </a>
+            <ul>
+                <li><a href="wow_animation.html">Animate</a></li>
+                <li><a href="Scroll_Reveal.html">Scroll Reveal</a></li>
+                <li><a href="tilt.html">Tilt Animation</a></li>
+                
+            </ul>
+          </li>
+          <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/10.svg')}}" alt="">
+              </div>
+              <span>Components</span>
+            </a>
+            <ul>
+              <li><a href="accordion.html">Accordions</a></li>
+              <li><a href="Scrollable.html">Scrollable</a></li>
+              <li><a href="notification.html">Notifications</a></li>
+              <li><a href="carousel.html">Carousel</a></li>
+              <li><a href="Pagination.html">Pagination</a></li>
+            </ul>
+          </li>
+
+          <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/11.svg')}}" alt="">
+              </div>
+              <span>Table</span>
+            </a>
+            <ul>
+                <li><a href="data_table.html">Data Tables</a></li>
+                <li><a href="bootstrap_table.html">Bootstrap</a></li>
+            </ul>
+          </li>
+          <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/12.svg')}}" alt="">
+              </div>
+              <span>Cards</span>
+            </a>
+            <ul>
+                <li><a href="basic_card.html">Basic Card</a></li>
+                <li><a href="theme_card.html">Theme Card</a></li>
+                <li><a href="dargable_card.html">Draggable Card</a></li>
+            </ul>
+          </li>
+
+
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/13.svg')}}" alt="">
+            </div>
+            <span>Charts</span>
+          </a>
+          <ul>
+            <li><a href="chartjs.html">ChartJS</a></li>
+            <li><a href="apex_chart.html">Apex Charts</a></li>
+            <li><a href="chart_sparkline.html">Chart sparkline</a></li>
+            <li><a href="am_chart.html">am-charts</a></li>
+            <li><a href="nvd3_charts.html">nvd3 charts.</a></li>
+          </ul>
+        </li>
+        
+
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/14.svg')}}" alt="">
+            </div>
+            <span>Widgets</span>
+          </a>
+          <ul>
+            <li><a href="chart_box_1.html">Chart Boxes 1</a></li>
+            <li><a href="profilebox.html">Profile Box</a></li>
+          </ul>
+        </li>
+        
+
+        <li class="">
+          <a   class="has-arrow" href="#" aria-expanded="false">
+            <div class="icon_menu">
+                <img src="{{ asset('assets/img/menu-icon/15.svg')}}" alt="">
+            </div>
+            <span>Maps</span>
+          </a>
+          <ul>
+            <li><a href="mapjs.html">Maps JS</a></li>
+            <li><a href="vector_map.html">Vector Maps</a></li>
+          </ul>
+        </li>
+        <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/16.svg')}}" alt="">
+              </div>
+              <span>Pages</span>
+            </a>
+            <ul>
+              <li><a href="login.html">Login</a></li>
+              <li><a href="resister.html">Register</a></li>
+              <li><a href="error_400.html">Error 404</a></li>
+              <li><a href="error_500.html">Error 500</a></li>
+              <li><a href="forgot_pass.html">Forgot Password</a></li>
+              <li><a href="gallery.html">Gallery</a></li>
+            </ul>
+          </li>
+
+      </ul>
+</nav>
+ <!--/ sidebar  -->
+
+
+<section class="main_content dashboard_part large_header_bg">
+        <!-- menu  -->
+    <div class="container-fluid g-0">
+        <div class="row">
+            <div class="col-lg-12 p-0">
+                <div class="header_iner d-flex justify-content-between align-items-center">
+                    <div class="sidebar_icon d-lg-none">
+                        <i class="ti-menu"></i>
+                    </div>
+                    <div class="serach_field-area d-flex align-items-center">
+                            <div class="search_inner">
+                                <form action="#">
+                                    <div class="search_field">
+                                        <input type="text" placeholder="Search here..." >
+                                    </div>
+                                    <button type="submit"> <img src="{{ asset('assets/img/icon/icon_search.svg')}}" alt=""> </button>
+                                </form>
                             </div>
-                        </li>
-                        <li class="nav-item dropdown notification">
-                            <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-                                <li>
-                                    <div class="notification-title"> Notification</div>
-                                    <div class="notification-list">
-                                        <div class="list-group">
-                                            <a href="#" class="list-group-item list-group-item-action active">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="{{ asset('assets/images/avatar-2.jpg')}}" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="{{ asset('assets/images/avatar-3.jpg')}}" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">John Abraham </span>is now following you
-                                                        <div class="notification-date">2 days ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="{{ asset('assets/images/avatar-4.jpg')}}" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="{{ asset('assets/images/avatar-5.jpg')}}" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block"><span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="list-footer"> <a href="#">View all notifications</a></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown connection">
-                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
-                            <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
-                                <li class="connection-list">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/github.png' )}}" alt=""> <span>Github</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/dribbble.png' )}}" alt=""> <span>Dribbble</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/dropbox.png' )}}" alt=""> <span>Dropbox</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/bitbucket.png')}}" alt=""> <span>Bitbucket</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/mail_chimp.png' )}}" alt=""><span>Mail chimp</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="{{ asset('assets/images/slack.png' )}}" alt=""> <span>Slack</span></a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="conntection-footer"><a href="#">More</a></div>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="{{ asset('assets/images/avatar-1.jpg')}}" alt="" class="user-avatar-md rounded-circle"></a>
-                            <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-                                <div class="nav-user-info">
-                                    <h5 class="mb-0 text-white nav-user-name">John Abraham </h5>
-                                    <span class="status"></span><span class="ml-2">Available</span>
+                            <span class="f_s_14 f_w_400 ml_25 white_text text_white" >Apps</span>
+                        </div>
+                    <div class="header_right d-flex justify-content-between align-items-center">
+                        <div class="header_notification_warp d-flex align-items-center">
+                            <li>
+                                <a class="bell_notification_clicker nav-link-notify" href="#"> <img src="{{ asset('assets/img/icon/bell.svg')}}" alt="">
+                                    
+                                </a>
+                                <!-- Menu_NOtification_Wrap  -->
+                            <div class="Menu_NOtification_Wrap">
+                                <div class="notification_Header">
+                                    <h4>Notifications</h4>
                                 </div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                <div class="Notification_body">
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/2.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>Cool Marketing </h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/4.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>Awesome packages</h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/3.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>what a packages</h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/2.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>Cool Marketing </h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/4.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>Awesome packages</h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                    <!-- single_notify  -->
+                                    <div class="single_notify d-flex align-items-center">
+                                        <div class="notify_thumb">
+                                            <a href="#"><img src="{{ asset('assets/img/staf/3.png')}}" alt=""></a>
+                                        </div>
+                                        <div class="notify_content">
+                                            <a href="#"><h5>what a packages</h5></a>
+                                            <p>Lorem ipsum dolor sit amet</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="nofity_footer">
+                                    <div class="submit_button text-center pt_20">
+                                        <a href="#" class="btn_1">See More</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--/ Menu_NOtification_Wrap  -->
+                            </li>
+                            <li>
+                                <a class="CHATBOX_open nav-link-notify" href="#"> <img src="{{ asset('assets/img/icon/msg.svg')}}" alt="">   </a>
+                            </li>
+                        </div>
+                        <div class="profile_info">
+                            <img src="{{ asset('assets/img/client_img.png')}}" alt="#">
+                            <div class="profile_info_iner">
+                                <div class="profile_author_name">
+                                    <p>Neurologist </p>
+                                    <h5>Dr. Robar Smith</h5>
+                                </div>
+                                <div class="profile_info_details">
+                                    <a href="#">My Profile </a>
+                                    <a href="#">Settings</a>
+                                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
     @csrf
-    <a class="dropdown-item" href="#" 
-       onclick="event.preventDefault(); this.closest('form').submit();">
-        <i class="fas fa-power-off mr-2"></i>Logout
-    </a>
+    <a href="" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
 </form>
 
-
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-        <!-- ============================================================== -->
-        <!-- end navbar -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- left sidebar -->
-        <!-- ============================================================== -->
-        <div class="nav-left-sidebar sidebar-dark">
-            <div class="menu-list">
-                <nav class="navbar navbar-expand-lg navbar-light">
-                    <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav flex-column">
-                            <li class="nav-divider">
-                                Menu
-                            </li>
-                            <li class="nav-item ">
-                                <a class="nav-link active" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1"><i class="fa fa-fw fa-user-circle"></i>Dashboard <span class="badge badge-success">6</span></a>
-                                <div id="submenu-1" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="index.html">E Commerce Dashboard</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product.html">Product List</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-single.html">Product Single</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="ecommerce-product-checkout.html">Product Checkout</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="dashboard-finance.html">Finance</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="dashboard-sales.html">Sales</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-1" aria-controls="submenu-1-1">Infulencer</a>
-                                            <div id="submenu-1-1" class="collapse submenu" style="">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="dashboard-influencer.html">Influencer</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="influencer-finder.html">Influencer Finder</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="influencer-profile.html">Influencer Profile</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                    </ul>
                                 </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2"><i class="fa fa-fw fa-rocket"></i>UI Elements</a>
-                                <div id="submenu-2" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/cards.html">Cards <span class="badge badge-secondary">New</span></a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/general.html">General</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/carousel.html">Carousel</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/listgroup.html">List Group</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/typography.html">Typography</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/accordions.html">Accordions</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/tabs.html">Tabs</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-3" aria-controls="submenu-3"><i class="fas fa-fw fa-chart-pie"></i>Chart</a>
-                                <div id="submenu-3" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-c3.html">C3 Charts</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-chartist.html">Chartist Charts</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-charts.html">Chart</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-morris.html">Morris</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-sparkline.html">Sparkline</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/chart-gauge.html">Guage</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item ">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-4" aria-controls="submenu-4"><i class="fab fa-fw fa-wpforms"></i>Forms</a>
-                                <div id="submenu-4" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/form-elements.html">Form Elements</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/form-validation.html">Parsely Validations</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/multiselect.html">Multiselect</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/datepicker.html">Date Picker</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/bootstrap-select.html">Bootstrap Select</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-5" aria-controls="submenu-5"><i class="fas fa-fw fa-table"></i>Tables</a>
-                                <div id="submenu-5" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/general-table.html">General Tables</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/data-tables.html">Data Tables</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-divider">
-                                Features
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-6" aria-controls="submenu-6"><i class="fas fa-fw fa-file"></i> Pages </a>
-                                <div id="submenu-6" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/blank-page.html">Blank Page</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/blank-page-header.html">Blank Page Header</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/login.html">Login</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/404-page.html">404 page</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/sign-up.html">Sign up Page</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/forgot-password.html">Forgot Password</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/pricing.html">Pricing Tables</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/timeline.html">Timeline</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/calendar.html">Calendar</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/sortable-nestable-lists.html">Sortable/Nestable List</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/widgets.html">Widgets</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/media-object.html">Media Objects</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/cropper-image.html">Cropper</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/color-picker.html">Color Picker</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-7" aria-controls="submenu-7"><i class="fas fa-fw fa-inbox"></i>Apps <span class="badge badge-secondary">New</span></a>
-                                <div id="submenu-7" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/inbox.html">Inbox</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/email-details.html">Email Detail</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/email-compose.html">Email Compose</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/message-chat.html">Message Chat</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-8" aria-controls="submenu-8"><i class="fas fa-fw fa-columns"></i>Icons</a>
-                                <div id="submenu-8" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-fontawesome.html">FontAwesome Icons</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-material.html">Material Icons</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-simple-lineicon.html">Simpleline Icon</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-themify.html">Themify Icon</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-flag.html">Flag Icons</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/icon-weather.html">Weather Icon</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-9" aria-controls="submenu-9"><i class="fas fa-fw fa-map-marker-alt"></i>Maps</a>
-                                <div id="submenu-9" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/map-google.html">Google Maps</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="pages/map-vector.html">Vector Maps</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-10" aria-controls="submenu-10"><i class="fas fa-f fa-folder"></i>Menu Level</a>
-                                <div id="submenu-10" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#">Level 1</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-11" aria-controls="submenu-11">Level 2</a>
-                                            <div id="submenu-11" class="collapse submenu" style="">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="#">Level 1</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="#">Level 2</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#">Level 3</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <div class="dashboard-wrapper">
-            <div class="dashboard-ecommerce">
-                @yield('content')
-            </div>
-            <!-- ============================================================== -->
-            <!-- footer -->
-            <!-- ============================================================== -->
-            <div class="footer">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                             Copyright © 2018 Concept. All rights reserved. Dashboard by <a href="https://colorlib.com/wp/">Colorlib</a>.
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                            <div class="text-md-right footer-links d-none d-sm-block">
-                                <a href="javascript: void(0);">About</a>
-                                <a href="javascript: void(0);">Support</a>
-                                <a href="javascript: void(0);">Contact Us</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- ============================================================== -->
-            <!-- end footer -->
-            <!-- ============================================================== -->
         </div>
-        <!-- ============================================================== -->
-        <!-- end wrapper  -->
-        <!-- ============================================================== -->
+    @yield('content')
+<!-- footer part -->
+<div class="footer_part">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="footer_iner text-center">
+                    <p>2020 © Influence - Designed by <a href="#"> <i class="ti-heart"></i> </a><a href="#"> Dashboard</a></p>
+                </div>
+            </div>
+        </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- end main wrapper  -->
-    <!-- ============================================================== -->
-    <!-- Optional JavaScript -->
-    <!-- jquery 3.3.1 -->
-    <script src="{{ asset('assets/vendor/jquery/jquery-3.3.1.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.js')}}"></script>
-    <script src="{{ asset('assets/vendor/slimscroll/jquery.slimscroll.js')}}"></script>
-    <script src="{{ asset('assets/libs/js/main-js.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/chartist-bundle/chartist.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/sparkline/jquery.sparkline.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/morris-bundle/raphael.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/morris-bundle/morris.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/c3charts/c3.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/c3charts/d3-5.4.0.min.js')}}"></script>
-    <script src="{{ asset('assets/vendor/charts/c3charts/C3chartjs.js')}}"></script>
-    <script src="{{ asset('assets/libs/js/dashboard-ecommerce.js')}}"></script>
+</div>
+</section>
+<!-- main content part end -->
+
+<!-- ### CHAT_MESSAGE_BOX   ### -->
+
+<div class="CHAT_MESSAGE_POPUPBOX">
+    <div class="CHAT_POPUP_HEADER">
+    <div class="MSEESAGE_CHATBOX_CLOSE">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7.09939 5.98831L11.772 10.661C12.076 10.965 12.076 11.4564 11.772 11.7603C11.468 12.0643 10.9766 12.0643 10.6726 11.7603L5.99994 7.08762L1.32737 11.7603C1.02329 12.0643 0.532002 12.0643 0.228062 11.7603C-0.0760207 11.4564 -0.0760207 10.965 0.228062 10.661L4.90063 5.98831L0.228062 1.3156C-0.0760207 1.01166 -0.0760207 0.520226 0.228062 0.216286C0.379534 0.0646715 0.578697 -0.0114918 0.777717 -0.0114918C0.976738 -0.0114918 1.17576 0.0646715 1.32737 0.216286L5.99994 4.889L10.6726 0.216286C10.8243 0.0646715 11.0233 -0.0114918 11.2223 -0.0114918C11.4213 -0.0114918 11.6203 0.0646715 11.772 0.216286C12.076 0.520226 12.076 1.01166 11.772 1.3156L7.09939 5.98831Z" fill="white"/>
+    </svg>
+
+    </div>
+        <h3>Chat with us</h3>
+        <div class="Chat_Listed_member">
+            <ul>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                         <img src="{{ asset('assets/img/staf/1.png')}}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                         <img src="{{ asset('assets/img/staf/2.png')}}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                         <img src="{{ asset('assets/img/staf/3.png')}}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                         <img src="{{ asset('assets/img/staf/4.png')}}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                         <img src="{{ asset('assets/img/staf/5.png')}}" alt="">
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <div class="member_thumb">
+                            <div class="more_member_count">
+                                <span>90+</span>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="CHAT_POPUP_BODY">
+        <p class="mesaged_send_date">
+        Sunday, 12 January
+        </p>
+    
+    <div class="CHATING_SENDER">
+        <div class="SMS_thumb">
+            <img src="{{ asset('assets/img/staf/1.png')}}" alt="">
+        </div>
+        <div class="SEND_SMS_VIEW">
+            <P>Hi! Welcome .
+            How can I help you?</P>
+        </div>
+    </div>
+    
+    <div class="CHATING_SENDER CHATING_RECEIVEr">
+        
+        <div class="SEND_SMS_VIEW">
+            <P>Hello</P>
+        </div>
+        <div class="SMS_thumb">
+            <img src="{{ asset('assets/img/staf/1.png')}}" alt="">
+        </div>
+    </div>
+    
+    </div>
+    <div class="CHAT_POPUP_BOTTOM">
+        <div class="chat_input_box d-flex align-items-center">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Write your message" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn " type="button"> 
+                        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.7821 3.21895C14.4908 -1.07281 7.50882 -1.07281 3.2183 3.21792C-1.07304 7.50864 -1.07263 14.4908 3.21872 18.7824C7.50882 23.0729 14.4908 23.0729 18.7817 18.7815C23.0726 14.4908 23.0724 7.50906 18.7821 3.21895ZM17.5813 17.5815C13.9525 21.2103 8.04773 21.2108 4.41871 17.5819C0.78907 13.9525 0.789485 8.04714 4.41871 4.41832C8.04752 0.789719 13.9521 0.789304 17.5817 4.41874C21.2105 8.04755 21.2101 13.9529 17.5813 17.5815ZM6.89503 8.02162C6.89503 7.31138 7.47107 6.73534 8.18131 6.73534C8.89135 6.73534 9.46739 7.31117 9.46739 8.02162C9.46739 8.73228 8.89135 9.30811 8.18131 9.30811C7.47107 9.30811 6.89503 8.73228 6.89503 8.02162ZM12.7274 8.02162C12.7274 7.31138 13.3038 6.73534 14.0141 6.73534C14.7241 6.73534 15.3002 7.31117 15.3002 8.02162C15.3002 8.73228 14.7243 9.30811 14.0141 9.30811C13.3038 9.30811 12.7274 8.73228 12.7274 8.02162ZM15.7683 13.2898C14.9712 15.1332 13.1043 16.3243 11.0126 16.3243C8.8758 16.3243 6.99792 15.1272 6.22834 13.2744C6.09642 12.9573 6.24681 12.593 6.56438 12.4611C6.64238 12.4289 6.72328 12.4136 6.80293 12.4136C7.04687 12.4136 7.27836 12.5577 7.37772 12.7973C7.95376 14.1842 9.38048 15.0799 11.0126 15.0799C12.6077 15.0799 14.0261 14.1836 14.626 12.7959C14.7625 12.4804 15.1288 12.335 15.4441 12.4717C15.7594 12.6084 15.9048 12.9745 15.7683 13.2898Z" fill="#707DB7"/>
+                        </svg>
+                    </button>
+                    <button class="btn" type="button">
+                         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M11 0.289062C4.92455 0.289062 0 5.08402 0 10.9996C0 16.9152 4.92455 21.7101 11 21.7101C17.0755 21.7101 22 16.9145 22 10.9996C22 5.08472 17.0755 0.289062 11 0.289062ZM11 20.3713C5.68423 20.3713 1.375 16.1755 1.375 10.9996C1.375 5.82371 5.68423 1.62788 11 1.62788C16.3158 1.62788 20.625 5.82371 20.625 10.9996C20.625 16.1755 16.3158 20.3713 11 20.3713ZM15.125 10.3302H11.6875V6.98314C11.6875 6.61363 11.3795 6.31373 11 6.31373C10.6205 6.31373 10.3125 6.61363 10.3125 6.98314V10.3302H6.875C6.4955 10.3302 6.1875 10.6301 6.1875 10.9996C6.1875 11.3691 6.4955 11.669 6.875 11.669H10.3125V15.016C10.3125 15.3855 10.6205 15.6854 11 15.6854C11.3795 15.6854 11.6875 15.3855 11.6875 15.016V11.669H15.125C15.5045 11.669 15.8125 11.3691 15.8125 10.9996C15.8125 10.6301 15.5045 10.3302 15.125 10.3302Z" fill="#707DB7"/>
+                        </svg>
+                         <input type="file">
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="back-top" style="display: none;">
+    <a title="Go to Top" href="#">
+        <i class="ti-angle-up"></i>
+    </a>
+</div>
+<!-- Scripts -->
+<script src="{{ asset('assets/js/jquery1-3.4.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/popper1.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/js/metisMenu.js') }}"></script>
+<script src="{{ asset('assets/vendors/count_up/jquery.waypoints.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/chartlist/Chart.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/count_up/jquery.counterup.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/niceselect/js/jquery.nice-select.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/owl_carousel/js/owl.carousel.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/buttons.flash.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/jszip.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/pdfmake.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/vfs_fonts.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datatable/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/datepicker/datepicker.js') }}"></script>
+<script src="{{ asset('assets/vendors/datepicker/datepicker.en.js') }}"></script>
+<script src="{{ asset('assets/vendors/datepicker/datepicker.custom.js') }}"></script>
+<script src="{{ asset('assets/js/chart.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/chartjs/roundedBar.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/progressbar/jquery.barfiller.js') }}"></script>
+<script src="{{ asset('assets/vendors/tagsinput/tagsinput.js') }}"></script>
+<script src="{{ asset('assets/vendors/text_editor/summernote-bs4.js') }}"></script>
+<script src="{{ asset('assets/vendors/am_chart/amcharts.js') }}"></script>
+<script src="{{ asset('assets/vendors/scroll/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/scroll/scrollable-custom.js') }}"></script>
+<script src="{{ asset('assets/vendors/vectormap-home/vectormap-2.0.2.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/vectormap-home/vectormap-world-mill-en.js') }}"></script>
+<script src="{{ asset('assets/vendors/apex_chart/apex-chart2.js') }}"></script>
+<script src="{{ asset('assets/vendors/apex_chart/apex_dashboard.js') }}"></script>
+<script src="{{ asset('assets/vendors/echart/echarts.min.js') }}"></script>
+<script src="{{ asset('assets/vendors/chart_am/core.js') }}"></script>
+<script src="{{ asset('assets/vendors/chart_am/charts.js') }}"></script>
+<script src="{{ asset('assets/vendors/chart_am/animated.js') }}"></script>
+<script src="{{ asset('assets/vendors/chart_am/kelly.js') }}"></script>
+<script src="{{ asset('assets/vendors/chart_am/chart-custom.js') }}"></script>
+<script src="{{ asset('assets/js/dashboard_init.js') }}"></script>
+<script src="{{ asset('assets/js/custom.js') }}"></script>
 </body>
- 
 </html>
