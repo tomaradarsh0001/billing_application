@@ -1,6 +1,8 @@
 @extends('layouts.app') 
 @section('title', 'Dashboard')
 @section('content')
+
+<title>Welcome to Dashboard</title>
 <div class="main_content_iner overly_inner ">
         <div class="container-fluid p-0 ">
             <!-- page title  -->

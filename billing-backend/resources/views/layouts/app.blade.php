@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Sales</title>
     <!-- CSS Links -->
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.min.css') }}" />
 <link rel="stylesheet" href="{{ asset('assets/vendors/themefy_icon/themify-icons.css') }}" />
@@ -54,16 +53,17 @@
               <div class="icon_menu">
                   <img src="{{ asset('assets/img/menu-icon/2.svg')}}" alt="">
               </div>
-              <span>Apps</span>
+              <span>Configuration</span>
             </a>
             <ul>
-              <li><a href="editor.html">editor</a></li>
+            <li><a href="{{ route('configuration.create') }}">Add Configuration</a></li>
+            <!-- <li><a href="editor.html">editor</a></li>
               <li><a href="mail_box.html">Mail Box</a></li>
               <li><a href="chat.html">Chat</a></li>
-              <li><a href="faq.html">FAQ</a></li>
+              <li><a href="faq.html">FAQ</a></li> -->
             </ul>
           </li>
-        <li class="">
+        <!-- <li class="">
           <a   class="has-arrow" href="#" aria-expanded="false">
             
             <div class="icon_menu">
@@ -268,7 +268,7 @@
               <li><a href="forgot_pass.html">Forgot Password</a></li>
               <li><a href="gallery.html">Gallery</a></li>
             </ul>
-          </li>
+          </li> -->
 
       </ul>
 </nav>

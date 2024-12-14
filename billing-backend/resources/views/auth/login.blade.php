@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Sales</title>
+    <title>Login to Admin Panel</title>
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/themefy_icon/themify-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/font_awesome/css/all.min.css') }}" />
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style1.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/colors/default.css') }}" id="colorSkinCSS">
 </head>
-
 <body class="d-flex justify-content-center align-items-center vh-100 m-0">
 <div class="container-fluid p-0">
                 <div class="col-lg-12">
