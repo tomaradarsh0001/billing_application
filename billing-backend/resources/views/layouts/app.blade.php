@@ -386,9 +386,9 @@
                             <img src="{{ asset('assets/img/client_img.png')}}" alt="#">
                             <div class="profile_info_iner">
                                 <div class="profile_author_name">
-                                    <p>Neurologist </p>
-                                    <h5>Dr. Robar Smith</h5>
-                                </div>
+                                    <p>{{ Auth::user()->email }} </p>
+                                    <h5>{{ Auth::user()->name }}</h5>
+                                    </div>
                                 <div class="profile_info_details">
                                     <a href="#">My Profile </a>
                                     <a href="#">Settings</a>
