@@ -42,15 +42,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/configuration/{id}/edit', [ConfigurationController::class, 'edit'])->name('configuration.edit');
     Route::put('/configuration/{id}', [ConfigurationController::class, 'update'])->name('configuration.update');
 
-    // RBAC: Roles, Permissions, Users
-    Route::middleware('role:Superadmin')->group(function () {
-        Route::resource('roles', RoleController::class);
-        Route::resource('permissions', PermissionController::class);
-    });
-
-    Route::middleware('role:Admin')->group(function () {
-        Route::resource('users', UserController::class);
-    });
+});
+Route::middleware(['role:superadmin|admin'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:configuration.view');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:configuration.edit');
+    Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:configuration.edit');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.delete')->middleware('permission:configuration.delete');
 });
 
+// Allow superadmin access to manage roles and permissions
+Route::middleware(['role:superadmin'])->group(function () {
+    Route::get('/roles', [UserController::class, 'manageRoles'])->name('roles.index');
+    Route::post('/roles', [UserController::class, 'assignRoles'])->name('roles.assign');
+});
 require __DIR__ . '/auth.php';

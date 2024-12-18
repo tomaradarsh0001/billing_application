@@ -2581,6 +2581,21 @@ p a:hover {
   -webkit-animation: notify-pulse 1s infinite;
 }
 
+.nav-link-set {
+  position: relative;
+}
+
+/* line 1905, G:/admin_project/6 admin/sales/scss/_reset.scss */
+.nav-link-set:before {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  right: -7px;
+  border-radius: 50%;
+  top: -10px;
+}
+
 @-webkit-keyframes notify-pulse {
   0% {
     box-shadow: 0 0 0 0px rgba(100, 197, 177, 0.7);
@@ -11321,6 +11336,30 @@ a.pswp__share--download:hover {
     transform: translateY(30px) translateX(55px);
   }
 }
+
+.Notification_body {
+  display: flex;
+  gap: 20px; /* Adjust the spacing between items */
+}
+
+.set_notification_clicker {
+  display: flex;
+  flex-direction: column; /* Align image and text vertically */
+  align-items: center; /* Center the text and image */
+  text-decoration: none; /* Remove underline from links */
+  color: inherit; /* Inherit the text color */
+}
+
+.set_notification_clicker img {
+  width: 50px; /* Adjust size as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+
+.set_notification_clicker p {
+  margin: 8px 0 0; /* Add space between the image and text */
+  text-align: center;
+}
+
 
 /* line 17, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */
 .Menu_NOtification_Wrap.active {

@@ -44,27 +44,47 @@ $("#sidebar_menu >li a").filter(function() {
 
 // #NOTIFICATION_ 
 	// for MENU notification
-	$('.bell_notification_clicker').on('click', function () {
-		$('.Menu_NOtification_Wrap').toggleClass('active');
-	});
+	// Toggle Settings Notification
+$('.set_notification_clicker').on('click', function () {
+    $('.settings_notification_wrap').toggleClass('active');
+});
 
-	$(document).click(function(event){
-        if (!$(event.target).closest(".bell_notification_clicker ,.Menu_NOtification_Wrap").length) {
-            $("body").find(".Menu_NOtification_Wrap").removeClass("active");
-        }
-    });
-    	// CHAT_MENU_OPEN 
-        $('.CHATBOX_open').on('click', function() {
-            $('.CHAT_MESSAGE_POPUPBOX').toggleClass('active');
-        });
-        $('.MSEESAGE_CHATBOX_CLOSE').on('click', function() {
-            $('.CHAT_MESSAGE_POPUPBOX').removeClass('active');
-        });
-        $(document).click(function(event) {
-            if (!$(event.target).closest(".CHAT_MESSAGE_POPUPBOX, .CHATBOX_open").length) {
-                $("body").find(".CHAT_MESSAGE_POPUPBOX").removeClass("active");
-            }
-        });
+// Close Settings Notification when clicking outside
+$(document).click(function (event) {
+    if (!$(event.target).closest(".set_notification_clicker, .settings_notification_wrap").length) {
+        $(".settings_notification_wrap").removeClass("active");
+    }
+});
+
+// Toggle Bell Notification
+$('.bell_notification_clicker').on('click', function () {
+    $('.bell_notification_wrap').toggleClass('active');
+});
+
+// Close Bell Notification when clicking outside
+$(document).click(function (event) {
+    if (!$(event.target).closest(".bell_notification_clicker, .bell_notification_wrap").length) {
+        $(".bell_notification_wrap").removeClass("active");
+    }
+});
+
+// Open Chatbox
+$('.CHATBOX_open').on('click', function () {
+    $('.CHAT_MESSAGE_POPUPBOX').toggleClass('active');
+});
+
+// Close Chatbox
+$('.MSEESAGE_CHATBOX_CLOSE').on('click', function () {
+    $('.CHAT_MESSAGE_POPUPBOX').removeClass('active');
+});
+
+// Close Chatbox when clicking outside
+$(document).click(function (event) {
+    if (!$(event.target).closest(".CHAT_MESSAGE_POPUPBOX, .CHATBOX_open").length) {
+        $(".CHAT_MESSAGE_POPUPBOX").removeClass('active');
+    }
+});
+
     //progressbar js
     $(document).ready(function(){
         var proBar = $('#bar1');

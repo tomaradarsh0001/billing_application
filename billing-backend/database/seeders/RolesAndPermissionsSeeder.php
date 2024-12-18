@@ -2,32 +2,34 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run()
     {
-        // Create Roles
-        $superAdmin = Role::create(['name' => 'Superadmin']);
-        $admin = Role::create(['name' => 'Admin']);
-        $user = Role::create(['name' => 'User']);
+        // Clear cache
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create Permissions
-        $permissions = ['manage users', 'manage roles', 'manage permissions'];
+        // Create permissions
+        Permission::create(['name' => 'configuration.view']);
+        Permission::create(['name' => 'configuration.edit']);
+        Permission::create(['name' => 'configuration.delete']);
 
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
+        // Create roles and assign permissions
+        $superAdmin = Role::create(['name' => 'superadmin']);
+        $admin = Role::create(['name' => 'admin']);
+        $user = Role::create(['name' => 'user']);
 
-        // Assign Permissions to Roles
+        // Superadmin gets all permissions
         $superAdmin->givePermissionTo(Permission::all());
-        $admin->givePermissionTo('manage users');
+
+        // Admin gets specific permissions
+        $admin->givePermissionTo(['configuration.view', 'configuration.edit']);
+
+        // User gets limited permissions
+        $user->givePermissionTo('configuration.view');
     }
 }
