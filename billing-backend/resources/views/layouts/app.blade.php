@@ -303,27 +303,39 @@
                         <div class="header_notification_warp d-flex align-items-center">
     <!-- Settings Notification -->
     <li>
-        <a class="set_notification_clicker nav-link-set" href="#">
-            <img src="{{ asset('assets/img/icon/settings.svg') }}" alt="Settings">
-        </a>
-        <div class="Menu_NOtification_Wrap settings_notification_wrap">
-            <div class="notification_Header">
-                <h4>Settings</h4>
-            </div>
-            <div class="Notification_body">
-    <!-- single_notify -->
     <a class="set_notification_clicker nav-link-set" href="#">
-        <img src="{{ asset('assets/img/icon/rbac.png') }}" alt="Settings">
-        <p>RBAC Settings</p>
+        <img src="{{ asset('assets/img/icon/settings.svg') }}" alt="Settings">
     </a>
-    <a class="set_notification_clicker nav-link-set" href="{{ route('configuration.index')}}">
-        <img src="{{ asset('assets/img/icon/configuration.png') }}" alt="Settings">
-        <p>Configuration</p>
-    </a>
-</div>
-
+    <div class="Menu_NOtification_Wrap settings_notification_wrap">
+        <div class="notification_Header">
+            <h4>Settings</h4>
         </div>
-    </li>
+        <div class="Notification_body">
+            <div class="row col-partition">
+                <div class="col-lg-8">
+                    <div class="notification_item">
+                        <p>RBAC</p>
+                        <ul class="list-group list-group-flush">
+                            <li><a href="{{ route('roles.index')}}">Role</a></li>
+                            <li><a href="{{ route('permissions.index')}}">Permissions</a></li>
+                            <li><a href="{{ route('users.index')}}">Manage Users</a></li>
+                        </ul>
+                    </div>
+                 </div>
+                 <div class="col-lg-8">
+                    <div class="notification_item">
+                        <p>Configuration</p>
+                        <ul class="list-group list-group-flush">
+                            <li><a href="{{ route('configuration.index')}}">Configuration</a></li>
+                        </ul>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</li>
+
+
 
     <!-- Bell Notification -->
     <li>
