@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ConfigurationController extends Controller
 {
+    
     public function index()
     {
         $configurations = Configuration::all();

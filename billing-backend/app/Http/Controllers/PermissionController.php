@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
@@ -8,7 +7,6 @@ use Spatie\Permission\Models\Permission as SpatiePermission;
 
 class PermissionController extends Controller
 {
-  
     public function index()
     {
         $permissions = Permission::all();
@@ -20,15 +18,12 @@ class PermissionController extends Controller
         return view('permissions.create');
     }
 
- 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|unique:permissions,name',
         ]);
-
         SpatiePermission::create(['name' => $request->name]);
-
         return redirect()->route('permissions.index')->with('success', 'Permission created successfully.');
     }
 
@@ -36,7 +31,6 @@ class PermissionController extends Controller
     {
         return view('permissions.edit', compact('permission'));
     }
-
 
     public function update(Request $request, Permission $permission)
     {
@@ -48,7 +42,6 @@ class PermissionController extends Controller
 
         return redirect()->route('permissions.index')->with('success', 'Permission updated successfully.');
     }
-
 
     public function destroy(Permission $permission)
     {

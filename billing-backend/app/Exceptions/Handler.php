@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,4 +29,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+{
+    // Check if it's a 403 error
+    if ($exception instanceof AccessDeniedHttpException) {
+        return response()->view('errors.403', [], 403);
+    }
+
+    return parent::render($request, $exception);
+}
 }

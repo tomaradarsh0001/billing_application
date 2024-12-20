@@ -3847,6 +3847,11 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   background: #F5F7FD;
   border-radius: 30px;
 }
+.alert .btn-close {
+  opacity: 1;
+  color: #fff;
+  
+}
 
 /* line 401, G:/admin_project/6 admin/sales/scss/_header.scss */
 .serach_field-area2 .search_inner input::placeholder {
@@ -3885,6 +3890,7 @@ table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child::befor
   width: 430px;
   position: relative;
   margin-right: 0px;
+  margin-top: 3px;
 }
 
 @media (max-width: 575.98px) {
