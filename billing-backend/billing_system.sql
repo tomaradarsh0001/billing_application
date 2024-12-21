@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2024 at 01:53 PM
+-- Generation Time: Dec 21, 2024 at 09:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,9 +42,10 @@ CREATE TABLE `configurations` (
 --
 
 INSERT INTO `configurations` (`id`, `app_name`, `app_logo`, `app_tagline`, `app_theme`, `created_at`, `updated_at`) VALUES
-(1, 'Puma', 'logos/NkikceIKdVszpyflkMiPRuXpg8TQgTY1OSVKAJAR.png', 'Forever Faster', '#e90707', '2024-12-14 07:15:42', '2024-12-14 08:37:01'),
-(2, 'Adidas', 'logos/5As8UQGmLN6HbkFgvQ97motXGMMBdeIkPuFQNxi8.png', 'Impossible is Nothing', '#3f73ee', '2024-12-14 08:37:30', '2024-12-14 11:06:00'),
-(3, 'U.S Puma', 'logos/QKXdzobKPvoLUg7QodDh7Qy4ABPedMjPawCVF00U.png', 'Play Your Part', '#ff0000', '2024-12-14 08:40:14', '2024-12-20 02:40:51');
+(1, 'Puma', 'logos/dGvJnzJJRxe1peFASgNuoie1aSOHg1fa0DIKi84n.png', 'Forever Faster', '#e90707', '2024-12-14 07:15:42', '2024-12-21 02:49:16'),
+(2, 'Adidas', 'logos/SZquP1icv6E1Ko9IjUyZIjPEIjwJmwlHvJ8eQ5oz.png', 'Impossible is Nothing', '#000000', '2024-12-14 08:37:30', '2024-12-21 02:57:55'),
+(3, 'U.S Puma', 'logos/X8iMN9jXX4Mm7QGVxzLUALvWUHicCisERtmT7U4o.png', 'Play Your Part', '#46729b', '2024-12-14 08:40:14', '2024-12-21 02:53:10'),
+(5, 'Reebok', 'logos/hiKiHSATfo9EuqMHCR0vjBxTW7SFJ0MVPfPDiNlw.png', 'Because life is not a spectator sport', '#4d82ff', '2024-12-21 02:57:43', '2024-12-21 02:57:43');
 
 -- --------------------------------------------------------
 
@@ -350,7 +351,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `configurations`
 --
 ALTER TABLE `configurations`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`

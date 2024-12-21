@@ -300,82 +300,82 @@
                             <span class="f_s_14 f_w_400 ml_25 white_text text_white">Apps</span>
                         </div>
                         <div class="header_right d-flex justify-content-between align-items-center">
-                        <div class="header_notification_warp d-flex align-items-center">
-    <!-- Settings Notification -->
-    <li>
-    <a class="set_notification_clicker nav-link-set" href="#">
-        <img src="{{ asset('assets/img/icon/settings.svg') }}" alt="Settings">
-    </a>
-    <div class="Menu_NOtification_Wrap settings_notification_wrap">
-        <div class="notification_Header">
-            <h4>Settings</h4>
-        </div>
-        <div class="Notification_body">
-            <div class="row col-partition">
-                <div class="col-lg-8">
-                    <div class="notification_item">
-                        <p>RBAC</p>
-                        <ul class="list-group list-group-flush">
-                            <li><a href="{{ route('roles.index')}}">Role</a></li>
-                            <li><a href="{{ route('permissions.index')}}">Permissions</a></li>
-                            <li><a href="{{ route('users.index')}}">Manage Users</a></li>
-                        </ul>
-                    </div>
-                 </div>
-                 <div class="col-lg-8">
-                    <div class="notification_item">
-                        <p>Configuration</p>
-                        <ul class="list-group list-group-flush">
-                            <li><a href="{{ route('configuration.index')}}">Configuration</a></li>
-                        </ul>
-                    </div>
-                 </div>
-            </div>
-        </div>
-    </div>
-</li>
+                            <div class="header_notification_warp d-flex align-items-center">
+                                <!-- Settings Notification -->
+                                <li>
+                                    <a class="set_notification_clicker nav-link-set" href="#">
+                                        <img src="{{ asset('assets/img/icon/settings.svg') }}" alt="Settings">
+                                    </a>
+                                    <div class="Menu_NOtification_Wrap settings_notification_wrap">
+                                        <div class="notification_Header">
+                                            <h4>Settings</h4>
+                                        </div>
+                                        <div class="Notification_body">
+                                            <div class="row col-partition">
+                                                <div class="col-lg-8">
+                                                    <div class="notification_item">
+                                                        <p>RBAC</p>
+                                                        <ul class="list-group list-group-flush">
+                                                            <li><a href="{{ route('roles.index')}}">Role</a></li>
+                                                            <li><a href="{{ route('permissions.index')}}">Permissions</a></li>
+                                                            <li><a href="{{ route('users.index')}}">Manage Users</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-8">
+                                                    <div class="notification_item">
+                                                        <p>Configuration</p>
+                                                        <ul class="list-group list-group-flush">
+                                                            <li><a href="{{ route('configuration.index')}}">Configuration</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
 
 
 
-    <!-- Bell Notification -->
-    <li>
-        <a class="bell_notification_clicker nav-link-notify" href="#">
-            <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">
-        </a>
-        <div class="Menu_NOtification_Wrap bell_notification_wrap">
-            <div class="notification_Header">
-                <h4>Bell Notifications</h4>
-            </div>
-            <div class="Notification_body">
-                <!-- single_notify -->
-                <div class="single_notify d-flex align-items-center">
-                    <div class="notify_thumb">
-                        <a href="#"><img src="{{ asset('assets/img/staf/4.png') }}" alt="Notification"></a>
-                    </div>
-                    <div class="notify_content">
-                        <a href="#">
-                            <h5>Awesome Packages</h5>
-                        </a>
-                        <p>Lorem ipsum dolor sit amet</p>
-                    </div>
-                </div>
-                <!-- Add more single_notify elements as needed -->
-            </div>
-            <div class="nofity_footer">
-                <div class="submit_button text-center pt_20">
-                    <a href="#" class="btn_1">See More</a>
-                </div>
-            </div>
-        </div>
-    </li>
+                                <!-- Bell Notification -->
+                                <li>
+                                    <a class="bell_notification_clicker nav-link-notify" href="#">
+                                        <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">
+                                    </a>
+                                    <div class="Menu_NOtification_Wrap bell_notification_wrap">
+                                        <div class="notification_Header">
+                                            <h4>Bell Notifications</h4>
+                                        </div>
+                                        <div class="Notification_body">
+                                            <!-- single_notify -->
+                                            <div class="single_notify d-flex align-items-center">
+                                                <div class="notify_thumb">
+                                                    <a href="#"><img src="{{ asset('assets/img/staf/4.png') }}" alt="Notification"></a>
+                                                </div>
+                                                <div class="notify_content">
+                                                    <a href="#">
+                                                        <h5>Awesome Packages</h5>
+                                                    </a>
+                                                    <p>Lorem ipsum dolor sit amet</p>
+                                                </div>
+                                            </div>
+                                            <!-- Add more single_notify elements as needed -->
+                                        </div>
+                                        <div class="nofity_footer">
+                                            <div class="submit_button text-center pt_20">
+                                                <a href="#" class="btn_1">See More</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
 
-    <!-- Chatbox -->
-    <li>
-        <a class="CHATBOX_open nav-link-notify" href="#">
-            <img src="{{ asset('assets/img/icon/msg.svg') }}" alt="Chat">
-        </a>
-    </li>
-</div>
+                                <!-- Chatbox -->
+                                <li>
+                                    <a class="CHATBOX_open nav-link-notify" href="#">
+                                        <img src="{{ asset('assets/img/icon/msg.svg') }}" alt="Chat">
+                                    </a>
+                                </li>
+                            </div>
 
                             <div class="profile_info">
                                 <img src="{{ asset('assets/img/client_img.png')}}" alt="#">
@@ -392,7 +392,7 @@
                                                 <a href="{{ route('users.index') }}">Users</a>
                                                 <a href="{{ route('roles.index') }}">Roles</a>
                                                 <a href="{{ route('permissions.index') }}">Permissions</a>
-                                               
+
                                             </div>
                                         </div>
                                         <form method="POST" action="{{ route('logout') }}" style="display: inline;">
@@ -591,6 +591,7 @@
     <script src="{{ asset('assets/vendors/datepicker/datepicker.en.js') }}"></script>
     <script src="{{ asset('assets/vendors/datepicker/datepicker.custom.js') }}"></script>
     <script src="{{ asset('assets/js/chart.min.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('assets/vendors/chartjs/roundedBar.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/progressbar/jquery.barfiller.js') }}"></script>
     <script src="{{ asset('assets/vendors/tagsinput/tagsinput.js') }}"></script>

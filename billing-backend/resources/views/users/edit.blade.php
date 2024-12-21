@@ -8,14 +8,18 @@
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">
                 <div class="QA_section">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                    @if(session('success'))
+                    <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    @endif
+                    <!-- Error message -->
+                    @if(session('error'))
+                    <div class="alert text-white bg-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                     @endif
 
                     <div class="white_box_tittle list_header">
@@ -45,18 +49,18 @@
                             <label for="roles" class="form-label">Roles</label>
                             <div id="roles">
                                 @foreach ($roles as $role)
-                                    <div class="form-check">
-                                        <input 
-                                            class="form-check-input" 
-                                            type="checkbox" 
-                                            name="roles[]" 
-                                            value="{{ $role->id }}" 
-                                            id="role_{{ $role->id }}"
-                                            {{ in_array($role->id, old('roles', $user->roles->pluck('id')->toArray())) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="role_{{ $role->id }}">
-                                            {{ $role->name }}
-                                        </label>
-                                    </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="roles[]"
+                                        value="{{ $role->id }}"
+                                        id="role_{{ $role->id }}"
+                                        {{ in_array($role->id, old('roles', $user->roles->pluck('id')->toArray())) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="role_{{ $role->id }}">
+                                        {{ $role->name }}
+                                    </label>
+                                </div>
                                 @endforeach
                             </div>
                             <small class="text-muted">Select one or more roles for the user.</small>

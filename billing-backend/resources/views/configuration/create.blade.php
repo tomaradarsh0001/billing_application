@@ -3,10 +3,17 @@
 @section('content')
 <title>Configurations</title>
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+<div class="alert text-white bg-success alert-dismissible fade show" role="alert">
+    {{ session('success') }}
+    <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
+<!-- Error message -->
+@if(session('error'))
+<div class="alert text-white bg-danger alert-dismissible fade show" role="alert">
+    {{ session('error') }}
+    <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 @endif
 <div class="main_content_iner  mt-5">
     <div class="col-lg-12">
