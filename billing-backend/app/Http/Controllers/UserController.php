@@ -9,7 +9,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-   
+
     public function index()
     {
         $users = User::with('roles')->get();
@@ -17,10 +17,10 @@ class UserController extends Controller
     }
     public function create()
     {
-        $roles = Role::all(); 
+        $roles = Role::all();
         return view('users.create', compact('roles'));
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -29,18 +29,18 @@ class UserController extends Controller
             'password' => 'required|min:8|max:16',
             'roles' => 'required|array',
         ]);
-    
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);
-    
-        $user->roles()->sync($request->roles); 
-    
+
+        $user->roles()->sync($request->roles);
+
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
-    
+
 
     public function edit(User $user)
     {
@@ -49,30 +49,95 @@ class UserController extends Controller
     }
 
     public function update(Request $request, User $user)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-        'password' => 'nullable|min:8',
-        'roles' => 'required|array',
-        'roles.*' => 'exists:roles,id',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
+        ]);
 
-    $user->update([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => $validated['password'] ? bcrypt($validated['password']) : $user->password,
-    ]);
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'] ? bcrypt($validated['password']) : $user->password,
+        ]);
 
-    $user->roles()->sync($validated['roles']);
+        $previousRoles = $user->roles->pluck('id')->toArray();
+        $user->roles()->sync($validated['roles']);
+        $removedRoles = array_diff($previousRoles, $validated['roles']);
 
-    return redirect()->route('users.index')->with('success', 'User updated successfully!');
-}
+        if ($removedRoles) {
+            foreach ($removedRoles as $roleId) {
+                $role = Role::find($roleId);
+                if ($role) {
+                    $user->permissions()->detach($role->permissions);
+                }
+            }
+        }
 
-public function show(User $user)
-{
-    return view('users.show', compact('user'));
-}
+        return redirect()->route('users.index')->with('success', 'User updated successfully!');
+    }
+
+
+    public function show(User $user)
+    {
+        return view('users.show', compact('user'));
+    }
+
+    public function perandroles(User $user)
+    {
+        $roles = Role::with('permissions')->get();
+        $permissions = Permission::all();
+        $userPermissions = $user->permissions->pluck('id')->toArray();
+
+        $specificPermissionId = 0;
+        if (!in_array($specificPermissionId, $userPermissions)) {
+            $userPermissions[] = $specificPermissionId;
+        }
+
+        return view('users.perandroles', compact('roles', 'permissions', 'userPermissions', 'user'));
+    }
+
+
+
+    public function updateperandroles(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'roles' => 'array',
+            'permissions' => 'array',
+        ]);
+
+        $user->roles()->sync($validated['roles']);
+        $user->permissions()->sync($validated['permissions']);
+        $user->permissions()->syncWithoutDetaching([]);
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    }
+
+    // public function updateperandroles(Request $request, User $user)
+    // {
+    //     $validated = $request->validate([
+    //         'roles' => 'array',
+    //         'permissions' => 'array',
+    //     ]);
+    //     $userRoles = $validated['roles'];
+    //     $userPermissions = $validated['permissions'];
+    //     $assignedPermissions = collect();
+    //     foreach ($userRoles as $roleId) {
+    //         $role = Role::find($roleId);
+    //         $assignedPermissions = $assignedPermissions->merge($role->permissions->pluck('id'));
+    //     }
+    //     $userPermissions = collect($userPermissions)->intersect($assignedPermissions)->toArray();
+    //     $user->roles()->sync($userRoles);
+    //     $user->permissions()->sync($userPermissions);
+    //     $user->permissions()->syncWithoutDetaching([]);
+
+    //     return redirect()->route('users.index')->with('success', 'User updated successfully.');
+    // }
+
+
 
     public function destroy(User $user)
     {
@@ -93,33 +158,32 @@ public function show(User $user)
 
         return redirect()->route('roles.index')->with('success', 'Roles updated successfully.');
     }
+
+
     public function managePermissions(Role $role)
     {
         $permissions = Permission::all();
         return view('roles.permissions', compact('role', 'permissions'));
     }
-    
+
     public function addPermission(Request $request, Role $role)
-{
-    $selectedPermissions = $request->input('permissions', []); 
-    $role->permissions()->sync($selectedPermissions); 
-    return redirect()->route('roles.index', $role->id)->with('success', 'Permissions updated successfully!');
-}
-
-public function removePermission(Request $request, Role $role)
-{
-    $permissionId = $request->input('permission_id'); 
-
-    if ($permissionId) {
-        $permission = Permission::findOrFail($permissionId);
-        $role->permissions()->detach($permission);
-
-        return redirect()->route('roles.permissions', $role->id)->with('success', 'Permission removed successfully!');
+    {
+        $selectedPermissions = $request->input('permissions', []);
+        $role->permissions()->sync($selectedPermissions);
+        return redirect()->route('roles.index', $role->id)->with('success', 'Permissions updated successfully!');
     }
 
-    return redirect()->route('roles.permissions', $role->id)->with('error', 'No permission selected for removal.');
-}
-    
-    
-    
+    public function removePermission(Request $request, Role $role)
+    {
+        $permissionId = $request->input('permission_id');
+
+        if ($permissionId) {
+            $permission = Permission::findOrFail($permissionId);
+            $role->permissions()->detach($permission);
+
+            return redirect()->route('roles.permissions', $role->id)->with('success', 'Permission removed successfully!');
+        }
+
+        return redirect()->route('roles.permissions', $role->id)->with('error', 'No permission selected for removal.');
+    }
 }

@@ -63,6 +63,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger rounded-pill mb-2" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
                                         </form>
+                                        <a href="{{ route('users.perandroles', $user) }}" class="btn btn-success rounded-pill mb-2">Edit Roles / Permissions</a>
                                     </td>
                                 </tr>
                                 @endforeach

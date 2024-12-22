@@ -21,8 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/users/add', [UserController::class, 'create'])->name('users.create')->middleware('permission:users.create');
-    Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('permission:users.create');     
-
+    Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('permission:users.create');
 });
 
 // Allow superadmin access to manage roles and permissions
@@ -51,6 +50,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     //users
     Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:users.view');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')->middleware('permission:users.view');
+    Route::get('/users/{user}/editrolesandpermissions', [UserController::class, 'perandroles'])->name('users.perandroles')->middleware('permission:users.edit');
+    Route::post('/users/{user}/updated', [UserController::class, 'updateperandroles'])->name('users.updateperandroles')->middleware('permission:users.edit');
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:users.edit');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:users.edit');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.delete')->middleware('permission:users.delete');
@@ -62,7 +63,5 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])->name('permissions.edit')->middleware('permission:permissions.edit');
     Route::put('permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update')->middleware('permission:permissions.edit');
     Route::delete('permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy')->middleware('permission:permissions.delete');
-
-
 });
 require __DIR__ . '/auth.php';
