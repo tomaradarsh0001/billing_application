@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <!-- CSS Links -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap1.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/themefy_icon/themify-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/niceselect/css/nice-select.css') }}" />
@@ -23,264 +22,89 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/material_icon/material-icons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/metisMenu.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/style1.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/colors/default.css') }}" id="colorSkinCSS">
-
+    <script src="{{ asset('assets/js/jquery3.js') }}"></script>
 
 </head>
 
 <body class="crm_body_bg">
+    <style>
+        .main_content {
+            transition: padding-left 0.3s ease;
+        }
 
-    <nav class="sidebar vertical-scroll  ps-container ps-theme-default ps-active-y">
+        .sidebar.collapsed {
+            width: 80px;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed .icon_menu {
+            margin: auto;
+        }
+
+        .sidebar.collapsed ul#sidebar_menu li a span {
+            display: none;
+        }
+
+        .sidebar.collapsed ul#sidebar_menu li a {
+            text-align: center;
+        }
+
+        .sidebar.collapsed ul li a.has-arrow {
+            visibility: hidden !important;
+            transition: visibility 0s !important;
+        }
+
+        .sidebar.collapsed ul li a .icon_menu {
+            visibility: visible !important;
+            opacity: 1 !important;
+            transition: opacity 0s !important;
+        }
+
+
+        .sidebar-toggle-btn {
+            background: transparent;
+            border: none;
+            color: #000;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .sidebar-toggle-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-toggle-btn i {
+            transform: rotate(180deg);
+        }
+    </style>
+
+    <nav class="sidebar vertical-scroll ps-container ps-theme-default ps-active-y">
         <div class="logo d-flex justify-content-between">
-            <a href="index.html"><img src="{{ asset('assets/img/logo.png')}}" alt=""></a>
-            <div class="sidebar_close_icon d-lg-none">
-                <i class="ti-close"></i>
-            </div>
+            <a href="/dashboard"><img src="{{ asset('assets/img/logo.png')}}" alt="Logo"></a>
+            <button class="sidebar-toggle-btn" id="toggleSidebar">
+                <i class="ti-menu"></i>
+            </button>
         </div>
         <ul id="sidebar_menu">
             <li class="mm-active">
                 <a class="has-arrow" href="#" aria-expanded="false">
                     <div class="icon_menu">
-                        <img src="{{ asset('assets/img/menu-icon/dashboard.svg')}}" alt="">
+                        <img src="{{ asset('assets/img/menu-icon/dashboard.svg')}}" alt="Dashboard Icon">
                     </div>
                     <span>Dashboard</span>
                 </a>
                 <ul>
-                    <li><a class="active" href="index.html">Sales</a></li>
-                    <li><a href="index_2.html">Default</a></li>
-                    <li><a href="index_3.html">Dark Menu</a></li>
+                    <li><a class="active" href="/dashboard">Sales</a></li>
                 </ul>
             </li>
-            <li class="">
-                <a class="has-arrow" href="#" aria-expanded="false">
-                    <div class="icon_menu">
-                        <img src="{{ asset('assets/img/menu-icon/2.svg')}}" alt="">
-                    </div>
-                    <span>Configuration</span>
-                </a>
-                <ul>
-                    <li><a href="{{ route('configuration.create') }}">Add Configuration</a></li>
-                    <li><a href="{{ route('configuration.index') }}">View Configuration</a></li>
-                    <!-- <li><a href="editor.html">editor</a></li>
-              <li><a href="mail_box.html">Mail Box</a></li>
-              <li><a href="chat.html">Chat</a></li>
-              <li><a href="faq.html">FAQ</a></li> -->
-                </ul>
-            </li>
-            <!-- <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/3.svg')}}" alt="">
-            </div>
-            <span>UI Kits</span>
-          </a>
-          <ul>
-            <li><a href="colors.html">colors</a></li>
-            <li><a href="Alerts.html">Alerts</a></li>
-            <li><a href="buttons.html">Buttons</a></li>
-            <li><a href="modal.html">modal</a></li>
-            <li><a href="dropdown.html">Droopdowns</a></li>
-            <li><a href="Badges.html">Badges</a></li>
-            <li><a href="Loading_Indicators.html">Loading Indicators</a></li>
-            <li><a href="State_color.html">State color</a></li>
-            <li><a href="typography.html">Typography</a></li>
-            <li><a href="datepicker.html">Date Picker</a></li>
-          </ul>
-        </li>
-        <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/4.svg')}}" alt="">
-            </div>
-            <span>forms</span>
-          </a>
-          <ul>
-            <li><a href="Basic_Elements.html">Basic Elements</a></li>
-            <li><a href="Groups.html">Groups</a></li>
-            <li><a href="Max_Length.html">Max Length</a></li>
-            <li><a href="Layouts.html">Layouts</a></li>
-          </ul>
-        </li>
-        <li class="">
-            <a href="Board.html" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/5.svg')}}" alt="">
-              </div>
-              <span>Board</span>
-            </a>
-        </li>
-        <li class="">
-            <a  href="invoice.html" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/6.svg')}}" alt="">
-              </div>
-              <span>Invoice</span>
-            </a>
-        </li>
-        <li class="">
-            <a  href="calender.html" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/7.svg')}}" alt="">
-              </div>
-              <span>Calander</span>
-            </a>
-        </li>
-        
-        <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/8.svg')}}" alt="">
-              </div>
-              <span>Products</span>
-            </a>
-            <ul>
-              <li><a href="Products.html">Products</a></li>
-              <li><a href="Product_Details.html">Product Details</a></li>
-              <li><a href="Cart.html">Cart</a></li>
-              <li><a href="Checkout.html">Checkout</a></li>
-            </ul>
-          </li>
-        <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/8.svg')}}" alt="">
-            </div>
-            <span>Icons</span>
-          </a>
-          <ul>
-            <li><a href="Fontawesome_Icon.html">Fontawesome Icon</a></li>
-            <li><a href="themefy_icon.html">themefy icon</a></li>
-          </ul>
-        </li>
-
-        <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/9.svg')}}" alt="">
-              </div>
-              <span>Animations</span>
-            </a>
-            <ul>
-                <li><a href="wow_animation.html">Animate</a></li>
-                <li><a href="Scroll_Reveal.html">Scroll Reveal</a></li>
-                <li><a href="tilt.html">Tilt Animation</a></li>
-                
-            </ul>
-          </li>
-          <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/10.svg')}}" alt="">
-              </div>
-              <span>Components</span>
-            </a>
-            <ul>
-              <li><a href="accordion.html">Accordions</a></li>
-              <li><a href="Scrollable.html">Scrollable</a></li>
-              <li><a href="notification.html">Notifications</a></li>
-              <li><a href="carousel.html">Carousel</a></li>
-              <li><a href="Pagination.html">Pagination</a></li>
-            </ul>
-          </li>
-
-          <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/11.svg')}}" alt="">
-              </div>
-              <span>Table</span>
-            </a>
-            <ul>
-                <li><a href="data_table.html">Data Tables</a></li>
-                <li><a href="bootstrap_table.html">Bootstrap</a></li>
-            </ul>
-          </li>
-          <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/12.svg')}}" alt="">
-              </div>
-              <span>Cards</span>
-            </a>
-            <ul>
-                <li><a href="basic_card.html">Basic Card</a></li>
-                <li><a href="theme_card.html">Theme Card</a></li>
-                <li><a href="dargable_card.html">Draggable Card</a></li>
-            </ul>
-          </li>
-
-
-        <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/13.svg')}}" alt="">
-            </div>
-            <span>Charts</span>
-          </a>
-          <ul>
-            <li><a href="chartjs.html">ChartJS</a></li>
-            <li><a href="apex_chart.html">Apex Charts</a></li>
-            <li><a href="chart_sparkline.html">Chart sparkline</a></li>
-            <li><a href="am_chart.html">am-charts</a></li>
-            <li><a href="nvd3_charts.html">nvd3 charts.</a></li>
-          </ul>
-        </li>
-        
-
-        <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/14.svg')}}" alt="">
-            </div>
-            <span>Widgets</span>
-          </a>
-          <ul>
-            <li><a href="chart_box_1.html">Chart Boxes 1</a></li>
-            <li><a href="profilebox.html">Profile Box</a></li>
-          </ul>
-        </li>
-        
-
-        <li class="">
-          <a   class="has-arrow" href="#" aria-expanded="false">
-            <div class="icon_menu">
-                <img src="{{ asset('assets/img/menu-icon/15.svg')}}" alt="">
-            </div>
-            <span>Maps</span>
-          </a>
-          <ul>
-            <li><a href="mapjs.html">Maps JS</a></li>
-            <li><a href="vector_map.html">Vector Maps</a></li>
-          </ul>
-        </li>
-        <li class="">
-            <a   class="has-arrow" href="#" aria-expanded="false">
-              
-              <div class="icon_menu">
-                  <img src="{{ asset('assets/img/menu-icon/16.svg')}}" alt="">
-              </div>
-              <span>Pages</span>
-            </a>
-            <ul>
-              <li><a href="login.html">Login</a></li>
-              <li><a href="resister.html">Register</a></li>
-              <li><a href="error_400.html">Error 404</a></li>
-              <li><a href="error_500.html">Error 500</a></li>
-              <li><a href="forgot_pass.html">Forgot Password</a></li>
-              <li><a href="gallery.html">Gallery</a></li>
-            </ul>
-          </li> -->
-
         </ul>
     </nav>
-    <!--/ sidebar  -->
+
 
 
     <section class="main_content dashboard_part large_header_bg">
-        <!-- menu  -->
         <div class="container-fluid g-0">
             <div class="row">
                 <div class="col-lg-12 p-0">
@@ -301,7 +125,6 @@
                         </div>
                         <div class="header_right d-flex justify-content-between align-items-center">
                             <div class="header_notification_warp d-flex align-items-center">
-                                <!-- Settings Notification -->
                                 <li>
                                     <a class="set_notification_clicker nav-link-set" href="#">
                                         <img src="{{ asset('assets/img/icon/settings.svg') }}" alt="Settings">
@@ -335,9 +158,6 @@
                                     </div>
                                 </li>
 
-
-
-                                <!-- Bell Notification -->
                                 <li>
                                     <a class="bell_notification_clicker nav-link-notify" href="#">
                                         <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">
@@ -612,6 +432,31 @@
     <script src="{{ asset('assets/js/dashboard_init.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleButton = document.getElementById('toggleSidebar');
+            const sidebar = document.querySelector('.sidebar');
+            const mainContent = document.querySelector('.main_content');
+
+            toggleButton.addEventListener('click', function() {
+                sidebar.classList.toggle('collapsed');
+                if (sidebar.classList.contains('collapsed')) {
+                    mainContent.style.paddingLeft = '80px';
+                } else {
+                    mainContent.style.paddingLeft = '270px';
+                }
+            });
+
+            // Set initial padding
+            if (sidebar.classList.contains('collapsed')) {
+                mainContent.style.paddingLeft = '80px';
+            } else {
+                mainContent.style.paddingLeft = '270px';
+            }
+        });
+    </script>
+
 </body>
 
 </html>

@@ -25,16 +25,6 @@
                     <div class="white_box_tittle list_header">
                         <h4>Configurations List</h4>
                         <div class="box_right d-flex lms_block">
-                            <div class="serach_field_2">
-                                <div class="search_inner">
-                                    <form Active="#">
-                                        <div class="search_field">
-                                            <input type="text" placeholder="Search content here...">
-                                        </div>
-                                        <button type="submit"> <i class="ti-search"></i> </button>
-                                    </form>
-                                </div>
-                            </div>
                             <div class="add_button ms-2">
                                 <a href="{{route('configuration.create')}}" class="btn_1">Add New</a>
                             </div>
@@ -42,7 +32,7 @@
                     </div>
                     <div class="QA_table mb_30">
                         @if($configurations->count() > 0)
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="configurationsTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -93,9 +83,19 @@
         </div>
     </div>
     <div class="col-12">
-
     </div>
-
 </div>
-
+<script>
+    $(document).ready(function() {
+        $('#configurationsTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            lengthChange: true,
+            autoWidth: false,
+            responsive: true, // Make it responsive
+        });
+    });
+</script>
 @endsection

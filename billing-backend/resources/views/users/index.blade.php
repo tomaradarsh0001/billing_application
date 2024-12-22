@@ -26,16 +26,7 @@
                     <div class="white_box_tittle list_header">
                         <h4>Users List</h4>
                         <div class="box_right d-flex lms_block">
-                            <div class="serach_field_2">
-                                <div class="search_inner">
-                                    <form action="#" method="GET">
-                                        <div class="search_field">
-                                            <input type="text" name="search" placeholder="Search users...">
-                                        </div>
-                                        <button type="submit"><i class="ti-search"></i></button>
-                                    </form>
-                                </div>
-                            </div>
+
                             <div class="add_button ms-2">
                                 <a href="{{ route('users.create') }}" class="btn_1">Create User</a>
                             </div>
@@ -44,7 +35,7 @@
 
                     <div class="QA_table mb_30">
                         @if($users->count() > 0)
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="usersTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -86,4 +77,17 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('#usersTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            lengthChange: true,
+            autoWidth: false,
+            responsive: true, // Make it responsive
+        });
+    });
+</script>
 @endsection
