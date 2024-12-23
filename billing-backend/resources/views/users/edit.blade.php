@@ -38,6 +38,7 @@
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" name="email" id="email" class="form-control" placeholder="Enter user email" value="{{ old('email', $user->email) }}" required>
+                            <small id="email-error" class="text-danger" style="display: none;">Email already exists.</small>
                         </div>
 
                         <div class="mb-3">
@@ -68,7 +69,7 @@
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Update User</button>
+                            <button type="submit" class="btn btn-primary" id="submit-btn" disabled>Update User</button>
                         </div>
                     </form>
                 </div>
@@ -76,4 +77,30 @@
         </div>
     </div>
 </div>
+<script>
+    document.getElementById('email').addEventListener('input', function() {
+        let email = this.value;
+        let errorElement = document.getElementById('email-error');
+        let submitButton = document.getElementById('submit-btn');
+        let currentEmail = "{{ $user->email }}"; // Get the current user's email
+
+        // Check if the email is different from the current email to prevent validation error on the same email
+        if (email !== currentEmail && email.length > 0) {
+            fetch(`/check-email/${email}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        errorElement.style.display = 'block';
+                        submitButton.disabled = true;
+                    } else {
+                        errorElement.style.display = 'none';
+                        submitButton.disabled = false;
+                    }
+                });
+        } else {
+            errorElement.style.display = 'none';
+            submitButton.disabled = false;
+        }
+    });
+</script>
 @endsection

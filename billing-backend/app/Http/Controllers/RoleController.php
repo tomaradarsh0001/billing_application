@@ -65,4 +65,16 @@ class RoleController extends Controller
         $role->delete();
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
+
+    public function checkRoleName(Request $request)
+{
+    $roleName = $request->input('name');
+    
+    $exists = Role::where('name', $roleName)
+        ->where('id', '!=', $request->route('role'))
+        ->exists();
+        
+    return response()->json(['exists' => $exists]);
+}
+
 }

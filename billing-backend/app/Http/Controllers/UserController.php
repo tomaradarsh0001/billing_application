@@ -186,4 +186,10 @@ class UserController extends Controller
 
         return redirect()->route('roles.permissions', $role->id)->with('error', 'No permission selected for removal.');
     }
+    public function checkEmail($email)
+{
+    $exists = User::where('email', $email)->exists();
+
+    return response()->json(['exists' => $exists]);
+}
 }

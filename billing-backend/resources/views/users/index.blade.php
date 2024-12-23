@@ -1,8 +1,8 @@
 @extends('layouts.app')
-
 @section('title', 'Users')
-
 @section('content')
+@include('include.alerts.delete-confirmation')
+
 <div class="main_content_iner  mt-5">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
@@ -58,10 +58,10 @@
                                     <td>
                                         <a href="{{ route('users.show', $user) }}" class="btn btn-primary rounded-pill mb-2">View</a>
                                         <a href="{{ route('users.edit', $user) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
-                                        <form method="POST" action="{{ route('users.delete', $user) }}" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger rounded-pill mb-2" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                                        <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('user', {{ $user->id }})">Delete</button>
+                                        <form method="POST" action="{{ route('users.delete', $user) }}" class="d-inline" id="deleteForm-{{ $user->id }}">
+                                         @csrf
+                                         @method('DELETE')
                                         </form>
                                         <a href="{{ route('users.perandroles', $user) }}" class="btn btn-success rounded-pill mb-2">Edit Roles / Permissions</a>
                                     </td>
@@ -78,6 +78,7 @@
         </div>
     </div>
 </div>
+
 <script>
     $(document).ready(function() {
         $('#usersTable').DataTable({
@@ -87,7 +88,7 @@
             info: true,
             lengthChange: true,
             autoWidth: false,
-            responsive: true, // Make it responsive
+            responsive: true,
         });
     });
 </script>

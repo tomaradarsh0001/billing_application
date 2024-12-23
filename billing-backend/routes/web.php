@@ -46,6 +46,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('/roles/{role}/permissions', [UserController::class, 'managePermissions'])->name('roles.permissions');
     Route::post('/roles/{role}/permissions/add', [UserController::class, 'addPermission'])->name('roles.permissions.add');
     Route::post('/roles/{role}/permissions/remove', [UserController::class, 'removePermission'])->name('roles.permissions.remove');
+    Route::get('roles/check-name', [RoleController::class, 'checkRoleName'])->name('roles.checkName');
+
 
     //users
     Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:users.view');
@@ -55,6 +57,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:users.edit');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:users.edit');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.delete')->middleware('permission:users.delete');
+Route::get('check-email/{email}', [UserController::class, 'checkEmail'])->name('check.email');
+
 
     //permissions
     Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index')->middleware('permission:permissions.view');
@@ -63,5 +67,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])->name('permissions.edit')->middleware('permission:permissions.edit');
     Route::put('permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update')->middleware('permission:permissions.edit');
     Route::delete('permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy')->middleware('permission:permissions.delete');
+    Route::get('permissions/check-name', [PermissionController::class, 'checkPermissionName'])->name('permissions.checkName');
+
 });
 require __DIR__ . '/auth.php';

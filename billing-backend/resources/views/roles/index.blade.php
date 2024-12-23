@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Roles List')
 @section('content')
+@include('include.alerts.delete-confirmation')
 
 <div class="main_content_iner mt-5">
     <div class="col-lg-12">
@@ -71,11 +72,12 @@
                                         </td>
                                         <td class="gap-2">
                                             <a href="{{ route('roles.edit', $role->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
-                                            <form action="{{ route('roles.delete', $role->id) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger rounded-pill mb-2" onclick="return confirm('Are you sure you want to delete this role?')">Delete</button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('role', {{ $role->id }})">Delete</button>
+<form method="POST" action="{{ route('roles.delete', $role) }}" class="d-inline" id="deleteForm-{{ $role->id }}">
+    @csrf
+    @method('DELETE')
+</form>
+
                                             <a href="{{ route('roles.permissions', $role->id) }}" class="btn btn-success rounded-pill mb-2">Add Permission</a>
                                         </td>
                                     </tr>
