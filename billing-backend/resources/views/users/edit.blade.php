@@ -82,9 +82,7 @@
         let email = this.value;
         let errorElement = document.getElementById('email-error');
         let submitButton = document.getElementById('submit-btn');
-        let currentEmail = "{{ $user->email }}"; // Get the current user's email
-
-        // Check if the email is different from the current email to prevent validation error on the same email
+        let currentEmail = "{{ $user->email }}"; 
         if (email !== currentEmail && email.length > 0) {
             fetch(`/check-email/${email}`)
                 .then(response => response.json())

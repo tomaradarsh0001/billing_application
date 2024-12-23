@@ -91,4 +91,12 @@ class ConfigurationController extends Controller
 
         return redirect()->route('configuration.index')->with('success', 'Configuration deleted successfully.');
     }
+    public function checkAppName(Request $request)
+{
+    $appName = $request->input('app_name');
+    $exists = Configuration::where('app_name', $appName)->exists();
+    
+    return response()->json(['exists' => $exists]);
+}
+
 }

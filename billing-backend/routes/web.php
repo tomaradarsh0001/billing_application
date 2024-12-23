@@ -34,6 +34,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::post('/configuration/store', [ConfigurationController::class, 'store'])->name('configuration.store');
     Route::get('/configuration/{id}/edit', [ConfigurationController::class, 'edit'])->name('configuration.edit');
     Route::put('/configuration/{id}', [ConfigurationController::class, 'update'])->name('configuration.update');
+    Route::get('/configuration/check-app-name', [ConfigurationController::class, 'checkAppName'])->name('configuration.checkAppName');
+
 
     //roles
     Route::get('/roles', [UserController::class, 'manageRoles'])->name('roles.index');

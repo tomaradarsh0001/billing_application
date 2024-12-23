@@ -77,7 +77,6 @@
     @csrf
     @method('DELETE')
 </form>
-
                                             <a href="{{ route('roles.permissions', $role->id) }}" class="btn btn-success rounded-pill mb-2">Add Permission</a>
                                         </td>
                                     </tr>

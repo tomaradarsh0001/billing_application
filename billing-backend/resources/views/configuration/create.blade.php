@@ -2,20 +2,22 @@
 @section('title', 'Configurations')
 @section('content')
 <title>Configurations</title>
+
 @if(session('success'))
 <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
     {{ session('success') }}
     <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
-<!-- Error message -->
+
 @if(session('error'))
 <div class="alert text-white bg-danger alert-dismissible fade show" role="alert">
     {{ session('error') }}
     <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
-<div class="main_content_iner  mt-5">
+
+<div class="main_content_iner mt-5">
     <div class="col-lg-12">
         <div class="white_card card_height_100 mb_30">
             <div class="white_card_header">
@@ -32,6 +34,7 @@
                         <div class="mb-3">
                             <label for="app_name" class="form-label">Application Name</label>
                             <input type="text" class="form-control" id="app_name" name="app_name" placeholder="Enter Application Name" required>
+                            <small id="app-name-error" class="text-danger" style="display: none;">App name already exists.</small>
                         </div>
                         <div class="mb-3">
                             <label for="app_logo" class="form-label">Application Logo</label>
@@ -47,7 +50,7 @@
                             <small class="form-text text-muted">Pick a color to set your app's theme.</small>
                         </div>
                         <div class="mb-3">
-                            <button type="submit" class="btn btn-success">Save Settings</button>
+                            <button type="submit" id="submit-button" class="btn btn-success">Save Settings</button>
                         </div>
                     </form>
                 </div>
@@ -55,4 +58,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('app_name').addEventListener('input', function () {
+        const appName = this.value;
+        const errorMessage = document.getElementById('app-name-error');
+        const submitButton = document.getElementById('submit-button');
+        if (appName.length > 0) {
+            fetch(`{{ route('configuration.checkAppName') }}?app_name=${appName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        errorMessage.style.display = 'block';
+                        submitButton.disabled = true;  
+                    } else {
+                        errorMessage.style.display = 'none';
+                        submitButton.disabled = false;  
+                    }
+                });
+        } else {
+            errorMessage.style.display = 'none';
+            submitButton.disabled = false;  
+        }
+    });
+</script>
+
 @endsection

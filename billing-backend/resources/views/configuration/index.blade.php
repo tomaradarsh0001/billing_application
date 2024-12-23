@@ -94,7 +94,7 @@
             info: true,
             lengthChange: true,
             autoWidth: false,
-            responsive: true, // Make it responsive
+            responsive: true, 
         });
     });
 </script>
