@@ -6,6 +6,7 @@ use App\Http\Controllers\ConfigurationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
 
 
 Route::get('/', function () {
@@ -35,6 +36,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('/configuration/{id}/edit', [ConfigurationController::class, 'edit'])->name('configuration.edit');
     Route::put('/configuration/{id}', [ConfigurationController::class, 'update'])->name('configuration.update');
     Route::get('/configuration/check-app-name', [ConfigurationController::class, 'checkAppName'])->name('configuration.checkAppName');
+    Route::get('/check-app-name', [ConfigurationController::class, 'checkAppNameEdit'])->name('configuration.checkAppNameEdit');
+
 
 
     //roles
@@ -48,6 +51,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('/roles/{role}/permissions', [UserController::class, 'managePermissions'])->name('roles.permissions');
     Route::post('/roles/{role}/permissions/add', [UserController::class, 'addPermission'])->name('roles.permissions.add');
     Route::post('/roles/{role}/permissions/remove', [UserController::class, 'removePermission'])->name('roles.permissions.remove');
+    Route::get('roles/check-name-edit', [RoleController::class, 'checkRoleNameEdit'])->name('roles.checkNameEdit');
     Route::get('roles/check-name', [RoleController::class, 'checkRoleName'])->name('roles.checkName');
 
 
@@ -59,7 +63,8 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit')->middleware('permission:users.edit');
     Route::post('/users/{user}', [UserController::class, 'update'])->name('users.update')->middleware('permission:users.edit');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.delete')->middleware('permission:users.delete');
-Route::get('check-email/{email}', [UserController::class, 'checkEmail'])->name('check.email');
+    Route::get('check-email/{email}', [UserController::class, 'checkEmail'])->name('check.email');
+    Route::get('/check-email-edit', [UserController::class, 'checkEmailEdit'])->name('users.checkEmailEdit');
 
 
     //permissions
@@ -69,7 +74,11 @@ Route::get('check-email/{email}', [UserController::class, 'checkEmail'])->name('
     Route::get('permissions/{permission}/edit', [PermissionController::class, 'edit'])->name('permissions.edit')->middleware('permission:permissions.edit');
     Route::put('permissions/{permission}', [PermissionController::class, 'update'])->name('permissions.update')->middleware('permission:permissions.edit');
     Route::delete('permissions/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy')->middleware('permission:permissions.delete');
+    Route::get('permissions/check-name-edit', [PermissionController::class, 'checkPermissionNameEdit'])->name('permissions.checkNameEdit');
     Route::get('permissions/check-name', [PermissionController::class, 'checkPermissionName'])->name('permissions.checkName');
+
+    Route::resource('customers', CustomerController::class);
+
 
 });
 require __DIR__ . '/auth.php';

@@ -78,13 +78,14 @@
     </div>
 </div>
 <script>
-    document.getElementById('email').addEventListener('input', function() {
-        let email = this.value;
-        let errorElement = document.getElementById('email-error');
-        let submitButton = document.getElementById('submit-btn');
-        let currentEmail = "{{ $user->email }}"; 
+    document.getElementById('email').addEventListener('input', function () {
+        const email = this.value;
+        const errorElement = document.getElementById('email-error');
+        const submitButton = document.getElementById('submit-btn');
+        const currentEmail = "{{ $user->email }}";
+        const userId = "{{ $user->id }}"; 
         if (email !== currentEmail && email.length > 0) {
-            fetch(`/check-email/${email}`)
+            fetch(`{{ route('users.checkEmailEdit') }}?email=${email}&id=${userId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists) {
@@ -94,6 +95,9 @@
                         errorElement.style.display = 'none';
                         submitButton.disabled = false;
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
         } else {
             errorElement.style.display = 'none';
@@ -101,4 +105,5 @@
         }
     });
 </script>
+
 @endsection

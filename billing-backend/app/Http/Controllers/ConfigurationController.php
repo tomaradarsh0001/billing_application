@@ -35,7 +35,6 @@ class ConfigurationController extends Controller
 
         $data = $validated;
 
-        // Handle file upload
         if ($request->hasFile('app_logo')) {
             $data['app_logo'] = $request->file('app_logo')->store('logos', 'public');
         }
@@ -61,14 +60,11 @@ class ConfigurationController extends Controller
 
         $configuration = Configuration::findOrFail($id);
 
-        // Update fields
         $configuration->app_name = $request->app_name;
         $configuration->app_tagline = $request->app_tagline;
         $configuration->app_theme = $request->app_theme;
 
-        // Handle file upload
         if ($request->hasFile('app_logo')) {
-            // Delete the old logo if it exists
             if ($configuration->app_logo && \Storage::exists($configuration->app_logo)) {
                 \Storage::delete($configuration->app_logo);
             }
@@ -98,5 +94,27 @@ class ConfigurationController extends Controller
     
     return response()->json(['exists' => $exists]);
 }
+public function checkAppNameEdit(Request $request)
+{
+    $appName = $request->input('app_name'); 
+    $appId = $request->input('id'); 
+    $app = Configuration::find($appId); 
+
+    if (!$app) {
+        return response()->json(['exists' => false]); 
+    }
+
+    $exists = Configuration::where('app_name', $appName)
+        ->where('id', '!=', $appId)
+        ->exists();
+
+    if ($appName === $app->app_name) {
+        $exists = false;
+    }
+
+    return response()->json(['exists' => $exists]);
+}
+
+
 
 }

@@ -49,12 +49,32 @@ class PermissionController extends Controller
         return redirect()->route('permissions.index')->with('success', 'Permission deleted successfully.');
     }
     public function checkPermissionName(Request $request)
-{
+    {
     $permissionName = $request->input('name');
     
     $exists = Permission::where('name', $permissionName)->exists();
     
     return response()->json(['exists' => $exists]);
-}
+    }
+
+    public function checkPermissionNameEdit(Request $request)
+    {
+        $permissionName = $request->input('name'); 
+        $permissionId = $request->input('id'); 
+        $permission = Permission::find($permissionId);
+    
+        if (!$permission) {
+            return response()->json(['exists' => false]); 
+        }
+    
+       $exists = Permission::where('name', $permissionName)
+            ->where('id', '!=', $permissionId) 
+            ->exists();
+        if ($permissionName === $permission->name) {
+            $exists = false;
+        }
+    
+        return response()->json(['exists' => $exists]);
+    }    
 
 }

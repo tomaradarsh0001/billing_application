@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'Configurations')
 @section('content')
-<title>Configurations</title>
+@include('include.alerts.delete-confirmation')
 
 <div class="main_content_iner  mt-5">
     <div class="col-lg-12">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="QA_table mb_30">
                         @if($configurations->count() > 0)
-                        <table class="table table-striped" id="configurationsTable">
+                        <table class="table table-striped" id="usersTable">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -64,10 +64,10 @@
                                     <td>
                                         <a href="{{ route('configuration.view', $configuration->id) }}" class="btn btn-primary rounded-pill mb-3">View</a>
                                         <a href="{{ route('configuration.edit', $configuration->id) }}" class="btn btn-warning rounded-pill mb-3">Edit</a>
-                                        <form action="{{ route('configuration.destroy', $configuration->id) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger rounded-pill mb-3" onclick="return confirm('Are you sure you want to delete this configuration?');">Delete</button>
+                                        <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('configuration', {{ $configuration->id }})">Delete</button>
+                                        <form method="POST" action="{{ route('configuration.destroy', $configuration->id) }}" class="d-inline" id="deleteForm-{{ $configuration->id }}">
+                                         @csrf
+                                         @method('DELETE')
                                         </form>
                                     </td>
                                 </tr>
@@ -87,7 +87,7 @@
 </div>
 <script>
     $(document).ready(function() {
-        $('#configurationsTable').DataTable({
+        $('#usersTable').DataTable({
             paging: true,
             searching: true,
             ordering: true,

@@ -77,4 +77,23 @@ class RoleController extends Controller
     return response()->json(['exists' => $exists]);
 }
 
+public function checkRoleNameEdit(Request $request)
+{
+    $roleName = $request->input('name'); 
+    $roleId = $request->input('role'); 
+    $role = Role::find($roleId);
+
+    if (!$role) {
+        return response()->json(['exists' => false]); 
+    }
+        $exists = Role::where('name', $roleName)
+        ->where('id', '!=', $roleId)
+        ->exists();
+
+    if ($roleName === $role->name) {
+        $exists = false;
+    }
+    return response()->json(['exists' => $exists]);
+}
+
 }

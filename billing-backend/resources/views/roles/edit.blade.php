@@ -17,6 +17,10 @@
                         <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $role->name) }}" required>
                         <small id="role-name-error" class="form-text text-danger" style="display: none;">Role name already exists.</small>
                     </div>
+
+                    <!-- Hidden field to include role ID -->
+                    <input type="hidden" id="role-id" value="{{ $role->id }}">
+
                     <button type="submit" class="btn btn-primary mt-3" id="submit-button">Update</button>
                 </form>
             </div>
@@ -27,11 +31,12 @@
 <script>
     document.getElementById('name').addEventListener('input', function () {
         const roleName = this.value;
+        const roleId = document.getElementById('role-id').value; 
         const errorMessage = document.getElementById('role-name-error');
         const submitButton = document.getElementById('submit-button');
-        
+
         if (roleName.length > 0) {
-            fetch(`{{ route('roles.checkName') }}?name=${roleName}`)
+            fetch(`{{ route('roles.checkNameEdit') }}?name=${roleName}&role=${roleId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists) {

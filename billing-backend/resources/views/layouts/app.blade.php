@@ -99,6 +99,18 @@
                     <li><a class="active" href="/dashboard">Sales</a></li>
                 </ul>
             </li>
+            <li class="">
+            <a   class="has-arrow" href="#" aria-expanded="false">
+              <div class="icon_menu">
+                  <img src="{{ asset('assets/img/menu-icon/2.svg')}}" alt="">
+              </div>
+              <span>Customers</span>
+            </a>
+            <ul>
+              <li><a href="{{ route('customers.create') }}">Add Customers</a></li>
+              <li><a href="{{ route('customers.index') }}">View Customers</a></li>
+            </ul>
+          </li>
         </ul>
     </nav>
 
@@ -134,30 +146,39 @@
                                             <h4>Settings</h4>
                                         </div>
                                         <div class="Notification_body">
-                                            <div class="row col-partition">
-                                                <div class="col-lg-8">
-                                                    <div class="notification_item">
-                                                        <p>RBAC</p>
-                                                        <ul class="list-group list-group-flush">
-                                                            <li><a href="{{ route('roles.index')}}">Role</a></li>
-                                                            <li><a href="{{ route('permissions.index')}}">Permissions</a></li>
-                                                            <li><a href="{{ route('users.index')}}">Manage Users</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-8">
-                                                    <div class="notification_item">
-                                                        <p>Configuration</p>
-                                                        <ul class="list-group list-group-flush">
-                                                            <li><a href="{{ route('configuration.index')}}">Configuration</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <div class="Notification_body">
+                                        <div class="row col-partition justify-content-center">
+                                        <div class="row col-partition justify-content-center">
+    <div class="col-lg-4">
+        <!-- RBAC Section -->
+        <div class="notification_item">
+            <p>RBAC</p>
+            <ul class="nav-links">
+                <li><a href="{{ route('roles.index') }}"><i class='fas fa-dollar-sign'></i> Roles</a></li>
+                <li><a href="{{ route('permissions.index') }}"><i class='fab fa-ethereum'></i> Permissions</a></li>
+                <li><a href="{{ route('users.index') }}"><i class='fab fa-btc'></i> Manage Users</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-4 vertical-line">
+        <!-- Configuration Section -->
+        <div class="notification_item">
+            <p>Configuration</p>
+            <ul class="nav-links">
+                <li><a href="{{ route('configuration.index') }}"><i class='fab fa-reddit-alien'></i> Config</a></li>
+                <li><a href="{{ route('customers.index') }}"><i class='fab fa-fort-awesome'></i> Customers</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<style>
+    .col-lg-4 {
+        max-height: 150px; /* Adjust this height */
+        overflow-y: auto;
+    }
+</style>
                                     </div>
                                 </li>
-
                                 <li>
                                     <a class="bell_notification_clicker nav-link-notify" href="#">
                                         <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">

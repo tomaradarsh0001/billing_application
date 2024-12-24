@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Configurations')
 @section('content')
-<title>Configurations</title>
 
 @if(session('success'))
 <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
@@ -39,6 +38,7 @@
                         <div class="mb-3">
                             <label for="app_logo" class="form-label">Application Logo</label>
                             <input type="file" class="form-control" id="app_logo" name="app_logo" accept="image/*">
+                            <small id="file-error" class="text-danger" style="display: none;"></small>
                         </div>
                         <div class="mb-3">
                             <label for="app_tagline" class="form-label">Application Tagline</label>
@@ -50,7 +50,7 @@
                             <small class="form-text text-muted">Pick a color to set your app's theme.</small>
                         </div>
                         <div class="mb-3">
-                            <button type="submit" id="submit-button" class="btn btn-success">Save Settings</button>
+                            <button type="submit" id="submit-button" class="btn btn-success" disabled>Save Settings</button>
                         </div>
                     </form>
                 </div>
@@ -64,6 +64,9 @@
         const appName = this.value;
         const errorMessage = document.getElementById('app-name-error');
         const submitButton = document.getElementById('submit-button');
+
+        errorMessage.style.display = 'none';
+
         if (appName.length > 0) {
             fetch(`{{ route('configuration.checkAppName') }}?app_name=${appName}`)
                 .then(response => response.json())
@@ -79,6 +82,37 @@
         } else {
             errorMessage.style.display = 'none';
             submitButton.disabled = false;  
+        }
+    });
+    document.getElementById('app_logo').addEventListener('change', function () {
+        const file = this.files[0];
+        const errorMessage = document.getElementById('file-error');
+        const submitButton = document.getElementById('submit-button');
+
+        errorMessage.style.display = 'none';
+
+        if (file) {
+            const fileSize = file.size / 1024 / 1024; 
+            const fileType = file.type;
+
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+            if (!allowedTypes.includes(fileType)) {
+                errorMessage.textContent = 'File type not supported. Please upload a JPEG, PNG, GIF, or JPG image.';
+                errorMessage.style.display = 'block';
+                submitButton.disabled = true;
+                return;
+            }
+
+            if (fileSize > 2) {
+                errorMessage.textContent = 'File size must be less than 2 MB.';
+                errorMessage.style.display = 'block';
+                submitButton.disabled = true;
+                return;
+            }   
+
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
         }
     });
 </script>

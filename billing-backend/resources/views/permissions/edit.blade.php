@@ -23,15 +23,15 @@
         </div>
     </div>
 </div>
-
 <script>
     document.getElementById('name').addEventListener('input', function () {
         const permissionName = this.value; 
+        const permissionId = "{{ $permission->id }}";
         const errorMessage = document.getElementById('name-error');
         const submitButton = document.getElementById('submit-button');
         
         if (permissionName.length > 0) {
-            fetch(`{{ route('permissions.checkName') }}?name=${permissionName}`)
+            fetch(`{{ route('permissions.checkNameEdit') }}?name=${permissionName}&id=${permissionId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.exists) {
@@ -48,4 +48,5 @@
         }
     });
 </script>
+
 @endsection
