@@ -2,7 +2,7 @@
 @section('title', 'Configuration Details')
 @section('content')
 <title>Configurations</title>
-    <div class="main_content_iner mt-5">
+    <div class="main_content_iner">
         <div class="col-lg-6">
             <div class="card_box box_shadow position-relative ">
                 <div class="white_box_tittle">

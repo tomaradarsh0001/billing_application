@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="main_content_iner mt-5">
+<div class="main_content_iner">
     <div class="col-lg-6">
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">    

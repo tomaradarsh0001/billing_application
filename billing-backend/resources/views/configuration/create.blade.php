@@ -16,7 +16,7 @@
 </div>
 @endif
 
-<div class="main_content_iner mt-5">
+<div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 mb_30">
             <div class="white_card_header">

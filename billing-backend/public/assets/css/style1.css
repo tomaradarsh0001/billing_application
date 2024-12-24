@@ -11403,7 +11403,7 @@ a.pswp__share--download:hover {
 .Menu_NOtification_Wrap .Notification_body {
   padding: 10px 20px;
   height: 200px;
-  /* overflow: auto; */
+  overflow: auto;
 }
 
 /* line 40, G:/admin_project/6 admin/sales/scss/_notification_menu.scss */

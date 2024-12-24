@@ -3,7 +3,7 @@
 @section('content')
 @include('include.alerts.delete-confirmation')
 
-<div class="main_content_iner  mt-5">
+<div class="main_content_iner ">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">
