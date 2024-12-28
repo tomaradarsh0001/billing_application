@@ -16,6 +16,16 @@
                 </div>
             </div>
             <div class="white_card_body">
+                @if ($errors->any())
+                <div>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
+
                 <div class="card-body">
                     <form method="POST" action="{{ route('customers.store') }}">
                         @csrf
@@ -116,33 +126,39 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <label for="country" class="form-label">Country</label>
-                                <select id="country" name="country" class="form-control-select">
+                                <select id="country" name="country_id" class="form-control-select">
                                     <option value="">Select Country</option>
+                                    @foreach ($countries as $country)
+                                    <option value="{{ $country->id }}" {{ old('country_id') == $country->id ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label for="state" class="form-label">State</label>
-                                <select id="state" name="state" class="form-control-select">
+                                <select id="state" name="state_id" class="form-control-select">
                                     <option value="">Select State</option>
                                 </select>
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label for="city" class="form-label">City</label>
-                                <select id="city" name="city" class="form-control-select">
+                                <select id="city" name="city_id" class="form-control-select">
                                     <option value="">Select City</option>
                                 </select>
                             </div>
+                        </div>
 
-                            <!-- Pincode -->
-                            <div class="mb-3">
-                                <label for="pincode" class="form-label">Pincode</label>
-                                <input type="text" id="pincode" name="pincode" class="form-control" value="{{ old('pincode') }}">
-                                @error('pincode')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
+
+                        <!-- Pincode -->
+                        <div class="mb-3">
+                            <label for="pincode" class="form-label">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" class="form-control" value="{{ old('pincode') }}">
+                            @error('pincode')
+                            <div class="text-danger">{{ $message }}</div>
+                            @enderror
                         </div>
                         <!-- Submit Button -->
                         <div class="mt-4">
@@ -157,46 +173,47 @@
     </div>
 </div>
 </div>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        let countrySelect = document.getElementById('country');
-        let stateSelect = document.getElementById('state');
-        let citySelect = document.getElementById('city');
+    $(document).ready(function() {
+        // Fetch states based on selected country
+        $('#country').change(function() {
+            let countryId = $(this).val();
+            $('#state').html('<option value="">Select State</option>'); // Reset states
+            $('#city').html('<option value="">Select City</option>'); // Reset cities
 
-        let countries = IndiaStatesCities.getCountries();
-        countries.forEach(country => {
-            let option = document.createElement('option');
-            option.value = country;
-            option.text = country;
-            countrySelect.add(option);
-        });
-
-        countrySelect.addEventListener('change', function() {
-            let country = countrySelect.value;
-            stateSelect.innerHTML = '';
-            citySelect.innerHTML = '';
-            if (country) {
-                let states = IndiaStatesCities.getStates(country);
-                states.forEach(state => {
-                    let option = document.createElement('option');
-                    option.value = state;
-                    option.text = state;
-                    stateSelect.add(option);
+            if (countryId) {
+                $.ajax({
+                    url: "{{ route('get.states') }}",
+                    type: "GET",
+                    data: {
+                        country_id: countryId
+                    },
+                    success: function(data) {
+                        data.forEach(state => {
+                            $('#state').append(`<option value="${state.id}">${state.name}</option>`);
+                        });
+                    }
                 });
             }
         });
 
-        stateSelect.addEventListener('change', function() {
-            let state = stateSelect.value;
-            citySelect.innerHTML = '';
-            if (state) {
-                let cities = IndiaStatesCities.getCities(state);
-                cities.forEach(city => {
-                    let option = document.createElement('option');
-                    option.value = city;
-                    option.text = city;
-                    citySelect.add(option);
+        // Fetch cities based on selected state
+        $('#state').change(function() {
+            let stateId = $(this).val();
+            $('#city').html('<option value="">Select City</option>'); // Reset cities
+
+            if (stateId) {
+                $.ajax({
+                    url: "{{ route('get.cities') }}",
+                    type: "GET",
+                    data: {
+                        state_id: stateId
+                    },
+                    success: function(data) {
+                        data.forEach(city => {
+                            $('#city').append(`<option value="${city.id}">${city.name}</option>`);
+                        });
+                    }
                 });
             }
         });

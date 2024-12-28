@@ -49,12 +49,12 @@
                                 @foreach ($customers as $customer)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $customer->full_name }}</td>
+                                    <td>{{ $customer->first_name . ' ' . $customer->last_name }}</td>
                                     <td>{{ $customer->email }}</td>
                                     <td>{{ $customer->phone_number }}</td>
                                     <td>{{ $customer->gender }}</td>
                                     <td>
-                                    <a href="{{ route('customers.show', $customer) }}" class="btn btn-primary rounded-pill mb-2">View</a>
+                                        <a href="{{ route('customers.show', $customer) }}" class="btn btn-primary rounded-pill mb-2">View</a>
                                         <a href="{{ route('customers.edit', $customer) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
                                         <!-- <form action="{{ route('customers.destroy', $customer) }}" method="POST" style="display:inline;">
                                             @csrf
@@ -63,8 +63,8 @@
                                         </form> -->
                                         <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('customer', {{ $customer->id }})">Delete</button>
                                         <form method="POST" action="{{ route('customers.destroy', $customer) }}" class="d-inline" id="deleteForm-{{ $customer->id }}">
-                                         @csrf
-                                         @method('DELETE')
+                                            @csrf
+                                            @method('DELETE')
                                         </form>
                                     </td>
                                 </tr>

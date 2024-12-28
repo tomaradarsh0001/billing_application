@@ -78,7 +78,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('permissions/check-name', [PermissionController::class, 'checkPermissionName'])->name('permissions.checkName');
 
     Route::resource('customers', CustomerController::class);
-
-
+    Route::get('/states', [CustomerController::class, 'getStates'])->name('get.states');
+    Route::get('/cities', [CustomerController::class, 'getCities'])->name('get.cities');
 });
 require __DIR__ . '/auth.php';

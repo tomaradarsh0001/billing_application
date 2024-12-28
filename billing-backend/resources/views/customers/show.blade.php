@@ -13,16 +13,13 @@
             </div>
             <div class="card-body p-4">
                 <div class="mb-3">
-                    <strong>Full Name:</strong> {{ $customer->full_name }}
+                    <strong>Full Name:</strong> {{ $customer->first_name . ' ' . $customer->last_name }}
                 </div>
                 <div class="mb-3">
                     <strong>Email Address:</strong> {{ $customer->email }}
                 </div>
                 <div class="mb-3">
                     <strong>Phone Number:</strong> {{ $customer->phone_number }}
-                </div>
-                <div class="mb-3">
-                    <strong>Service Address:</strong> {{ $customer->service_address }}
                 </div>
                 <div class="mb-3">
                     <strong>Date of Birth:</strong> {{ \Carbon\Carbon::parse($customer->dob)->format('d M, Y') }}
@@ -35,6 +32,18 @@
                 </div>
                 <div class="mb-3">
                     <strong>Gender:</strong> {{ $customer->gender }}
+                </div>
+                <div class="mb-3">
+                    <strong>Service Address:</strong> {{ $customer->service_address }}
+                </div>
+                <div class="mb-3">
+                    <strong>City:</strong> {{ $customer->city->name ?? 'N/A' }}
+                </div>
+                <div class="mb-3">
+                    <strong>State:</strong> {{ $customer->state->name ?? 'N/A' }}
+                </div>
+                <div class="mb-3">
+                    <strong>Country:</strong> {{ $customer->country->name ?? 'N/A' }}
                 </div>
                 <div class="mb-3">
                     <strong>Created At:</strong> {{ $customer->created_at->diffForHumans() }}
