@@ -19,7 +19,7 @@
                     <strong>Email Address:</strong> {{ $customer->email }}
                 </div>
                 <div class="mb-3">
-                    <strong>Phone Number:</strong> {{ $customer->phone_number }}
+                    <strong>Phone Number:</strong> {{ '+' . $customer->phonecode->phonecode . ' ' .  $customer->phone_number }}
                 </div>
                 <div class="mb-3">
                     <strong>Date of Birth:</strong> {{ \Carbon\Carbon::parse($customer->dob)->format('d M, Y') }}

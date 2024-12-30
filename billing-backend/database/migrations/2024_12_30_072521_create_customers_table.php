@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->unsignedBigInteger('phone_code_id')->nullable();            
             $table->string('phone_number')->nullable();
             $table->date('dob')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
@@ -26,11 +27,11 @@ return new class extends Migration
             $table->unsignedBigInteger('country_id');
             $table->unsignedBigInteger('state_id');
             $table->unsignedBigInteger('city_id');
-            $table->timestamps();
-
+            $table->foreign('phone_code_id')->references('id')->on('phone_codes')->onDelete('cascade');
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
             $table->foreign('state_id')->references('id')->on('states')->onDelete('cascade');
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 

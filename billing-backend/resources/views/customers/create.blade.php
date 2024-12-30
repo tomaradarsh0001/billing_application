@@ -3,8 +3,9 @@
 @section('title', 'Create Customer')
 
 @section('content')
-<script src="https://cdn.jsdelivr.net/gh/cheeri/IndiaStatesCities@latest/dist/IndiaStatesCities.min.js"></script>
-
+<style>
+   
+</style>
 <div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 mb_30">
@@ -15,17 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="white_card_body">
-                @if ($errors->any())
-                <div>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-
+            <div class="white_card_body">  
                 <div class="card-body">
                     <form method="POST" action="{{ route('customers.store') }}">
                         @csrf
@@ -78,12 +69,33 @@
                         <div class="row">
                             <!-- Phone Number -->
                             <div class="col-md-6 mb-3">
-                                <label for="phone_number" class="form-label">Phone Number</label>
-                                <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number') }}" maxlength="10">
-                                @error('phone_number')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
+    <label for="phone_number" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+    <div class="input-group">
+        <!-- Country Code Dropdown -->
+        <select id="phone_code" name="phone_code_id" class="form-select-country" 
+                style="width: 90px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+            <option value="" disabled selected>Select Code</option>
+            @foreach ($phoneCodes as $code)
+                <option value="{{ $code->id }}" {{ old('phone_code_id') == $code->id ? 'selected' : '' }}>
+                    {{ $code->iso }} (+{{ $code->phonecode }})
+                </option>
+            @endforeach
+        </select>
+
+        <!-- Phone Number Input -->
+        <input type="text" id="phone_number" name="phone_number" class="form-control" 
+               value="{{ old('phone_number') }}" maxlength="10" placeholder="Mobile"
+               style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+    </div>
+    @error('phone_code_id')
+    <div class="text-danger">{{ $message }}</div>
+    @enderror
+    @error('phone_number')
+    <div class="text-danger">{{ $message }}</div>
+    @enderror
+</div>
+
+
 
                             <!-- Email Address -->
                             <div class="col-md-6 mb-3">

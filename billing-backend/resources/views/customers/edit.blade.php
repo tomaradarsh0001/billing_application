@@ -65,13 +65,36 @@
 
                         <div class="row">
                             <!-- Phone Number -->
-                            <div class="col-md-6 mb-3">
-                                <label for="phone_number" class="form-label">Phone Number</label>
-                                <input type="text" id="phone_number" name="phone_number" class="form-control" value="{{ old('phone_number', $customer->phone_number) }}" maxlength="10">
-                                @error('phone_number')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
+                           <!-- Phone Number -->
+<div class="col-md-6 mb-3">
+    <label for="phone_number" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+    <div class="input-group">
+        <!-- Country Code Dropdown -->
+        <select id="phone_code" name="phone_code_id" class="form-select-country" 
+                style="width: 90px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+            <option value="" disabled>Select Code</option>
+            @foreach ($phoneCodes as $code)
+                <option value="{{ $code->id }}" 
+                        {{ (old('phone_code_id') ?? $customer->phone_code_id ?? '') == $code->id ? 'selected' : '' }}>
+                    {{ $code->iso }} (+{{ $code->phonecode }})
+                </option>
+            @endforeach
+        </select>
+
+        <!-- Phone Number Input -->
+        <input type="text" id="phone_number" name="phone_number" class="form-control" 
+               value="{{ old('phone_number') ?? $customer->phone_number ?? '' }}" 
+               maxlength="10" placeholder="Mobile"
+               style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+    </div>
+    @error('phone_code_id')
+    <div class="text-danger">{{ $message }}</div>
+    @enderror
+    @error('phone_number')
+    <div class="text-danger">{{ $message }}</div>
+    @enderror
+</div>
+
 
                             <!-- Email Address -->
                             <div class="col-md-6 mb-3">

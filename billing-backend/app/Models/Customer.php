@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Customer extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'first_name',
         'last_name',
@@ -21,6 +20,7 @@ class Customer extends Model
         'service_address',
         'pincode',
         'country_id',
+        'phone_code_id',
         'state_id',
         'city_id',
     ];
@@ -39,4 +39,9 @@ class Customer extends Model
     {
         return $this->belongsTo(Country::class);
     }
+    public function phoneCode()
+    {
+        return $this->belongsTo(PhoneCode::class);
+    }
+
 }

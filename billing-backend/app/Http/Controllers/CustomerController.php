@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Country;
+use App\Models\PhoneCode;
 use App\Models\State;
 use App\Models\City;
 
@@ -18,7 +19,8 @@ class CustomerController extends Controller
     public function create()
     {
         $countries = Country::all();
-        return view('customers.create', compact('countries'));
+        $phoneCodes = PhoneCode::all(); 
+        return view('customers.create', compact('countries', 'phoneCodes'));
     }
 
     public function getStates(Request $request)
@@ -39,6 +41,7 @@ class CustomerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers',
+            'phone_code_id' => 'required|exists:phone_codes,id',
             'phone_number' => 'required|string|max:15',
             'dob' => 'required|date',
             'aadhar_number' => 'required|string|max:12',
@@ -55,6 +58,7 @@ class CustomerController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'phone_code_id' => $request->phone_code_id,
             'phone_number' => $request->phone_number,
             'dob' => $request->dob,
             'aadhar_number' => $request->aadhar_number,
@@ -72,7 +76,8 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        $customer = $customer->load(['city', 'state', 'country']);
+        $customer = $customer->load(['city', 'state', 'country', 'phonecode']);
+        // dd( $customer->city_id->name);
         return view('customers.show', compact('customer'));
     }
     public function edit($id)
@@ -81,8 +86,9 @@ class CustomerController extends Controller
         $countries = Country::all();
         $states = State::all();
         $cities = City::all();
+        $phoneCodes = PhoneCode::all(); 
 
-        return view('customers.edit', compact('customer', 'countries', 'states', 'cities'));
+        return view('customers.edit', compact('customer', 'countries', 'states', 'cities', 'phoneCodes'));
     }
 
     public function update(Request $request, $id)
@@ -91,6 +97,7 @@ class CustomerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:customers,email,' . $id,
+            'phone_code_id' => 'required|exists:phone_codes,id',
             'phone_number' => 'required|digits:10|unique:customers,phone_number,' . $id,
             'dob' => 'required|date',
             'aadhar_number' => 'required|digits:12|unique:customers,aadhar_number,' . $id,
@@ -107,6 +114,7 @@ class CustomerController extends Controller
         $customer->first_name = $request->first_name;
         $customer->last_name = $request->last_name;
         $customer->email = $request->email;
+        $customer->phone_code_id = $request->phone_code_id;
         $customer->phone_number = $request->phone_number;
         $customer->dob = $request->dob;
         $customer->aadhar_number = $request->aadhar_number;
