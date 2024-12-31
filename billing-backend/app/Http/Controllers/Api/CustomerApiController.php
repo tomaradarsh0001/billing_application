@@ -18,7 +18,7 @@ class CustomerApiController extends Controller
     }
     public function show($id)
     {
-        $customer = Customer::with(['city', 'state', 'country'])->findOrFail($id);
+        $customer = Customer::with(['city', 'state', 'country', 'phonecode'])->findOrFail($id);
         return response()->json($customer);
     }
     public function store(Request $request)
@@ -27,6 +27,7 @@ class CustomerApiController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers',
+            'phone_code_id' => 'required|exists:phone_codes,id',
             'phone_number' => 'required|string|max:15',
             'dob' => 'required|date',
             'aadhar_number' => 'required|string|max:12',
@@ -43,6 +44,7 @@ class CustomerApiController extends Controller
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'email' => $request->email,
+            'phone_code_id' => $request->phone_code_id,
             'phone_number' => $request->phone_number,
             'dob' => $request->dob,
             'aadhar_number' => $request->aadhar_number,
@@ -64,6 +66,7 @@ class CustomerApiController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:customers,email,' . $id,
+            'phone_code_id' => 'required|exists:phone_codes,id',
             'phone_number' => 'required|digits:10|unique:customers,phone_number,' . $id,
             'dob' => 'required|date',
             'aadhar_number' => 'required|digits:12|unique:customers,aadhar_number,' . $id,

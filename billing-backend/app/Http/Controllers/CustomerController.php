@@ -88,7 +88,7 @@ class CustomerController extends Controller
         $cities = City::all();
         $phoneCodes = PhoneCode::all(); 
 
-        return view('customers.edit', compact('customer', 'countries', 'states', 'cities', 'phoneCodes'));
+        return view('customers.edit', compact('customer', 'countries', 'states', 'cities', 'phonecodes'));
     }
 
     public function update(Request $request, $id)
