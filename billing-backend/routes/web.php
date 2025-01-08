@@ -7,6 +7,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Billing\OccupantDetailController;
+use App\Http\Controllers\Billing\HouseDetailController;
+
 
 
 Route::get('/', function () {
@@ -80,5 +83,20 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::resource('customers', CustomerController::class);
     Route::get('/states', [CustomerController::class, 'getStates'])->name('get.states');
     Route::get('/cities', [CustomerController::class, 'getCities'])->name('get.cities');
+
+Route::get('billing/occupants', [OccupantDetailController::class, 'index'])->name('occupants.index');
+Route::get('billing/occupants/create', [OccupantDetailController::class, 'create'])->name('occupants.create');
+Route::post('billing/occupants', [OccupantDetailController::class, 'store'])->name('occupants.store');
+Route::get('billing/occupants/{occupantDetail}/edit', [OccupantDetailController::class, 'edit'])->name('occupants.edit');
+Route::put('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'update'])->name('occupants.update');
+Route::get('billing/occupants/{id}', [OccupantDetailController::class, 'show'])->name('occupants.show');
+Route::delete('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'destroy'])->name('occupants.destroy');
+Route::get('billing/houses', [HouseDetailController::class, 'index'])->name('houses.index');
+Route::get('billing/houses/create', [HouseDetailController::class, 'create'])->name('houses.create');
+Route::post('billing/houses', [HouseDetailController::class, 'store'])->name('houses.store');
+Route::get('billing/houses/{houseDetail}/edit', [HouseDetailController::class, 'edit'])->name('houses.edit');
+Route::put('billing/houses/{houseDetail}', [HouseDetailController::class, 'update'])->name('houses.update');
+Route::delete('billing/houses/{houseDetail}', [HouseDetailController::class, 'destroy'])->name('houses.destroy');
+
 });
 require __DIR__ . '/auth.php';

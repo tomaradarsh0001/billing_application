@@ -111,6 +111,30 @@
                     <li><a href="{{ route('customers.index') }}">View Customers</a></li>
                 </ul>
             </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/3.svg')}}" alt="">
+                    </div>
+                    <span>Houses</span>
+                </a>
+                <ul>
+                    <li><a href="{{ route('houses.create') }}">Add Houses</a></li>
+                    <li><a href="{{ route('houses.index') }}">View Houses</a></li>
+                </ul>
+            </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/4.svg')}}" alt="">
+                    </div>
+                    <span>Occupants</span>
+                </a>
+                <ul>
+                    <li><a href="{{ route('occupants.create') }}">Add Occupants</a></li>
+                    <li><a href="{{ route('occupants.index') }}">View Occupants</a></li>
+                </ul>
+            </li>
         </ul>
     </nav>
 

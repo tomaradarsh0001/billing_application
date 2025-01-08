@@ -77,7 +77,7 @@ class CustomerController extends Controller
     public function show(Customer $customer)
     {
         $customer = $customer->load(['city', 'state', 'country', 'phonecode']);
-        // dd( $customer->city_id->name);
+        
         return view('customers.show', compact('customer'));
     }
     public function edit($id)
@@ -88,7 +88,7 @@ class CustomerController extends Controller
         $cities = City::all();
         $phoneCodes = PhoneCode::all(); 
 
-        return view('customers.edit', compact('customer', 'countries', 'states', 'cities', 'phonecodes'));
+        return view('customers.edit', compact('customer', 'countries', 'states', 'cities', 'phoneCodes'));
     }
 
     public function update(Request $request, $id)

@@ -1,5 +1,4 @@
 // Alert Box Code 
-
 document.addEventListener("DOMContentLoaded", function() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
@@ -25,6 +24,12 @@ function confirmDelete(itemType, itemId) {
     else if (itemType === 'customer') {
         message = 'Are you sure you want to delete this Customer?';
     }
+    else if (itemType === 'occupant') {
+        message = 'Are you sure you want to delete this Occupant?';
+    }
+    else if (itemType === 'house') {
+        message = 'Are you sure you want to delete this House Details?';
+    }
         document.getElementById('customConfirmationMessage').innerText = message;
         $('#ModalDelete').modal('show');
         $('#confirmDelete').off('click').on('click', function() {
@@ -33,7 +38,6 @@ function confirmDelete(itemType, itemId) {
 }
 
 // AAdhar, PAN & Phone Number Validations
-
 function validateInput(inputId, regex) {
     const input = document.getElementById(inputId);
     const errorMessage = document.getElementById(inputId + '-error');

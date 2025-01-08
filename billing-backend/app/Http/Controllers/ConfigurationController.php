@@ -21,7 +21,6 @@ class ConfigurationController extends Controller
     public function view($id)
     {
         $configuration = Configuration::findOrFail($id);
-
         return view('configuration.view', compact('configuration'));
     }
     public function store(Request $request)
@@ -30,7 +29,16 @@ class ConfigurationController extends Controller
             'app_name' => 'required|string|max:255',
             'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'app_tagline' => 'nullable|string|max:255',
-            'app_theme' => 'required|string|max:7',
+            'app_theme_primary_light' => 'nullable|string',
+            'app_theme_primary_dark' => 'nullable|string',
+            'app_theme_secondary_light' => 'nullable|string',
+            'app_theme_secondary_dark' => 'nullable|string',
+            'app_theme_background' => 'nullable|string',
+            'app_theme_text_primary' => 'nullable|string',
+            'app_theme_text_secondary' => 'nullable|string',        
+            'app_theme_svg_login' => 'nullable|string',        
+            'app_theme_svg_signup' => 'nullable|string',        
+            'app_theme_links' => 'nullable|string',        
         ]);
 
         $data = $validated;
@@ -55,14 +63,32 @@ class ConfigurationController extends Controller
             'app_name' => 'required|string|max:255',
             'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'app_tagline' => 'nullable|string|max:255',
-            'app_theme' => 'required|string|max:7',
+            'app_theme_primary_light' => 'nullable|string',
+            'app_theme_primary_dark' => 'nullable|string',
+            'app_theme_secondary_light' => 'nullable|string',
+            'app_theme_secondary_dark' => 'nullable|string',
+            'app_theme_background' => 'nullable|string',
+            'app_theme_text_primary' => 'nullable|string',
+            'app_theme_text_secondary' => 'nullable|string',        
+            'app_theme_svg_login' => 'nullable|string',        
+            'app_theme_svg_signup' => 'nullable|string',        
+            'app_theme_links' => 'nullable|string',                
         ]);
 
         $configuration = Configuration::findOrFail($id);
 
         $configuration->app_name = $request->app_name;
         $configuration->app_tagline = $request->app_tagline;
-        $configuration->app_theme = $request->app_theme;
+        $configuration->app_theme_primary_light = $request->app_theme_primary_light;
+        $configuration->app_theme_primary_dark = $request->app_theme_primary_dark;
+        $configuration->app_theme_secondary_light = $request->app_theme_secondary_light;
+        $configuration->app_theme_secondary_dark = $request->app_theme_secondary_dark;
+        $configuration->app_theme_background = $request->app_theme_background;
+        $configuration->app_theme_text_primary = $request->app_theme_text_primary;
+        $configuration->app_theme_text_secondary = $request->app_theme_text_secondary;
+        $configuration->app_theme_svg_login = $request->app_theme_svg_login;
+        $configuration->app_theme_svg_signup = $request->app_theme_svg_signup;
+        $configuration->app_theme_links = $request->app_theme_links;
 
         if ($request->hasFile('app_logo')) {
             if ($configuration->app_logo && \Storage::exists($configuration->app_logo)) {

@@ -36,10 +36,52 @@
                             <label for="app_tagline" class="form-label">Application Tagline</label>
                             <input type="text" class="form-control" id="app_tagline" name="app_tagline" value="{{ $configuration->app_tagline }}">
                         </div>
+                        
                         <div class="mb-3">
                             <label for="app_theme" class="form-label">Application Theme</label>
-                            <input type="color" class="form-control form-control-color" id="app_theme" name="app_theme" value="{{ $configuration->app_theme }}">
-                            <small class="form-text text-muted">Pick a color to set your app's theme.</small>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div>
+                                    <label>Primary Light</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_primary_light" name="app_theme_primary_light" value="{{ $configuration->app_theme_primary_light }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Primary Dark</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_primary_dark" name="app_theme_primary_dark" value="{{ $configuration->app_theme_primary_dark }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Secondary Light</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_secondary_light" name="app_theme_secondary_light" value="{{ $configuration->app_theme_secondary_light }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Secondary Dark</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_secondary_dark" name="app_theme_secondary_dark" value="{{ $configuration->app_theme_secondary_dark }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Background</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_background" name="app_theme_background" value="{{ $configuration->app_theme_background }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Text Primary</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_text_primary" name="app_theme_text_primary" value="{{ $configuration->app_theme_text_primary }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Text Secondary</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_text_secondary" name="app_theme_text_secondary" value="{{ $configuration->app_theme_text_secondary }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Circle SVG Login</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_svg_login" name="app_theme_svg_login" value="{{ $configuration->app_theme_svg_login }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Circle SVG Signup</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_svg_signup" name="app_theme_svg_signup" value="{{ $configuration->app_theme_svg_signup }}" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Page Links</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_links" name="app_theme_links" value="{{ $configuration->app_theme_links }}" title="Choose your color">
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Change the app theme.</small>
                         </div>
                         <button type="submit" id="submit-button" class="btn btn-success">Update Configuration</button>
                     </form>

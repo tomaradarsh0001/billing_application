@@ -46,8 +46,49 @@
                         </div>
                         <div class="mb-3">
                             <label for="app_theme" class="form-label">Application Theme</label>
-                            <input type="color" class="form-control form-control-color" id="app_theme" name="app_theme" value="#000000" title="Choose your color">
-                            <small class="form-text text-muted">Pick a color to set your app's theme.</small>
+                            <div class="d-flex flex-wrap gap-3">
+                                <div>
+                                    <label>Primary Light</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_primary_light" name="app_theme_primary_light" value="#93bded" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Primary Dark</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_primary_dark" name="app_theme_primary_dark" value="#4b98f0" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Secondary Light</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_secondary_light" name="app_theme_secondary_light" value="#d7e9f8" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Secondary Dark</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_secondary_dark" name="app_theme_secondary_dark" value="#c0d7ea" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Background</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_background" name="app_theme_background" value="#ffffff" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Text Primary</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_text_primary" name="app_theme_text_primary" value="#649ad9" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Text Secondary</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_text_secondary" name="app_theme_text_secondary" value="#5d6269" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Circle SVG Login</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_svg_login" name="app_theme_svg_login" value="#cfefff" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Circle SVG Signup</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_svg_signup" name="app_theme_svg_signup" value="#8ebdf2" title="Choose your color">
+                                </div>
+                                <div>
+                                    <label>Page Links</label>
+                                    <input type="color" class="form-control form-control-color" id="app_theme_links" name="app_theme_links" value="#2b48aa" title="Choose your color">
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Set to Default app's theme.</small>
                         </div>
                         <div class="mb-3">
                             <button type="submit" id="submit-button" class="btn btn-success" disabled>Save Settings</button>

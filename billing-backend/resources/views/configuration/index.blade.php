@@ -57,9 +57,40 @@
                                     </td>
                                     <td>{{ $configuration->app_tagline }}</td>
                                     <td>
-                                        <span class="badge" style="background-color: {{ $configuration->app_theme }};">
-                                            {{ $configuration->app_theme }}
+                                        <div>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_primary_light }};">
+                                            {{ $configuration->app_theme_primary_light }}
                                         </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_primary_dark }};">
+                                            {{ $configuration->app_theme_primary_dark }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_secondary_light }};">
+                                            {{ $configuration->app_theme_secondary_light }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_secondary_dark }};">
+                                            {{ $configuration->app_theme_secondary_dark }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_background }};">
+                                            {{ $configuration->app_theme_background }}
+                                        </span>
+                                        </div>
+                                        <div>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_text_primary }};">
+                                            {{ $configuration->app_theme_text_primary }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_text_secondary }};">
+                                            {{ $configuration->app_theme_text_secondary }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_svg_login }};">
+                                            {{ $configuration->app_theme_svg_login }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_svg_signup }};">
+                                            {{ $configuration->app_theme_svg_signup }}
+                                        </span>
+                                        <span class="badge" style="background-color: {{ $configuration->app_theme_links }};">
+                                            {{ $configuration->app_theme_links }}
+                                        </span>
+                                        </div>
                                     </td>
                                     <td>
                                         <a href="{{ route('configuration.view', $configuration->id) }}" class="btn btn-primary rounded-pill mb-3">View</a>

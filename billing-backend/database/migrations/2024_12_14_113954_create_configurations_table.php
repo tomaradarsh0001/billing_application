@@ -14,9 +14,18 @@ return new class extends Migration
         Schema::create('configurations', function (Blueprint $table) {
             $table->id();
             $table->string('app_name')->nullable();
-            $table->string('app_logo')->nullable(); // Path to the uploaded logo
+            $table->string('app_logo')->nullable(); 
             $table->string('app_tagline')->nullable();
-            $table->string('app_theme', 7)->default('#000000');
+            $table->string('app_theme_primary_light')->nullable();
+            $table->string('app_theme_primary_dark')->nullable();
+            $table->string('app_theme_secondary_light')->nullable();
+            $table->string('app_theme_secondary_dark')->nullable();
+            $table->string('app_theme_background')->nullable();
+            $table->string('app_theme_text_primary')->nullable();
+            $table->string('app_theme_text_secondary')->nullable();            
+            $table->string('app_theme_svg_login')->nullable();            
+            $table->string('app_theme_svg_signup')->nullable();            
+            $table->string('app_theme_links')->nullable();            
             $table->timestamps();
         });
     }

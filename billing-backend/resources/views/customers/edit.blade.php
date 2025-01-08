@@ -137,7 +137,7 @@
 
                         <!-- Country, State, City Dropdowns -->
                         <div class="row">
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="country" class="form-label">Country</label>
                                 <select id="country" name="country_id" class="form-control-select">
                                     <option value="">Select Country</option>
@@ -149,7 +149,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="state" class="form-label">State</label>
                                 <select id="state" name="state_id" class="form-control-select">
                                     <option value="">Select State</option>
@@ -161,7 +161,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-4 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="city" class="form-label">City</label>
                                 <select id="city" name="city_id" class="form-control-select">
                                     <option value="">Select City</option>
@@ -172,17 +172,15 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
 
-                        <!-- Pincode -->
-                        <div class="mb-3">
+                            <div class="col-md-3 mb-3">
                             <label for="pincode" class="form-label">Pincode</label>
                             <input type="text" id="pincode" name="pincode" class="form-control" value="{{ old('pincode', $customer->pincode) }}">
                             @error('pincode')
                             <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>
-
+                        </div>
                         <!-- Submit Button -->
                         <div class="mt-4">
                             <button type="submit" class="btn btn-success">Update Customer</button>

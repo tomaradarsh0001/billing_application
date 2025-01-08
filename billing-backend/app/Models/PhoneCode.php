@@ -17,5 +17,9 @@ class PhoneCode extends Model
     {
         return $this->hasMany(Customer::class);
     }
+    public function occupant()
+    {
+        return $this->hasMany(OccupantDetail::class);
+    }
 
 }
