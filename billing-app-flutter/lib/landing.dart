@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
   // Function to fetch configuration data
   Future<Map<String, dynamic>> fetchConfiguration() async {
 
-    final response = await http.get(Uri.parse('http://172.232.108.54/api/configuration/3'));
+    final response = await http.get(Uri.parse('http://16.171.136.239/api/configuration/3'));
 
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON
@@ -86,7 +86,6 @@ class _LandingPageState extends State<LandingPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        // Single card containing App Name, App Tagline, App Theme, and Image
                         Card(
                           elevation: 40,
                           shape: RoundedRectangleBorder(
@@ -112,7 +111,7 @@ class _LandingPageState extends State<LandingPage> {
                                   'App Tagline: ${data['app_tagline']}',
                                   style: const TextStyle(
                                     fontSize: 18,
-                                    color: Colors.black54,
+                                    color: Colors.black87,
                                   ),
                                 ),
                                 const SizedBox(height: 10),
@@ -173,7 +172,7 @@ class _LandingPageState extends State<LandingPage> {
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.account_circle),
-                    label: 'Profile',
+                    label: 'Customer',
                   ),
                 ],
               ),

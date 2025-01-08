@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts package
 import 'dart:convert'; // For parsing JSON
-import 'landing.dart'; // Import the landing page
+import 'dashboard.dart'; // Import the Dashboard page
+import 'login.dart'; // Import the Login page
+
 
 void main() {
   runApp(const MyApp());
@@ -13,13 +16,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: ' Billing Application',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      debugShowCheckedModeBanner: false, // Disable the debug banner
-
+      debugShowCheckedModeBanner: false,
       home: const SplashScreen(), // Set SplashScreen as the home
     );
   }
@@ -33,30 +35,34 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late Future<Map<String, dynamic>> configurationData; // Variable to store API data
+  late Future<Map<String, dynamic>> configurationData;
 
-  // Function to fetch configuration data
   Future<Map<String, dynamic>> fetchConfiguration() async {
-    final response = await http.get(Uri.parse('http://172.232.108.54/api/configuration/3'));
+    final response =
+    await http.get(Uri.parse('http://16.171.136.239/api/configuration/2'));
 
     if (response.statusCode == 200) {
-      // If the server returns a 200 OK response, parse the JSON
       return json.decode(response.body)['data'];
     } else {
-      // If the server returns an error, throw an exception
       throw Exception('Failed to load configuration');
     }
   }
-
   @override
   void initState() {
     super.initState();
-    configurationData = fetchConfiguration(); // Fetch the configuration data
-    // Navigate to LandingPage after 1 second with animation
-    Future.delayed(const Duration(seconds: 4), () {
+    configurationData = fetchConfiguration();
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LandingPage()),
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>  LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
       );
     });
   }
@@ -64,9 +70,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // White background for splash screen
+      backgroundColor: const Color(0xFFFFFFFF), // Light gray background
       body: FutureBuilder<Map<String, dynamic>>(
-        future: configurationData, // Use the fetched configuration data
+        future: configurationData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -74,37 +80,66 @@ class _SplashScreenState extends State<SplashScreen> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             var data = snapshot.data!;
-            return Center(
-              child: AnimatedSwitcher(
-                duration: const Duration(seconds: 1), // 1 second transition duration
-                child: Column(
-                  key: ValueKey<String>(data['app_name']), // Unique key to trigger animation
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    // Display image fetched from the API
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: FittedBox(
-                        fit: BoxFit.contain, // Ensures the image fits without cropping
-                        child: Image.network(
-                          'http://172.232.108.54//storage/${data['app_logo']}',
-                          height: 160.0, // Set only the height (width will adjust)
+            return Stack(
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Image.network(
+                            'http://16.171.136.239/storage/${data['app_logo']}',
+                            height: 100.0,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Display tagline fetched from the API
-                    Text(
-                      data['app_tagline'] ?? 'Loading tagline...',
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black, // Text color black
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          const SizedBox(height: 10), // No additional spacing
+                          Text(
+                            data['app_name']?.toUpperCase() ?? 'Loading...',
+                            style: GoogleFonts.telex(
+                              fontSize: 43,
+                              fontWeight: FontWeight.normal,
+                              color: const Color(0xFF969696),
+                              height: 1.2, // Adjust line height to minimize space
+                            ),
+                          ),
+                          Text(
+                            data['app_tagline']?.toUpperCase() ?? 'Loading tagline...',
+                            style: GoogleFonts.sarabun(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF969696),
+                              height: 1.0, // Adjust line height to minimize space
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                // Positioned app version at the bottom
+                Positioned(
+                  bottom: 18,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Text(
+                      '${data['app_version'] ?? 'v1.01'}',
+                      style: GoogleFonts.sarabun(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF969696)
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             );
           } else {
             return const Center(child: Text('No data available'));
