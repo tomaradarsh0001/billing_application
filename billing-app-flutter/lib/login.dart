@@ -135,14 +135,12 @@ class _LoginPageState extends State<LoginPage> {
               top: _isAnimationComplete ? 0 : -300,
               left: 0,
               right: 0,
-              child: svgString.isNotEmpty
-                  ? SvgPicture.string(
+              child: SvgPicture.string(
                 svgString,  // Render the modified SVG string with new colors
                 semanticsLabel: 'Animated and Colored SVG',
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.fill,
               )
-                  : CircularProgressIndicator(), // Show loading indicator until the SVG is ready
             ),
             // Main Content
             Padding(
@@ -190,14 +188,12 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 14.0),
-                              child: svgStringEmail.isNotEmpty
-                                  ? SvgPicture.string(
+                              child: SvgPicture.string(
                                 svgStringEmail, // Render the modified SVG string with new colors
                                 semanticsLabel: 'Animated and Colored SVG',
                                 width: 15,
                                 height: 15,
                               )
-                                  : const CircularProgressIndicator(), // Show loading indicator until the SVG is ready
                             ),
                             labelText: 'Email',
                             labelStyle: GoogleFonts.signika(
@@ -225,14 +221,13 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 18.0),
-                              child: svgStringPass.isNotEmpty
-                                  ? SvgPicture.string(
+                              child: SvgPicture.string(
                                 svgStringPass, // Render the modified SVG string with new colors
                                 semanticsLabel: 'Animated and Colored SVG',
                                 width: 25,
                                 height: 25,
                               )
-                                  : const CircularProgressIndicator(), // Show loading indicator until the SVG is ready
+                                // Show loading indicator until the SVG is ready
                             ),
 
                             suffixIcon: IconButton(

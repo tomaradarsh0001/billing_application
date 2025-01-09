@@ -1,31 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:convert'; // For parsing JSON
-import 'dashboard.dart'; // Import the Dashboard page
-import 'login.dart'; // Import the Login page
-import 'colors.dart'; // Import the AppColors class
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Billing Application',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const SplashScreen(), // Set SplashScreen as the home
-    );
-  }
-}
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'login.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -97,22 +74,23 @@ class _SplashScreenState extends State<SplashScreen> {
                           //   height: 100.0,
                           // ),
                           child: Image.asset(
-                            'assets/dashboard_user.png',
+                            'assets/dashboard_user.png', // Assuming the image file is stored in the assets folder
                             height: 100.0,
                           ),
+
                         ),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          const SizedBox(height: 10), // No additional spacing
+                          const SizedBox(height: 10),
                           Text(
                             data['app_name']?.toUpperCase() ?? 'Loading...',
                             style: GoogleFonts.telex(
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: const Color(0xFF969696),
-                              height: 1.2, // Adjust line height to minimize space
+                              height: 1.2,
                             ),
                           ),
                           Text(
@@ -122,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
                               color: const Color(0xFF969696),
-                              height: 1.0, // Adjust line height to minimize space
+                              height: 1.0,
                             ),
                           ),
                         ],

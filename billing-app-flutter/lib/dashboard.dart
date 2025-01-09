@@ -16,13 +16,12 @@ class _DashboardPageState extends State<DashboardPage> {
   Color? primaryLight;
   Color? secondaryLight; // Assuming color2 is also a dynamic color
   Color? primaryDark; // Assuming color3 is also a dynamic color
-
+  double _tileOpacity = 0; // Start opacity is 0.2
+  double _avatarOpacity = 0;
 
   @override
   void initState() {
     super.initState();
-
-    // Fetch colors and update variables
     AppColors.fetchColors().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
@@ -33,7 +32,12 @@ class _DashboardPageState extends State<DashboardPage> {
       // Load SVG after colors are fetched
       loadSvg();
     });
-
+    Future.delayed(Duration(milliseconds: 100), () {
+      setState(() {
+        _tileOpacity = 1.0; // Transition tiles opacity to 1.0
+        _avatarOpacity = 1.0; // Transition avatar opacity to 1.0
+      });
+    });
     // Animation completion state
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
@@ -84,19 +88,17 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           // Top Background Shape
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 900),
+            duration: const Duration(milliseconds: 1500),
             curve: Curves.easeInOut,
             top: _isAnimationComplete ? 0 : -400,
             left: 0,
             right: 0,
-            child: svgString.isNotEmpty
-                ? SvgPicture.string(
+            child: SvgPicture.string(
               svgString,  // Render the modified SVG string with new colors
               semanticsLabel: 'Animated and Colored SVG',
               fit: BoxFit.fill,
               height: 300,  // Height of the SVG
             )
-                : CircularProgressIndicator(), // Show loading indicator until the SVG is ready
           ),
 
           // Main Content
@@ -139,13 +141,18 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ],
                       ),
-                      CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Colors.transparent,
-                        child: Image.asset(
-                          'assets/dashboard_user.png', // Replace with the actual path to your PNG file
-                          width: 60,
-                          height: 60,
+                      AnimatedOpacity(
+                        opacity: _avatarOpacity, // Use _avatarOpacity for CircleAvatar
+                        duration: Duration(seconds: 1),
+                        curve: Curves.easeInOut,
+                        child: CircleAvatar(
+                          radius: 30,
+                          backgroundColor: Colors.transparent,
+                          child: Image.asset(
+                            'assets/dashboard_user.png', // Replace with actual path to your PNG file
+                            width: 60,
+                            height: 60,
+                          ),
                         ),
                       ),
                     ],
@@ -244,10 +251,10 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildDashboardTile(String title, IconData icon) {
     return Material(
-      color: Colors.transparent, // Ensures ripple effect is visible
+      color: Colors.transparent,
       borderRadius: BorderRadius.circular(24),
       child: InkWell(
-        borderRadius: BorderRadius.circular(24), // Matches the tile's border radius
+        borderRadius: BorderRadius.circular(24),
         onTap: () {
           Navigator.push(
             context,
@@ -256,36 +263,42 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           );
         },
-        splashColor: Colors.blue.withOpacity(0.2), // Ripple effect color
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.4),
-                blurRadius: 15,
-                offset: Offset(2, 9),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 70, color: primaryDark),
-              SizedBox(height: 0),
-              Text(
-                title,
-                style: GoogleFonts.signika(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey,
+        splashColor: Colors.blue.withOpacity(0.2),
+        child: AnimatedOpacity(
+          opacity: _tileOpacity, // Use _tileOpacity to control opacity
+          duration: Duration(seconds: 2),
+          curve: Curves.easeInOut,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  blurRadius: 15,
+                  offset: Offset(2, 9),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 70, color: primaryDark ?? Colors.transparent),
+                SizedBox(height: 0),
+                Text(
+                  title,
+                  style: GoogleFonts.signika(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
 }

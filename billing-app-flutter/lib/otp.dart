@@ -127,19 +127,17 @@ class _OtpPageState extends State<OtpPage> {
         body: Stack(
           children: [
             AnimatedPositioned(
-              duration: Duration(milliseconds: 900),
+              duration: Duration(milliseconds: 1200),
               curve: Curves.easeInOut,
               top: _isAnimationComplete ? -50 : -400,
               left: 0,
               right: 0,
-              child: svgString.isNotEmpty
-                  ? SvgPicture.string(
+              child:  SvgPicture.string(
                 svgString,  // Render the modified SVG string with new colors
                 semanticsLabel: 'Animated and Colored SVG',
                 fit: BoxFit.fill,
                 height: 300,  // Height of the SVG
               )
-                  : CircularProgressIndicator(), // Show loading indicator until the SVG is ready
             ),
             Padding(
               padding: const EdgeInsets.only(top: 250),

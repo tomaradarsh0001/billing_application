@@ -5,6 +5,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'dashboard.dart';
 import 'customerviewdetails.dart';
+import 'package:flutter/services.dart';
+import 'colors.dart';
+import 'package:shimmer/shimmer.dart';
+
 
 class CustomerViewPage extends StatefulWidget {
   @override
@@ -12,7 +16,7 @@ class CustomerViewPage extends StatefulWidget {
 }
 
 class _CustomerViewPageState extends State<CustomerViewPage> {
-  bool _isAnimationComplete = true;
+  bool _isAnimationComplete = false;
   List<dynamic> _customers = [];
   List<dynamic> _filteredCustomers = [];
   bool _isLoading = true;
@@ -21,10 +25,32 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
   bool _isSearchActive = false;
+  String svgString = '';
+  Color? primaryLight;
+  Color? secondaryLight;
+  Color? secondaryDark;
+  Color? primaryDark;
+  Color? svgLogin;
+  Color? links;
+  Color? textPrimary;
+
 
   @override
   void initState() {
     super.initState();
+    AppColors.fetchColors().then((_) {
+      setState(() {
+        secondaryLight = AppColors.secondaryLight;
+        primaryLight = AppColors.primaryLight;
+        primaryDark = AppColors.primaryDark;
+        svgLogin = AppColors.svgLogin;
+        secondaryDark = AppColors.secondaryDark;
+        links = AppColors.links;
+        textPrimary = AppColors.textPrimary;
+      });
+
+      loadSvg();
+    });
     _scrollController.addListener(_scrollListener);
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
@@ -35,6 +61,22 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     _searchController.addListener(_onSearchChanged);
   }
 
+  Future<void> loadSvg() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/screen_upper_shape.svg');
+      setState(() {
+        // Replace placeholders with actual colors in hex format
+        svgString = svg.replaceAll(
+          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+        );
+      });
+    }
+  }
+  String _colorToHex(Color color) {
+    return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+  }
   void _scrollListener() {
     setState(() {
       _scrollOffset = _scrollController.offset;
@@ -78,6 +120,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     }
   }
 
+
   void _onSearchChanged() {
     setState(() {
       _filteredCustomers = _customers.where((customer) {
@@ -101,7 +144,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         slivers: [
           // SliverAppBar for dynamic header with scroll effect
           SliverAppBar(
-            backgroundColor: _scrollOffset <= 550 ? Colors.transparent : Colors.blue,
+            backgroundColor: _scrollOffset <= 300 ? Colors.transparent : primaryDark,
             expandedHeight: 350,
             automaticallyImplyLeading: false, // Hides the back button
             floating: true,
@@ -113,14 +156,15 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 900),
                     curve: Curves.easeInOut,
-                    top: _isAnimationComplete ? 0 : -350,
+                    top: _isAnimationComplete ? 0 : -400,
                     left: 0,
                     right: 0,
-                    child: SvgPicture.asset(
-                      'assets/screen_upper_shape.svg', // Replace with your asset path
+                    child: SvgPicture.string(
+                      svgString,  // Render the modified SVG string with new colors
+                      semanticsLabel: 'Animated and Colored SVG',
                       fit: BoxFit.fill,
                       height: 300,
-                    ),
+                    )
                   ),
                   Column(
                     children: [
@@ -283,9 +327,28 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                if (_isLoading) {
-                  return Center(child: CircularProgressIndicator());
-                }
+                    if (_isLoading) {
+                      // Shimmer effect when data is loading
+                      return Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Card(
+                          margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                          elevation: 5,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Container(
+                            height: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
 
                 if (_filteredCustomers.isEmpty) {
                   return Center(
@@ -325,7 +388,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: Colors.blue.shade100,
+                          color: primaryLight,
                           borderRadius: BorderRadius.circular(32),
                         ),
                         child: Center(
@@ -355,7 +418,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                         width: 24,
                         height: 24,
                         decoration: BoxDecoration(
-                          color: Colors.blue,
+                          color: primaryDark,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: IconButton(
@@ -380,7 +443,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                   ),
                 );
               },
-              childCount: _filteredCustomers.length,
+              childCount: _isLoading ? 5 : _filteredCustomers.length,
             ),
           ),
         ],

@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
+import 'colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
   final int customerId;
@@ -17,13 +20,37 @@ class CustomerDetailsPage extends StatefulWidget {
 
 class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   bool _isLoading = true;
+
   bool _isAnimationComplete = false;
   Map<String, dynamic>? _customerDetails;
   final String baseUrl = "http://16.171.136.239/api/customers/";
+  String svgString = '';
+  Color? primaryLight;
+  Color? secondaryLight; // Assuming color2 is also a dynamic color
+  Color? secondaryDark; // Assuming color2 is also a dynamic color
+  Color? primaryDark;
+  Color? svgLogin;
+  Color? links;
+  Color? textPrimary;
+
 
   @override
   void initState() {
     super.initState();
+    AppColors.fetchColors().then((_) {
+      setState(() {
+        secondaryLight = AppColors.secondaryLight;
+        primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
+        primaryDark = AppColors.primaryDark; // Replace with actual dynamic color
+        svgLogin = AppColors.svgLogin; // Replace with actual dynamic color
+        secondaryDark = AppColors.secondaryDark; // Replace with actual dynamic color
+        links = AppColors.links; // Replace with actual dynamic color
+        textPrimary = AppColors.textPrimary;
+      });
+
+      // Load SVG after colors are fetched
+      loadSvg();
+    });
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _isAnimationComplete = true;
@@ -31,7 +58,22 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
     });
     _fetchCustomerDetails();
   }
-
+  Future<void> loadSvg() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/screen_upper_shape.svg');
+      setState(() {
+        // Replace placeholders with actual colors in hex format
+        svgString = svg.replaceAll(
+          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+        );
+      });
+    }
+  }
+  String _colorToHex(Color color) {
+    return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+  }
   // Fetch customer details from the API
   Future<void> _fetchCustomerDetails() async {
     final String apiUrl = '$baseUrl${widget.customerId}';
@@ -222,11 +264,12 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
             top: _isAnimationComplete ? -30 : -400,
             left: 0,
             right: 0,
-            child: SvgPicture.asset(
-              'assets/screen_upper_shape.svg', // Ensure this is in pubspec.yaml
+            child: SvgPicture.string(
+              svgString,  // Render the modified SVG string with new colors
+              semanticsLabel: 'Animated and Colored SVG',
               fit: BoxFit.fill,
               height: 300,
-            ),
+            )
           ),
           Column(
             children: [
@@ -321,12 +364,19 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
               Expanded(
                 child: Container(
                   color: Colors.white,
-    child: RefreshIndicator(
-    onRefresh: _onRefresh,
-    child: SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                    child: Column(
+                    child: RefreshIndicator(
+                      onRefresh: _onRefresh,
+                        child: SingleChildScrollView(
+                       padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                     child: Column(
                       children: [
+                        if (_isLoading)
+                        // Show shimmer effect while loading
+                          Column(
+                            children: List.generate(10, (index) => _buildShimmerDetailField()),
+                          )
+                        else
+                        // Show actual data when loading is complete
                         _buildDetailField("Customer Full Name",
                             '${_customerDetails?['first_name']?.toString() ?? ''} ${_customerDetails?['last_name']?.toString() ?? ''}'),
                         _buildDetailField("Gender", _customerDetails?['gender']?.toString()),
@@ -353,13 +403,43 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           // Loading or Customer Details
           if (_isLoading)
             const Center(
-              child: CircularProgressIndicator(),
+              // child: CircularProgressIndicator(),
             ),
         ],
       ),
     );
   }
 
+  Widget _buildShimmerDetailField() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 0.0, left: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: 120,
+              height: 16,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: double.infinity,
+              height: 20,
+              color: Colors.grey,
+            ),
+          ),
+          const Divider(color: Color(0xFFE0E0E0)),
+        ],
+      ),
+    );
+  }
   // Method to display customer details in fields
   Widget _buildDetailField(String label, String? value) {
     return Padding(

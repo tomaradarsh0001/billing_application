@@ -142,14 +142,12 @@ class _SignupPageState extends State<SignupPage> {
             top: _isAnimationComplete ? -50 : -400, // Animate from -200 to 0
             left: 0,
             right: 0,
-            child: svgString.isNotEmpty
-                ? SvgPicture.string(
+            child: SvgPicture.string(
               svgString,  // Render the modified SVG string with new colors
               semanticsLabel: 'Animated and Colored SVG',
               fit: BoxFit.fill,
               height: 300,  // Height of the SVG
-            )
-                : CircularProgressIndicator(), // Show loading indicator until the SVG is ready
+            ), // Show loading indicator until the SVG is ready
           ),
           // Main Content
           Padding(
@@ -198,14 +196,13 @@ class _SignupPageState extends State<SignupPage> {
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 14.0),
-                              child: svgStringName.isNotEmpty
-                                  ? SvgPicture.string(
+                              child: SvgPicture.string(
                                 svgStringName, // Render the modified SVG string with new colors
                                 semanticsLabel: 'Animated and Colored SVG',
                                 width: 15,
                                 height: 15,
                               )
-                                  : const CircularProgressIndicator(), // Show loading indicator until the SVG is ready
+                              // Show loading indicator until the SVG is ready
                             ),
                             labelText: 'Name',
                             labelStyle: GoogleFonts.signika(
@@ -231,14 +228,13 @@ class _SignupPageState extends State<SignupPage> {
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 14.0),
-                              child: svgStringEmail.isNotEmpty
-                                  ? SvgPicture.string(
+                              child:SvgPicture.string(
                                 svgStringEmail, // Render the modified SVG string with new colors
                                 semanticsLabel: 'Animated and Colored SVG',
                                 width: 15,
                                 height: 15,
                               )
-                                  : const CircularProgressIndicator(), // Show loading indicator until the SVG is ready
+
                             ),
                             labelText: 'Email',
                             labelStyle: GoogleFonts.signika(
@@ -266,14 +262,13 @@ class _SignupPageState extends State<SignupPage> {
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 18.0),
-                              child: svgStringPass.isNotEmpty
-                                  ? SvgPicture.string(
+                              child: SvgPicture.string(
                                 svgStringPass, // Render the modified SVG string with new colors
                                 semanticsLabel: 'Animated and Colored SVG',
                                 width: 25,
                                 height: 25,
                               )
-                                  : const CircularProgressIndicator(), // Show loading indicator until the SVG is ready
+
                             ),
                             suffixIcon: IconButton(
                               icon: Icon(
