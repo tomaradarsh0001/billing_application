@@ -250,55 +250,67 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildDashboardTile(String title, IconData icon) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(24),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(24),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CustomerViewPage(),
-            ),
-          );
-        },
-        splashColor: Colors.blue.withOpacity(0.2),
-        child: AnimatedOpacity(
-          opacity: _tileOpacity, // Use _tileOpacity to control opacity
-          duration: Duration(seconds: 2),
-          curve: Curves.easeInOut,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  blurRadius: 15,
-                  offset: Offset(2, 9),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 70, color: primaryDark ?? Colors.transparent),
-                SizedBox(height: 0),
-                Text(
-                  title,
-                  style: GoogleFonts.signika(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey,
+    Color _tileColor = Colors.white; // Initial background color
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(24),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            onTap: () {
+              setState(() {
+                _tileColor = Colors.grey.shade200; // Change to grey on tap
+              });
+              Future.delayed(Duration(milliseconds: 200), () {
+                setState(() {
+                  _tileColor = Colors.white; // Revert to white after delay
+                });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomerViewPage(),
                   ),
-                ),
-              ],
+                );
+              });
+            },
+            splashColor: Colors.transparent, // Remove ripple effect
+            highlightColor: Colors.transparent, // Disable default highlight
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: _tileColor,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    blurRadius: 15,
+                    offset: Offset(2, 9),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 70, color: primaryDark),
+                  SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: GoogleFonts.signika(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
+
 
 }

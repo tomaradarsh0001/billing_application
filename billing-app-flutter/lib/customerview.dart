@@ -48,8 +48,9 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         links = AppColors.links;
         textPrimary = AppColors.textPrimary;
       });
-
       loadSvg();
+      _fetchCustomers();
+      _searchController.addListener(_onSearchChanged);
     });
     _scrollController.addListener(_scrollListener);
     Future.delayed(Duration(milliseconds: 200), () {
@@ -57,8 +58,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         _isAnimationComplete = true;
       });
     });
-    _fetchCustomers();
-    _searchController.addListener(_onSearchChanged);
+
   }
 
   Future<void> loadSvg() async {

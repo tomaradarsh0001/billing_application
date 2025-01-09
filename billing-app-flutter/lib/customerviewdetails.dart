@@ -50,13 +50,14 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
 
       // Load SVG after colors are fetched
       loadSvg();
+      _fetchCustomerDetails();
+
     });
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _isAnimationComplete = true;
       });
     });
-    _fetchCustomerDetails();
   }
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
