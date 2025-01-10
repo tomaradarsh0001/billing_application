@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dashboard.dart';
 import 'colors.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
+import 'CustomerAddedSuccessfullyPage.dart';
+import 'CustomerDeletedSuccessfullyPage.dart';
 
 class OtpPage extends StatefulWidget {
   @override
@@ -239,7 +241,8 @@ class _OtpPageState extends State<OtpPage> {
                                 PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                      DashboardPage(),
+                                      // DashboardPage(),
+                                  CustomerDeletedSuccessfullyPage(),
                                   transitionsBuilder: (context, animation,
                                       secondaryAnimation, child) {
                                     const begin = Offset(1.0, 0.0);
