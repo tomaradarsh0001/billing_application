@@ -168,7 +168,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                   ),
                   Column(
                     children: [
-                      const SizedBox(height: 220),
+                      const SizedBox(height: 230),
                       CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.white,
@@ -448,6 +448,26 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
           ),
         ],
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0), // Add bottom padding
+        child: FloatingActionButton(
+          onPressed: () {
+            // Handle FAB press here
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => DashboardPage()), // Replace with your desired page
+            );
+          },
+          backgroundColor: primaryDark ?? Colors.blue, // Use primaryDark or a default color
+          shape: CircleBorder(), // Ensure circular shape
+          child: Icon(
+            Icons.add, // Plus icon
+            color: Colors.white, // Icon color
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // FAB location
+
     );
   }
 }
