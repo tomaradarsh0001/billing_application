@@ -19,7 +19,7 @@ class _CustomerDeletedSuccessfullyPageState
     // Initialize the animation controller with a duration
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3), // Set the duration of the animation
+      duration: const Duration(seconds: 2), // Set the duration of the animation
     );
 
     // Listen for when the animation ends to navigate

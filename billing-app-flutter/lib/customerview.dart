@@ -8,7 +8,8 @@ import 'customerviewdetails.dart';
 import 'package:flutter/services.dart';
 import 'colors.dart';
 import 'package:shimmer/shimmer.dart';
-
+import 'package:fluttertoast/fluttertoast.dart';
+import 'CustomerDeletedSuccessfullyPage.dart';
 
 class CustomerViewPage extends StatefulWidget {
   @override
@@ -33,7 +34,11 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
+  final String baseUrl = "http://16.171.136.239/api/customers/";
 
+
+  // Add a list to track selected customers
+  List<int> _selectedItems = [];
 
   @override
   void initState() {
@@ -58,7 +63,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         _isAnimationComplete = true;
       });
     });
-
   }
 
   Future<void> loadSvg() async {
@@ -74,9 +78,11 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
       });
     }
   }
+
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
   }
+
   void _scrollListener() {
     setState(() {
       _scrollOffset = _scrollController.offset;
@@ -119,8 +125,34 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
       );
     }
   }
+  Future<void> deleteCustomer(int customerId) async {
+    final response = await http.delete(Uri.parse('$baseUrl$customerId'));
 
+    if (response.statusCode == 200) {
+      // Successfully deleted
+      Fluttertoast.showToast(
+        msg: "Customer deleted successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red, // Custom red color for toast
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
+      // Navigate back to previous page
+      Navigator.pop(context);
+    } else {
+      // If the server returns an error
+      Fluttertoast.showToast(
+        msg: "Failed to delete customer",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red, // Custom red color for toast
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
   void _onSearchChanged() {
     setState(() {
       _filteredCustomers = _customers.where((customer) {
@@ -132,6 +164,151 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                 .contains(_searchController.text.toLowerCase());
       }).toList();
     });
+  }
+
+  // Toggle selection of an item when long pressed
+  void _onItemLongPressed(int customerId) {
+    setState(() {
+      if (_selectedItems.contains(customerId)) {
+        _selectedItems.remove(customerId); // Deselect item
+      } else {
+        _selectedItems.add(customerId); // Select item
+      }
+    });
+  }
+
+  // Delete selected customers
+  Future<void> _deleteSelectedItems() async {
+    final deleteApiUrl = 'http://16.171.136.239/api/customers'; // Replace with your delete API URL
+
+    try {
+      // Navigate to the success page first
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CustomerDeletedSuccessfullyPage(),
+        ),
+      );
+
+      // Perform the deletion after navigating
+      for (int customerId in _selectedItems) {
+        final response = await http.delete(
+          Uri.parse('$deleteApiUrl/$customerId'), // Assuming DELETE request with customer ID
+        );
+        if (response.statusCode != 200) {
+          throw Exception('Failed to delete customer with ID $customerId');
+        }
+      }
+
+      // Remove the deleted customers from the list after navigation
+      setState(() {
+        _filteredCustomers.removeWhere((customer) =>
+            _selectedItems.contains(customer['id'])); // Remove selected customers
+        _selectedItems.clear(); // Clear the selection
+      });
+
+    } catch (e) {
+      // Show an error if something goes wrong
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting customers: $e')),
+      );
+    }
+  }
+// Show confirmation dialog for deletion
+  Future<void> showDeleteConfirmationDialog(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Border radius set to 12
+          ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white, // Background color
+              border: Border.all(color: Colors.red, width: 2), // Red border
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            width: MediaQuery.of(context).size.width * 0.9, // Dialog width (90% of screen width)
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Confirmation message
+                Text(
+                  "Are you sure you want to delete the selected customers?",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 30),
+                SvgPicture.asset(
+                  'assets/delete_confirmation.svg', // Replace with the actual path to your SVG
+                  height: 80,
+                  width: 80,
+                ),
+                const SizedBox(height: 30),
+                // Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Cancel button
+                    SizedBox(
+                      width: 120,
+                      height: 38,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        icon: Icon(Icons.close, color: Colors.grey),
+                        label: Text(
+                          "CANCEL",
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                          side: BorderSide(color: Colors.grey),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    // Delete button
+                    SizedBox(
+                      width: 120,
+                      height: 38,
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // Close the dialog
+                          await _deleteSelectedItems(); // Call delete function
+                        },
+                        icon: Icon(Icons.delete, color: Colors.white),
+                        label: Text(
+                          "DELETE",
+                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
 
@@ -164,7 +341,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                       semanticsLabel: 'Animated and Colored SVG',
                       fit: BoxFit.fill,
                       height: 300,
-                    )
+                    ),
                   ),
                   Column(
                     children: [
@@ -268,7 +445,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                     ),
                   )
                       : Container(), // Empty container when search is not active
-                  // Empty container when search is not active
                   Row(
                     children: [
                       // Back Button - hidden when search is active
@@ -322,33 +498,32 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
             ),
           ),
 
-
           // SliverList for displaying cards
           SliverList(
             delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    if (_isLoading) {
-                      // Shimmer effect when data is loading
-                      return Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Card(
-                          margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                          elevation: 5,
+                if (_isLoading) {
+                  // Shimmer effect when data is loading
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Card(
+                      margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
+                      elevation: 5,
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
                           color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Container(
-                            height: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                            ),
-                          ),
                         ),
-                      );
-                    }
+                      ),
+                    ),
+                  );
+                }
 
                 if (_filteredCustomers.isEmpty) {
                   return Center(
@@ -363,91 +538,116 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                 }
 
                 final customer = _filteredCustomers[index];
-                return Card(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                  elevation: 5,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 2,
-                          spreadRadius: 1,
-                          offset: Offset(0, 1),
-                        ),
-                      ],
+                bool isSelected = _selectedItems.contains(customer['id']);
+
+                return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      if (_selectedItems.contains(customer['id'])) {
+                        _selectedItems.remove(customer['id']);
+                      } else {
+                        _selectedItems.add(customer['id']);
+                      }
+                    });
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    elevation: 5,
+                    color: isSelected ? Colors.grey.shade300 : Colors.white, // Grey background if selected
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: ListTile(
-                      leading: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: primaryLight,
-                          borderRadius: BorderRadius.circular(32),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "${customer['first_name'][0]}${customer['last_name'][0]}",
-                            style: GoogleFonts.signika(
-                              fontWeight: FontWeight.normal,
-                              color: Colors.grey.shade800,
-                              fontSize: 34,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: isSelected ? Colors.grey.shade300 : Colors.white, // Grey background if selected
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 2,
+                            spreadRadius: 1,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: ListTile(
+                        leading: Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: primaryLight,
+                            borderRadius: BorderRadius.circular(32),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "${customer['first_name'][0]}${customer['last_name'][0]}",
+                              style: GoogleFonts.signika(
+                                fontWeight: FontWeight.normal,
+                                color: Colors.grey.shade800,
+                                fontSize: 34,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      title: Text(
-                        "Customer Name: ${customer['first_name']} ${customer['last_name']}",
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        "Customer ID: ${customer['aadhar_number']}\n"
-                            "City: ${customer['city_id']}, ${customer['state_id']}",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      trailing: Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: primaryDark,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.white,
-                            size: 10,
+                        title: Text(
+                          "Customer Name: ${customer['first_name']} ${customer['last_name']}",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
                           ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CustomerDetailsPage(
-                                  customerId: customer['id'],
+                        ),
+                        subtitle: Text(
+                          "Customer ID: ${customer['aadhar_number']}\n"
+                              "City: ${customer['city_id']}, ${customer['state_id']}",
+                          style: TextStyle(fontSize: 13),
+                        ),
+                        trailing: Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(
+                            color: primaryDark,
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.white,
+                              size: 10,
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CustomerDetailsPage(
+                                    customerId: customer['id'],
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
                 );
               },
-              childCount: _isLoading ? 5 : _filteredCustomers.length,
+              childCount: _filteredCustomers.length,
             ),
-          ),
+          )
+
         ],
       ),
+      // Floating Action Button for delete
+      floatingActionButton: _selectedItems.isNotEmpty
+          ? FloatingActionButton(
+        onPressed: () {
+          showDeleteConfirmationDialog(context); // Correct way to pass the function
+        },
+        backgroundColor: primaryLight,
+        child: Icon(Icons.delete),
+        shape: CircleBorder(),
+      )
+          : null,
     );
   }
 }

@@ -262,7 +262,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 900),
             curve: Curves.easeInOut,
-            top: _isAnimationComplete ? -30 : -400,
+            top: _isAnimationComplete ? -0 : -400,
             left: 0,
             right: 0,
             child: SvgPicture.string(
@@ -378,9 +378,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                           )
                         else
                         // Show actual data when loading is complete
-                        _buildDetailField("Customer Full Name",
-                            '${_customerDetails?['first_name']?.toString() ?? ''} ${_customerDetails?['last_name']?.toString() ?? ''}'),
-                        _buildDetailField("Gender", _customerDetails?['gender']?.toString()),
+                          _buildDetailField("First Name", _customerDetails?['first_name']?.toString()),
+                        _buildDetailField("Last Name", _customerDetails?['last_name']?.toString()),_buildDetailField("Gender", _customerDetails?['gender']?.toString()),
                         _buildDetailField("Date of Birth", formattedDob(_customerDetails?['dob']?.toString())),
                         _buildDetailField("Email Address", _customerDetails?['email']?.toString()),
                         _buildDetailField("Phone", _customerDetails?['phone_number']?.toString()),
