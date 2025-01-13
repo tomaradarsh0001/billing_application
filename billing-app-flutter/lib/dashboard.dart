@@ -32,7 +32,7 @@ class _DashboardPageState extends State<DashboardPage> {
       // Load SVG after colors are fetched
       loadSvg();
     });
-    Future.delayed(Duration(milliseconds: 100), () {
+    Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _tileOpacity = 1.0; // Transition tiles opacity to 1.0
         _avatarOpacity = 1.0; // Transition avatar opacity to 1.0
@@ -88,17 +88,17 @@ class _DashboardPageState extends State<DashboardPage> {
         children: [
           // Top Background Shape
           AnimatedPositioned(
-            duration: const Duration(milliseconds: 1500),
-            curve: Curves.easeInOut,
-            top: _isAnimationComplete ? 0 : -400,
-            left: 0,
-            right: 0,
-            child: SvgPicture.string(
-              svgString,  // Render the modified SVG string with new colors
-              semanticsLabel: 'Animated and Colored SVG',
-              fit: BoxFit.fill,
-              height: 300,  // Height of the SVG
-            )
+              duration: const Duration(milliseconds: 1500),
+              curve: Curves.easeInOut,
+              top: _isAnimationComplete ? 0 : -400,
+              left: 0,
+              right: 0,
+              child: SvgPicture.string(
+                svgString,  // Render the modified SVG string with new colors
+                semanticsLabel: 'Animated and Colored SVG',
+                fit: BoxFit.fill,
+                height: 300,  // Height of the SVG
+              )
           ),
 
           // Main Content

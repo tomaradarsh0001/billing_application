@@ -241,8 +241,8 @@ class _OtpPageState extends State<OtpPage> {
                                 PageRouteBuilder(
                                   pageBuilder: (context, animation,
                                       secondaryAnimation) =>
-                                      // DashboardPage(),
-                                  CustomerDeletedSuccessfullyPage(),
+                                      DashboardPage(),
+                                  // CustomerDeletedSuccessfullyPage(),
                                   transitionsBuilder: (context, animation,
                                       secondaryAnimation, child) {
                                     const begin = Offset(1.0, 0.0);
