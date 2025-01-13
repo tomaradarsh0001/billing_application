@@ -262,7 +262,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           AnimatedPositioned(
             duration: const Duration(milliseconds: 900),
             curve: Curves.easeInOut,
-            top: _isAnimationComplete ? 0 : -400,
+            top: _isAnimationComplete ? -30 : -400,
             left: 0,
             right: 0,
             child: SvgPicture.string(
@@ -306,7 +306,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 120),
+                    const SizedBox(height: 90),
                     CircleAvatar(
                       radius: 60,
                       backgroundColor: Colors.white,

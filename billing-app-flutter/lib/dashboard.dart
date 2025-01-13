@@ -22,17 +22,14 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-
-    // Fetch colors and load SVG, then update opacity
     AppColors.fetchColors().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
-        primaryLight = AppColors.primaryLight;
-        primaryDark = AppColors.primaryDark;
+        primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
+        primaryDark = AppColors.primaryDark; // Replace with actual dynamic color
       });
 
       // Load SVG after colors are fetched
-<<<<<<< HEAD
       loadSvg();
     });
     Future.delayed(Duration(milliseconds: 200), () {
@@ -45,21 +42,9 @@ class _DashboardPageState extends State<DashboardPage> {
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _isAnimationComplete = true;
-=======
-      return loadSvg();
-    }).then((_) {
-      // Once SVG is loaded, start animation
-      Future.delayed(Duration(milliseconds: 200), () {
-        setState(() {
-          _tileOpacity = 1.0; // Make tiles visible
-          _avatarOpacity = 1.0; // Make avatar visible
-          _isAnimationComplete = true; // Mark animation as complete
-        });
->>>>>>> a57467e77c3b4adc2b6148a5d2e28910cb807f48
       });
     });
   }
-
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -269,61 +254,56 @@ class _DashboardPageState extends State<DashboardPage> {
 
     return StatefulBuilder(
       builder: (context, setState) {
-        return AnimatedOpacity(
-          opacity: _tileOpacity, // Use _tileOpacity for visibility
-          duration: Duration(milliseconds: 1800), // Adjust duration for smooth transition
-          curve: Curves.easeInOut, // Optional: Add a curve for smoother effect
-          child: Material(
-            color: Colors.transparent,
+        return Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(24),
+          child: InkWell(
             borderRadius: BorderRadius.circular(24),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(24),
-              onTap: () {
+            onTap: () {
+              setState(() {
+                _tileColor = Colors.grey.shade200; // Change to grey on tap
+              });
+              Future.delayed(Duration(milliseconds: 200), () {
                 setState(() {
-                  _tileColor = Colors.grey.shade200; // Change to grey on tap
+                  _tileColor = Colors.white; // Revert to white after delay
                 });
-                Future.delayed(Duration(milliseconds: 200), () {
-                  setState(() {
-                    _tileColor = Colors.white; // Revert to white after delay
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CustomerViewPage(),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => CustomerViewPage(),
+                  ),
+                );
+              });
+            },
+            splashColor: Colors.transparent, // Remove ripple effect
+            highlightColor: Colors.transparent, // Disable default highlight
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              decoration: BoxDecoration(
+                color: _tileColor,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    blurRadius: 15,
+                    offset: Offset(2, 9),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 70, color: primaryDark),
+                  SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: GoogleFonts.signika(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey,
                     ),
-                  );
-                });
-              },
-              splashColor: Colors.transparent, // Remove ripple effect
-              highlightColor: Colors.transparent, // Disable default highlight
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 200),
-                decoration: BoxDecoration(
-                  color: _tileColor,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      blurRadius: 15,
-                      offset: Offset(2, 9),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(icon, size: 70, color: primaryDark),
-                    SizedBox(height: 8),
-                    Text(
-                      title,
-                      style: GoogleFonts.signika(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -333,9 +313,4 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
 
-<<<<<<< HEAD
 }
-=======
-
-}
->>>>>>> a57467e77c3b4adc2b6148a5d2e28910cb807f48
