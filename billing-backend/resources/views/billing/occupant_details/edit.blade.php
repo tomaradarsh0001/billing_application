@@ -43,7 +43,7 @@
                                 <div class="row">
                                     <!-- First Name -->
                                     <div class="col-md-6 mb-3">
-                                        <label for="first_name">First Name</label>
+                                        <label for="first_name" class="form-label mb-0">First Name</label>
                                         <input type="text" name="first_name" id="first_name" class="form-control" value="{{ old('first_name', $occupant->first_name) }}" required>
                                         @error('first_name')
                                             <div class="text-danger">{{ $message }}</div>
@@ -52,7 +52,7 @@
 
                                     <!-- Last Name -->
                                     <div class="col-md-6 mb-3">
-                                        <label for="last_name">Last Name</label>
+                                        <label for="last_name" class="form-label mb-0">Last Name</label>
                                         <input type="text" name="last_name" id="last_name" class="form-control" value="{{ old('last_name', $occupant->last_name) }}" required>
                                         @error('last_name')
                                             <div class="text-danger">{{ $message }}</div>
@@ -62,7 +62,7 @@
 
                                 <!-- House Selection -->
                                 <div class="form-group">
-                                    <label for="h_id">House No</label>
+                                    <label for="h_id" class="form-label mb-0">House No</label>
                                     <select name="h_id" id="h_id" class="form-control-select" required>
                                         <option value="">Select House</option>
                                         @foreach($houses as $house)
@@ -78,37 +78,35 @@
 
                                 <div class="row mt-3">
                                     <!-- Mobile -->
-                                    <div class="row mt-3">
-                                <!-- Mobile -->
-                                <div class="col-md-6 mb-3">
-    <label for="phone_number" class="form-label">Mobile<span class="text-danger">*</span></label>
-    <div class="input-group">
-        <!-- Phone Code Dropdown -->
-        <select id="phone_code" name="phone_code_id" class="form-select-country" 
-                style="width: 90px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
-            <option value="" disabled>Select Code</option>
-            @foreach ($phoneCodes as $code)
-                <option value="{{ $code->id }}" 
-                    {{ old('phone_code_id', $occupant->phone_code_id) == $code->id ? 'selected' : '' }}>
-                    {{ $code->iso }} (+{{ $code->phonecode }})
-                </option>
-            @endforeach
-        </select>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone_number" class="form-label mb-0">Mobile<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <!-- Phone Code Dropdown -->
+                                            <select id="phone_code" name="phone_code_id" class="form-select-country" 
+                                                    style="width: 90px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                                <option value="" disabled>Select Code</option>
+                                                @foreach ($phoneCodes as $code)
+                                                    <option value="{{ $code->id }}" 
+                                                        {{ old('phone_code_id', $occupant->phone_code_id) == $code->id ? 'selected' : '' }}>
+                                                        {{ $code->iso }} (+{{ $code->phonecode }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
 
-        <!-- Mobile Number Input -->
-        <input type="text" name="mobile" id="mobile" class="form-control" 
-               value="{{ old('mobile', $occupant->mobile) }}" 
-               placeholder="Enter mobile number" required>
-    </div>
+                                            <!-- Mobile Number Input -->
+                                            <input type="text" name="mobile" id="mobile" class="form-control" 
+                                                   value="{{ old('mobile', $occupant->mobile) }}" 
+                                                   placeholder="Enter mobile number" required>
+                                        </div>
 
-    <!-- Validation Error -->
-    @error('mobile')
-        <div class="text-danger">{{ $message }}</div>
-    @enderror
-</div>
+                                        @error('mobile')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
                                     <!-- Email -->
                                     <div class="col-md-6 mb-3">
-                                        <label for="email">Email</label>
+                                        <label for="email" class="form-label mb-0">Email</label>
                                         <input type="email" name="email" id="email" class="form-control" value="{{ old('email', $occupant->email) }}">
                                         @error('email')
                                             <div class="text-danger">{{ $message }}</div>
@@ -118,7 +116,7 @@
 
                                 <!-- Occupation Date -->
                                 <div class="form-group">
-                                    <label for="occupation_date">Occupation Date</label>
+                                    <label for="occupation_date" class="form-label mb-0">Occupation Date</label>
                                     <input type="date" name="occupation_date" id="occupation_date" class="form-control" value="{{ old('occupation_date', $occupant->occupation_date) }}" required>
                                     @error('occupation_date')
                                         <div class="text-danger">{{ $message }}</div>

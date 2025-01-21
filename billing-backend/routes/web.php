@@ -7,9 +7,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\BillingDetailController;
 use App\Http\Controllers\Billing\OccupantDetailController;
 use App\Http\Controllers\Billing\HouseDetailController;
-
 
 
 Route::get('/', function () {
@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/users', [UserController::class, 'store'])->name('users.store')->middleware('permission:users.create');
 });
 
+
 // Allow superadmin access to manage roles and permissions
 Route::middleware(['role:superadmin'])->group(function () {
     //configurations
@@ -40,8 +41,6 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::put('/configuration/{id}', [ConfigurationController::class, 'update'])->name('configuration.update');
     Route::get('/configuration/check-app-name', [ConfigurationController::class, 'checkAppName'])->name('configuration.checkAppName');
     Route::get('/check-app-name', [ConfigurationController::class, 'checkAppNameEdit'])->name('configuration.checkAppNameEdit');
-
-
 
     //roles
     Route::get('/roles', [UserController::class, 'manageRoles'])->name('roles.index');
@@ -57,7 +56,6 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('roles/check-name-edit', [RoleController::class, 'checkRoleNameEdit'])->name('roles.checkNameEdit');
     Route::get('roles/check-name', [RoleController::class, 'checkRoleName'])->name('roles.checkName');
 
-
     //users
     Route::get('/users', [UserController::class, 'index'])->name('users.index')->middleware('permission:users.view');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')->middleware('permission:users.view');
@@ -69,7 +67,6 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('check-email/{email}', [UserController::class, 'checkEmail'])->name('check.email');
     Route::get('/check-email-edit', [UserController::class, 'checkEmailEdit'])->name('users.checkEmailEdit');
 
-
     //permissions
     Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index')->middleware('permission:permissions.view');
     Route::get('permissions/create', [PermissionController::class, 'create'])->name('permissions.create')->middleware('permission:permissions.create');
@@ -80,23 +77,37 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('permissions/check-name-edit', [PermissionController::class, 'checkPermissionNameEdit'])->name('permissions.checkNameEdit');
     Route::get('permissions/check-name', [PermissionController::class, 'checkPermissionName'])->name('permissions.checkName');
 
+    //Locations Dropdowns
     Route::resource('customers', CustomerController::class);
     Route::get('/states', [CustomerController::class, 'getStates'])->name('get.states');
     Route::get('/cities', [CustomerController::class, 'getCities'])->name('get.cities');
 
-Route::get('billing/occupants', [OccupantDetailController::class, 'index'])->name('occupants.index');
-Route::get('billing/occupants/create', [OccupantDetailController::class, 'create'])->name('occupants.create');
-Route::post('billing/occupants', [OccupantDetailController::class, 'store'])->name('occupants.store');
-Route::get('billing/occupants/{occupantDetail}/edit', [OccupantDetailController::class, 'edit'])->name('occupants.edit');
-Route::put('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'update'])->name('occupants.update');
-Route::get('billing/occupants/{id}', [OccupantDetailController::class, 'show'])->name('occupants.show');
-Route::delete('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'destroy'])->name('occupants.destroy');
-Route::get('billing/houses', [HouseDetailController::class, 'index'])->name('houses.index');
-Route::get('billing/houses/create', [HouseDetailController::class, 'create'])->name('houses.create');
-Route::post('billing/houses', [HouseDetailController::class, 'store'])->name('houses.store');
-Route::get('billing/houses/{houseDetail}/edit', [HouseDetailController::class, 'edit'])->name('houses.edit');
-Route::put('billing/houses/{houseDetail}', [HouseDetailController::class, 'update'])->name('houses.update');
-Route::delete('billing/houses/{houseDetail}', [HouseDetailController::class, 'destroy'])->name('houses.destroy');
+    //occupant section
+    Route::get('billing/occupants/create', [OccupantDetailController::class, 'create'])->name('occupants.create');
+    Route::get('billing/occupants', [OccupantDetailController::class, 'index'])->name('occupants.index');
+    Route::get('billing/occupants/{occupantDetail}/edit', [OccupantDetailController::class, 'edit'])->name('occupants.edit');
+    Route::put('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'update'])->name('occupants.update');
+    Route::get('billing/occupants/{id}', [OccupantDetailController::class, 'show'])->name('occupants.show');
+    Route::delete('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'destroy'])->name('occupants.destroy');
+    Route::post('billing/occupants', [OccupantDetailController::class, 'store'])->name('occupants.store');
+    
+    //house detail
+    Route::get('billing/houses/create', [HouseDetailController::class, 'create'])->name('houses.create');
+    Route::post('billing/houses', [HouseDetailController::class, 'store'])->name('houses.store');
+    Route::get('billing/houses/{houseDetail}/edit', [HouseDetailController::class, 'edit'])->name('houses.edit');
+    Route::put('billing/houses/{houseDetail}', [HouseDetailController::class, 'update'])->name('houses.update');
+    Route::delete('billing/houses/{houseDetail}', [HouseDetailController::class, 'destroy'])->name('houses.destroy');
+    Route::get('billing/houses', [HouseDetailController::class, 'index'])->name('houses.index');
+
+    //billing details
+    Route::post('billing-details', [BillingDetailController::class, 'store'])->name('billing_details.store');
+    Route::get('billing-details/{billing_detail}', [BillingDetailController::class, 'show'])->name('billing_details.show');
+    Route::get('billing-details/{billing_detail}/edit', [BillingDetailController::class, 'edit'])->name('billing_details.edit');
+    Route::put('billing-details/{billing_detail}', [BillingDetailController::class, 'update'])->name('billing_details.update');
+    Route::get('billing-details', [BillingDetailController::class, 'index'])->name('billing_details.index');
+    Route::delete('billing-details/{billing_detail}', [BillingDetailController::class, 'destroy'])->name('billing_details.destroy');
+    Route::get('billing_details/create', [BillingDetailController::class, 'create'])->name('billing_details.create');
+
 
 });
 require __DIR__ . '/auth.php';

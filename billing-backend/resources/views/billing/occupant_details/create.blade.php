@@ -36,28 +36,28 @@
                             <form method="POST" action="{{ route('occupants.store') }}">
                                 @csrf
 
-                            <!-- Hidden Unique ID Field (No Input) -->
-                           <input type="hidden" name="unique_id" value="">
+                                <!-- Hidden Unique ID Field (No Input) -->
+                                <input type="hidden" name="unique_id" value="">
 
-                            <div class="row">
-                                <!-- First Name -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="first_name">First Name</label>
-                                    <input type="text" name="first_name" id="first_name" class="form-control" value="{{ old('first_name') }}" required>
-                                    @error('first_name')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                                <div class="row">
+                                    <!-- First Name -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="first_name">First Name</label>
+                                        <input type="text" name="first_name" id="first_name" class="form-control" value="{{ old('first_name') }}" required>
+                                        @error('first_name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
 
-                                <!-- Last Name -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="last_name">Last Name</label>
-                                    <input type="text" name="last_name" id="last_name" class="form-control" value="{{ old('last_name') }}" required>
-                                    @error('last_name')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <!-- Last Name -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="last_name">Last Name</label>
+                                        <input type="text" name="last_name" id="last_name" class="form-control" value="{{ old('last_name') }}" required>
+                                        @error('last_name')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                            </div>
 
                                 <!-- House Selection -->
                                 <div class="form-group">
@@ -70,48 +70,45 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('house_id')
+                                    @error('h_id')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <div class="row mt-3">
-                                <!-- Mobile -->
-                                <div class="col-md-6 mb-3">
-    <label for="phone_number" class="form-label">Mobile<span class="text-danger">*</span></label>
-    <div class="input-group">
-        <!-- Phone Code Dropdown -->
-        <select id="phone_code" name="phone_code_id" class="form-select-country" 
-                style="width: 90px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
-            <option value="" disabled selected>Select Code</option>
-            @foreach ($phoneCodes as $code)
-                <option value="{{ $code->id }}" {{ old('phone_code_id') == $code->id ? 'selected' : '' }}>
-                    {{ $code->iso }} (+{{ $code->phonecode }})
-                </option>
-            @endforeach
-        </select>
-
-        <!-- Mobile Number Input -->
-        <input type="text" name="mobile" id="mobile" class="form-control" 
-               value="{{ old('mobile') }}" placeholder="Enter mobile number" required>
-        </div>
-
-    <!-- Validation Error -->
-    @error('mobile')
-        <div class="text-danger">{{ $message }}</div>
-    @enderror
-</div>
-
-
-                                <!-- Email -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="email">Email</label>
-                                    <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
-                                    @error('email')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <!-- Mobile -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone_number" class="form-label mb-0">Mobile<span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <select id="phone_code" name="phone_code_id" class="form-select-country" 
+                                                    style="width: 30px; border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                                <option value="" disabled selected>Select Code</option>
+                                                @foreach ($phoneCodes as $code)
+                                                    <option value="{{ $code->id }}" {{ old('phone_code_id') == $code->id ? 'selected' : '' }}>
+                                                        {{ $code->iso }} (+{{ $code->phonecode }})
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                
+                                            <input type="text" name="mobile" id="mobile" class="form-control" 
+                                                   value="{{ old('mobile') }}" placeholder="Enter mobile number" required>
+                                        </div>
+                                
+                                        @error('mobile')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                
+                                    <!-- Email -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label mb-0">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}">
+                                        @error('email')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                                </div>
+                                
 
                                 <!-- Occupation Date -->
                                 <div class="form-group">

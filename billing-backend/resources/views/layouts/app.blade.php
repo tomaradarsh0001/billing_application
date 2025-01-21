@@ -96,7 +96,7 @@
                     <span>Dashboard</span>
                 </a>
                 <ul>
-                    <li><a class="active" href="/dashboard">Sales</a></li>
+                    <li><a class="active" href="/dashboard">Dashboard</a></li>
                 </ul>
             </li>
             <li class="">
@@ -135,10 +135,20 @@
                     <li><a href="{{ route('occupants.index') }}">View Occupants</a></li>
                 </ul>
             </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/5.svg')}}" alt="">
+                    </div>
+                    <span>Billings</span>
+                </a>
+                <ul>
+                    <li><a href="{{ route('billing_details.create') }}">Add Billings</a></li>
+                    <li><a href="{{ route('billing_details.index') }}">View Billings</a></li>
+                </ul>
+            </li>
         </ul>
     </nav>
-
-
 
     <section class="main_content dashboard_part large_header_bg">
         <div class="container-fluid g-0">

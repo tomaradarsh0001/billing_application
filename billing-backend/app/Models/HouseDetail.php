@@ -25,4 +25,9 @@ class HouseDetail extends Model
     {
         return $this->hasMany(OccupantDetail::class, 'h_id');
     }
+    public function HouseDetail()
+    {
+        return $this->hasMany(HouseDetail::class);
+    }
+  
 }

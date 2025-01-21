@@ -28,7 +28,10 @@ function confirmDelete(itemType, itemId) {
         message = 'Are you sure you want to delete this Occupant?';
     }
     else if (itemType === 'house') {
-        message = 'Are you sure you want to delete this House Details?';
+        message = 'Are you sure you want to delete this House Detail?';
+    }
+    else if (itemType === 'billing_detail') {
+        message = 'Are you sure you want to delete this Bill Detail?';
     }
         document.getElementById('customConfirmationMessage').innerText = message;
         $('#ModalDelete').modal('show');

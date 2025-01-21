@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'customerview.dart';
 import 'colors.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
+import 'billing.dart';
+import 'settings.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
@@ -171,12 +173,12 @@ class _DashboardPageState extends State<DashboardPage> {
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 20,
                         children: [
-                          _buildDashboardTile("Profile", Icons.person),
-                          _buildDashboardTile("Customers", Icons.group),
-                          _buildDashboardTile("Configurations", Icons.build),
-                          _buildDashboardTile("History", Icons.history),
-                          _buildDashboardTile("Bills", Icons.receipt_long),
-                          _buildDashboardTile("Settings", Icons.settings),
+                          _buildDashboardTile("Profile", Icons.person, CustomerViewPage()),
+                          _buildDashboardTile("Customers", Icons.group, CustomerViewPage()),
+                          _buildDashboardTile("Configurations", Icons.build, CustomerViewPage()),
+                          _buildDashboardTile("History", Icons.history, CustomerViewPage()),
+                          _buildDashboardTile("Bills", Icons.receipt_long, BillingPage()),
+                          _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
                       ),
                     ),
@@ -249,7 +251,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildDashboardTile(String title, IconData icon) {
+  Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
     Color _tileColor = Colors.white; // Initial background color
 
     return StatefulBuilder(
@@ -274,7 +276,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CustomerViewPage(),
+                      builder: (context) => destinationPage, // Navigate to the passed page
                     ),
                   );
                 });
