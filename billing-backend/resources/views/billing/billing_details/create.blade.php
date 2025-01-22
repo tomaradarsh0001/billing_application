@@ -38,7 +38,7 @@
                                 <!-- House ID Dropdown -->
                                 <div class="col-md-6 mb-3">
                                     <label for="h_id" class="form-label">Select House</label>
-                                    <select name="h_id" id="h_id" class="form-control-select" required>
+                                    <select name="h_id" id="h_id" class="form-control-select" >
                                         <option value="" disabled selected>Select a House</option>
                                         @foreach($houseDetails as $house)
                                             <option value="{{ $house->id }}">{{ $house->hno ?? 'No Name' }}</option>
@@ -52,7 +52,7 @@
                                 <!-- Last Reading -->
                                 <div class="col-md-6 mb-3">
                                     <label for="last_reading" class="form-label">Last Reading</label>
-                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading') }}" required>
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading') }}" >
                                     @error('last_reading')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -63,7 +63,7 @@
                                 <!-- Last Pay Date -->
                                 <div class="col-md-6 mb-3">
                                     <label for="last_pay_date" class="form-label">Last Pay Date</label>
-                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" required>
+                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" >
                                     @error('last_pay_date')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -72,7 +72,7 @@
                                 <!-- Outstanding Dues -->
                                 <div class="col-md-6 mb-3">
                                     <label for="outstanding_dues" class="form-label">Outstanding Dues</label>
-                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues') }}" required>
+                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues') }}" >
                                     @error('outstanding_dues')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -83,7 +83,7 @@
                                 <!-- Current Reading -->
                                 <div class="col-md-6 mb-3">
                                     <label for="current_reading" class="form-label">Current Reading</label>
-                                    <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading') }}" required>
+                                    <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading') }}" >
                                     @error('current_reading')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -92,7 +92,7 @@
                                 <!-- Current Charges -->
                                 <div class="col-md-6 mb-3">
                                     <label for="current_charges" class="form-label">Current Charges</label>
-                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges') }}" required>
+                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges') }}" >
                                     @error('current_charges')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -103,7 +103,7 @@
                                 <!-- Pay Date -->
                                 <div class="col-md-6 mb-3">
                                     <label for="pay_date" class="form-label">Pay Date</label>
-                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" required>
+                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" >
                                     @error('pay_date')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
@@ -112,7 +112,7 @@
                                 <!-- Status Dropdown -->
                                 <div class="col-md-6 mb-3">
                                     <label for="status" class="form-label">Status</label>
-                                    <select name="status" id="status" class="form-control-select" required>
+                                    <select name="status" id="status" class="form-control-select" >
                                         <option value="" disabled selected>Select Payment Status</option>
                                         <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
                                         <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
