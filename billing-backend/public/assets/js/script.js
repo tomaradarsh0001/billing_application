@@ -1,4 +1,5 @@
 // Alert Box Code 
+
 document.addEventListener("DOMContentLoaded", function() {
     const alerts = document.querySelectorAll('.alert');
     alerts.forEach(alert => {
@@ -41,6 +42,7 @@ function confirmDelete(itemType, itemId) {
 }
 
 // AAdhar, PAN & Phone Number Validations
+
 function validateInput(inputId, regex) {
     const input = document.getElementById(inputId);
     const errorMessage = document.getElementById(inputId + '-error');
@@ -125,4 +127,57 @@ document.addEventListener('DOMContentLoaded', function () {
 
     restrictToNumbers('phone_number');
     restrictToNumbers('aadhar_number');
+});
+
+// App Configuration conditions 
+
+document.getElementById('app_name').addEventListener('input', function () {
+    const appName = this.value;
+    const errorMessage = document.getElementById('app-name-error');
+    const submitButton = document.getElementById('submit-button');
+
+    errorMessage.style.display = 'none';
+
+    if (appName.length > 0) {
+        fetch(`{{ route('configuration.checkAppName') }}?app_name=${appName}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    errorMessage.style.display = 'block';
+                    submitButton.disabled = true;  
+                } else {
+                    errorMessage.style.display = 'none';
+                    submitButton.disabled = false;  
+                }
+            });
+    } else {
+        errorMessage.style.display = 'none';
+        submitButton.disabled = false;  
+    }
+});
+document.getElementById('app_logo').addEventListener('change', function () {
+    const file = this.files[0];
+    const errorMessage = document.getElementById('file-error');
+    const submitButton = document.getElementById('submit-button');
+    errorMessage.style.display = 'none';
+    if (file) {
+        const fileSize = file.size / 1024 / 1024; 
+        const fileType = file.type;
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
+        if (!allowedTypes.includes(fileType)) {
+            errorMessage.textContent = 'File type not supported. Please upload a JPEG, PNG, GIF, or JPG image.';
+            errorMessage.style.display = 'block';
+            submitButton.disabled = true;
+            return;
+        }
+        if (fileSize > 2) {
+            errorMessage.textContent = 'File size must be less than 2 MB.';
+            errorMessage.style.display = 'block';
+            submitButton.disabled = true;
+            return;
+        }   
+        submitButton.disabled = false;
+    } else {
+        submitButton.disabled = true;
+    }
 });

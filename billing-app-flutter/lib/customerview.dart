@@ -27,6 +27,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   TextEditingController _searchController = TextEditingController();
   bool _isSearchActive = false;
   String svgString = '';
+  String svgStringIcon = '';
   Color? primaryLight;
   Color? secondaryLight;
   Color? secondaryDark;

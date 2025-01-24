@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Configuration;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Http;
 class ConfigurationController extends Controller
 {
     
@@ -14,10 +13,14 @@ class ConfigurationController extends Controller
         $configurations = Configuration::all();
         return view('configuration.index', compact('configurations'));
     }
+
     public function create()
     {
-        return view('configuration.create');
+        $response = Http::get('https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyCas7Ce7ycj4zRlD3fx53GvhreTVS-g6TI');
+        $fonts = $response->successful() ? $response->json()['items'] : [];
+        return view('configuration.create', compact('fonts'));
     }
+    
     public function view($id)
     {
         $configuration = Configuration::findOrFail($id);
@@ -29,6 +32,8 @@ class ConfigurationController extends Controller
             'app_name' => 'required|string|max:255',
             'app_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'app_tagline' => 'nullable|string|max:255',
+            'app_font_primary' => 'nullable|string|max:255',
+            'app_font_secondary' => 'nullable|string|max:255',
             'app_theme_primary_light' => 'nullable|string',
             'app_theme_primary_dark' => 'nullable|string',
             'app_theme_secondary_light' => 'nullable|string',
@@ -139,8 +144,6 @@ public function checkAppNameEdit(Request $request)
     }
 
     return response()->json(['exists' => $exists]);
-}
-
-
+    }
 
 }

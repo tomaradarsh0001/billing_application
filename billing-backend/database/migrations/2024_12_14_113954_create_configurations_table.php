@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('app_name')->nullable();
             $table->string('app_logo')->nullable(); 
             $table->string('app_tagline')->nullable();
+            $table->string('app_font_primary')->nullable();
+            $table->string('app_font_secondary')->nullable();
             $table->string('app_theme_primary_light')->nullable();
             $table->string('app_theme_primary_dark')->nullable();
             $table->string('app_theme_secondary_light')->nullable();

@@ -13,6 +13,8 @@ class Configuration extends Model
         'app_name',
         'app_logo',
         'app_tagline',
+        'app_font_primary',
+        'app_font_secondary',
         'app_theme_primary_light',
         'app_theme_primary_dark',
         'app_theme_secondary_light',

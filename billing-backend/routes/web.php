@@ -107,6 +107,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::get('billing-details', [BillingDetailController::class, 'index'])->name('billing_details.index');
     Route::delete('billing-details/{billing_detail}', [BillingDetailController::class, 'destroy'])->name('billing_details.destroy');
     Route::get('billing_details/create', [BillingDetailController::class, 'create'])->name('billing_details.create');
+    Route::get('/api/fonts', [ConfigurationController::class, 'getFonts'])->name('fonts.api');
 
 
 });

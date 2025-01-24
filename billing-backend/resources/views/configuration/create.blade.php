@@ -8,13 +8,13 @@
     <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
-
 @if(session('error'))
 <div class="alert text-white bg-danger alert-dismissible fade show" role="alert">
     {{ session('error') }}
     <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 @endif
+<link id="google-fonts" rel="stylesheet" href="" />
 
 <div class="main_content_iner">
     <div class="col-lg-12">
@@ -30,20 +30,71 @@
                 <div class="card-body">
                     <form action="{{ route('configuration.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="mb-3">
-                            <label for="app_name" class="form-label">Application Name</label>
-                            <input type="text" class="form-control" id="app_name" name="app_name" placeholder="Enter Application Name" required>
-                            <small id="app-name-error" class="text-danger" style="display: none;">App name already exists.</small>
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="app_name" class="form-label">Application Name</label>
+                                <input type="text" class="form-control" id="app_name" name="app_name" placeholder="Enter Application Name" required>
+                                <small id="app-name-error" class="text-danger" style="display: none;">App name already exists.</small>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="app_logo" class="form-label">Application Logo</label>
+                                <input type="file" class="form-control" id="app_logo" name="app_logo" accept="image/*">
+                                <small id="file-error" class="text-danger" style="display: none;"></small>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="app_logo" class="form-label">Application Logo</label>
-                            <input type="file" class="form-control" id="app_logo" name="app_logo" accept="image/*">
-                            <small id="file-error" class="text-danger" style="display: none;"></small>
+                        <div class="row">
+                            <div class="mb-3 col-md-12">
+                                <label for="app_tagline" class="form-label">Application Tagline</label>
+                                <input type="text" class="form-control" id="app_tagline" name="app_tagline" placeholder="Enter Application Tagline">
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="app_tagline" class="form-label">Application Tagline</label>
-                            <input type="text" class="form-control" id="app_tagline" name="app_tagline" placeholder="Enter Application Tagline">
+                        <div class="row">
+                            <div class="mb-3 col-md-5">
+                                <label for="app_font_primary" class="form-label">Select Primary Font</label>
+                                <select name="app_font_primary" id="app_font_primary" class="form-control-select" onchange="applyFontToDropdownPri()">
+                                    @foreach ($fonts as $font)
+                                        @php
+                                            $fontFamily = strtolower($font['family']);
+                                            $fontFamily = preg_replace_callback('/\s(\w)/', function ($matches) {
+                                                return strtoupper($matches[1]);
+                                            }, $fontFamily);
+                                        @endphp
+                                        <option value="{{ $fontFamily }}" data-font-family="{{ $font['family'] }}" style="font-family: '{{ $font['family'] }}'"
+                                        @if($font['family'] == 'Signika') selected @endif>
+                                        {{ $font['family'] }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-md-1">
+                                <div id="sample-text" style="font-size: 22px; margin: 31px 0px 0px 0px; font-family; $font['family'] == 'Signika'">
+                                    Sample Text
+                                </div>
+                            </div>                       
+                            <div class="mb-3 col-md-5">
+                                <label for="app_font_secondary" class="form-label">Select Secondary Font</label>
+                                <select name="app_font_secondary" id="app_font_secondary" class="form-control-select" onchange="applyFontToDropdownSec()">
+                                    @foreach ($fonts as $font)
+                                        @php
+                                            $fontFamily = strtolower($font['family']);
+                                            $fontFamily = preg_replace_callback('/\s(\w)/', function ($matches) {
+                                                return strtoupper($matches[1]);
+                                            }, $fontFamily);
+                                        @endphp
+                                         <option value="{{ $fontFamily }}" data-font-family="{{ $font['family'] }}" style="font-family: '{{ $font['family'] }}'"
+                                         @if($font['family'] == 'Signika') selected @endif>
+                                         {{ $font['family'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3 col-md-1">
+                                <div id="sample-text-secondary" style="font-size: 22px; margin: 31px 0px 0px 0px;">
+                                    Sample Text
+                                </div>
+                            </div>
                         </div>
+                        
                         <div class="mb-3">
                             <label for="app_theme" class="form-label">Application Theme</label>
                             <div class="d-flex flex-wrap gap-3">
@@ -99,63 +150,37 @@
         </div>
     </div>
 </div>
-
 <script>
-    document.getElementById('app_name').addEventListener('input', function () {
-        const appName = this.value;
-        const errorMessage = document.getElementById('app-name-error');
-        const submitButton = document.getElementById('submit-button');
-
-        errorMessage.style.display = 'none';
-
-        if (appName.length > 0) {
-            fetch(`{{ route('configuration.checkAppName') }}?app_name=${appName}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        errorMessage.style.display = 'block';
-                        submitButton.disabled = true;  
-                    } else {
-                        errorMessage.style.display = 'none';
-                        submitButton.disabled = false;  
-                    }
-                });
-        } else {
-            errorMessage.style.display = 'none';
-            submitButton.disabled = false;  
+    function applyFontToDropdownPri() {
+        var selectElement = document.getElementById('app_font_primary');
+        var fontFamily = selectElement.value;
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var fontFamilyName = selectedOption.getAttribute('data-font-family');
+        var link = document.getElementById('google-fonts-primary');
+        if (!link) {
+            link = document.createElement('link');
+            link.id = 'google-fonts-primary';
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
         }
-    });
-    document.getElementById('app_logo').addEventListener('change', function () {
-        const file = this.files[0];
-        const errorMessage = document.getElementById('file-error');
-        const submitButton = document.getElementById('submit-button');
+        link.href = 'https://fonts.googleapis.com/css2?family=' + fontFamilyName + '&display=swap';
+        document.getElementById('sample-text').style.fontFamily = fontFamilyName;
+    }
 
-        errorMessage.style.display = 'none';
-
-        if (file) {
-            const fileSize = file.size / 1024 / 1024; 
-            const fileType = file.type;
-
-            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
-            if (!allowedTypes.includes(fileType)) {
-                errorMessage.textContent = 'File type not supported. Please upload a JPEG, PNG, GIF, or JPG image.';
-                errorMessage.style.display = 'block';
-                submitButton.disabled = true;
-                return;
-            }
-
-            if (fileSize > 2) {
-                errorMessage.textContent = 'File size must be less than 2 MB.';
-                errorMessage.style.display = 'block';
-                submitButton.disabled = true;
-                return;
-            }   
-
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
+    function applyFontToDropdownSec() {
+        var selectElement = document.getElementById('app_font_secondary');
+        var fontFamily = selectElement.value;
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var fontFamilyName = selectedOption.getAttribute('data-font-family');
+        var link = document.getElementById('google-fonts-secondary');
+        if (!link) {
+            link = document.createElement('link');
+            link.id = 'google-fonts-secondary';
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
         }
-    });
+        link.href = 'https://fonts.googleapis.com/css2?family=' + fontFamilyName + '&display=swap';
+        document.getElementById('sample-text-secondary').style.fontFamily = fontFamilyName;
+    }
 </script>
-
 @endsection
