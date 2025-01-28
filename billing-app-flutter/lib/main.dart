@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<Map<String, dynamic>> fetchConfiguration() async {
     final response =
-    await http.get(Uri.parse('http://16.171.136.239/api/configuration/2'));
+    await http.get(Uri.parse('http://16.171.136.239/api/configuration/1'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body)['data'];
