@@ -32,7 +32,7 @@ class _BillingPageState extends State<BillingPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-  final String baseUrl = "http://16.171.136.239/api/customers/";
+  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
 
 
   // Add a list to track selected customers

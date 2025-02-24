@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<Map<String, dynamic>> fetchConfiguration() async {
     final response =
-    await http.get(Uri.parse('http://16.171.136.239/api/configuration/1'));
+    await http.get(Uri.parse('http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/configuration/1'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body)['data'];
@@ -93,7 +93,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         child: FittedBox(
                           fit: BoxFit.contain,
                           // child: Image.network(
-                          //   'http://16.171.136.239/storage/${data['app_logo']}',
+                          //   'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/storage/${data['app_logo']}',
                           //   height: 100.0,
                           // ),
                           child: Image.asset(

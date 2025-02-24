@@ -16,7 +16,7 @@ class AppColors {
 
   // Function to fetch color data from the API
   static Future<void> fetchColors() async {
-    final response = await http.get(Uri.parse('http://16.171.136.239/api/configuration/1'));
+    final response = await http.get(Uri.parse('http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/configuration/1'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body)['data'];
