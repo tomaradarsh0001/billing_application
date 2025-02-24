@@ -178,6 +178,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     });
   }
 
+
   // Delete selected customers
   Future<void> _deleteSelectedItems() async {
     final deleteApiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers'; // Replace with your delete API URL
