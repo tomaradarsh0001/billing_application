@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'colors.dart';
+import 'main.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -16,7 +16,7 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadThemePreference();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryDark = AppColors.secondaryDark;
         primaryDark = AppColors.primaryDark;

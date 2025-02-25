@@ -23,11 +23,7 @@ class HouseDetail extends Model
 
     public function occupants()
     {
-        return $this->hasMany(OccupantDetail::class, 'h_id');
-    }
-    public function HouseDetail()
-    {
-        return $this->hasMany(HouseDetail::class);
+        return $this->hasOne(OccupantDetail::class, 'h_id');
     }
   
 }

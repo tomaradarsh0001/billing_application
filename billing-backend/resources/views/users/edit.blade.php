@@ -46,7 +46,7 @@
                             <input type="password" name="password" id="password" class="form-control" placeholder="Leave blank if not changing">
                         </div>
 
-                        <div class="mb-3">
+                        {{-- <div class="mb-3">
                             <label for="roles" class="form-label">Roles</label>
                             <div id="roles">
                                 @foreach ($roles as $role)
@@ -65,7 +65,7 @@
                                 @endforeach
                             </div>
                             <small class="text-muted">Select one or more roles for the user.</small>
-                        </div>
+                        </div> --}}
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ route('users.index') }}" class="btn btn-secondary">Cancel</a>

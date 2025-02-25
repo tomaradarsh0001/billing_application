@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CustomerDetailsPage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
@@ -230,7 +230,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   }
   // Format date of birth
   String formattedDob(String? dob) {
-    if (dob == null || dob.isEmpty) return "Not Available";
+    if (dob == null || dob.isEmpty) return "";
     try {
       final DateTime date = DateTime.parse(dob);
       final DateFormat formatter = DateFormat('dd MMM yyyy');
@@ -242,7 +242,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
 
   // Format Aadhar number
   String formatAadharNumber(String? aadhar) {
-    if (aadhar == null || aadhar.isEmpty) return "Not Available";
+    if (aadhar == null || aadhar.isEmpty) return "";
     final regExp = RegExp(r'(\d{4})(\d{4})(\d{4})');
     final match = regExp.firstMatch(aadhar);
     if (match != null) {
@@ -457,7 +457,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           ),
           const SizedBox(height: 4),
           Text(
-            value ?? "Not Available", // Fallback text for null values
+            value ?? "", // Fallback text for null values
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

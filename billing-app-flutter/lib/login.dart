@@ -6,7 +6,7 @@ import 'signup.dart';
 import 'resetPassword.dart';
 import 'otp.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
-import 'colors.dart';
+import 'main.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color

@@ -85,6 +85,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     //occupant section
     Route::get('billing/occupants/create', [OccupantDetailController::class, 'create'])->name('occupants.create');
     Route::get('billing/occupants', [OccupantDetailController::class, 'index'])->name('occupants.index');
+    Route::get('billing/mapped/occupants-houses', [OccupantDetailController::class, 'indexMapped'])->name('occupants.indexMapped');
     Route::get('billing/occupants/{occupantDetail}/edit', [OccupantDetailController::class, 'edit'])->name('occupants.edit');
     Route::put('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'update'])->name('occupants.update');
     Route::get('billing/occupants/{id}', [OccupantDetailController::class, 'show'])->name('occupants.show');

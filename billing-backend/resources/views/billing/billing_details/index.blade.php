@@ -35,44 +35,47 @@
                         @if($billingDetails->isEmpty())
                             <p class="text-muted text-center">No billing details found.</p>
                         @else
-                            <table class="table table-striped" id="usersTable">
-                                <thead>
+                        <table class="table table-striped" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>House Number</th>
+                                    <th>Occupant Name</th>
+                                    <th>Last Reading</th>
+                                    <th>Outstanding Dues</th>
+                                    <th>Current Reading</th>
+                                    <th>Current Charges</th>
+                                    <th>Pay Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($billingDetails as $detail)
                                     <tr>
-                                        <th>#</th>
-                                        <th>House Number</th>
-                                        <th>Last Reading</th>
-                                        <th>Outstanding Dues</th>
-                                        <th>Current Reading</th>
-                                        <th>Current Charges</th>
-                                        <th>Pay Date</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $detail->occ_id ?? 'N/A' }}</td>
+                                        <td>{{ $detail->occ_id ?? 'N/A' }}</td>
+                                        <td>{{ $detail->last_reading }}</td>
+                                        <td>{{ $detail->outstanding_dues }}</td>
+                                        <td>{{ $detail->current_reading }}</td>
+                                        <td>{{ $detail->current_charges }}</td>
+                                        <td>{{ $detail->pay_date }}</td>
+                                        <td>{{ ucfirst($detail->status) }}</td>
+                                        <td>
+                                            <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a>
+                                            <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
+                                            <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('billing_detail', {{ $detail->id }})">Delete</button>
+                                            <form method="POST" action="{{ route('billing_details.destroy', $detail->id) }}" class="d-inline" id="deleteForm-{{ $detail->id }}">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($billingDetails as $detail)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $detail->houseDetail->hno }}</td>
-                                            <td>{{ $detail->last_reading }}</td>
-                                            <td>{{ $detail->outstanding_dues }}</td>
-                                            <td>{{ $detail->current_reading }}</td>
-                                            <td>{{ $detail->current_charges }}</td>
-                                            <td>{{ $detail->pay_date }}</td>
-                                            <td>{{ ucfirst($detail->status) }}</td>
-                                            <td>
-                                                <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a>
-                                                <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
-                                                <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('billing_detail', {{ $detail->id }})">Delete</button>
-                                                <form method="POST" action="{{ route('billing_details.destroy', $detail->id) }}" class="d-inline" id="deleteForm-{{ $detail->id }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        
                         @endif
                     </div>
                 </div>

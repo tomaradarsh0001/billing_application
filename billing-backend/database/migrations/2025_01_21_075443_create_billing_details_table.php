@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('billing_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('h_id')->constrained('house_details')->onDelete('cascade');
+            $table->foreignId('occ_id')->constrained('occupant_house_status')->onDelete('cascade');
             $table->decimal('last_reading', 10, 2);
             $table->date('last_pay_date');
             $table->decimal('outstanding_dues', 10, 2);

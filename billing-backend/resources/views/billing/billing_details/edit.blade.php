@@ -40,16 +40,16 @@
                                 <div class="col-md-6">
                                     <!-- House ID Dropdown -->
                                     <div class="mb-3">
-                                        <label for="h_id" class="form-label">House ID</label>
-                                        <select name="h_id" id="h_id" class="form-control-select" required>
+                                        <label for="occ_id" class="form-label">House ID</label>
+                                        <select name="occ_id" id="occ_id" class="form-control-select" required>
                                             <option value="" disabled selected>Select a House</option>
-                                            @foreach($houseDetails as $house)
-                                                <option value="{{ $house->id }}" 
-                                                    {{ old('h_id', $billingDetail->h_id) == $house->id ? 'selected' : '' }}>{{ $house->hno ?? 'No Name' }}
+                                            @foreach($occupantHouse as $occ)
+                                                <option value="{{ $occ->id }}" 
+                                                    {{ old('occ_id', $occ->id) == $occ->id ? 'selected' : '' }}>{{ "House :- ". $occ->house->hno . " " . $occ->house->area . " " . "Occupant :- " . $occ->occupant->first_name . " " . $occ->occupant->last_name ?? 'No Name' }}
                                                 </option>
                                             @endforeach
                                         </select>
-                                        @error('h_id')
+                                        @error('occ_id')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>

@@ -439,6 +439,7 @@
     </div>
     <!-- Scripts -->
     <script src="{{ asset('assets/js/jquery1-3.4.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('assets/js/popper1.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/metisMenu.js') }}"></script>

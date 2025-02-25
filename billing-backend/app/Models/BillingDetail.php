@@ -10,7 +10,7 @@ class BillingDetail extends Model
     use HasFactory;
 
     protected $fillable = [
-        'h_id',
+        'occ_id',
         'last_reading',
         'last_pay_date',
         'outstanding_dues',
@@ -23,4 +23,10 @@ class BillingDetail extends Model
     public function houseDetail()
     {
         return $this->belongsTo(HouseDetail::class, 'h_id');
-    }}
+    }
+    public function occupantHouseStatus()
+    {
+        return $this->belongsTo(OccupantHouseStatus::class, 'occupant_house_status_id');
+    }
+    
+}

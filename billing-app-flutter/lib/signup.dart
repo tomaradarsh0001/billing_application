@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
 
 class SignupPage extends StatefulWidget {
@@ -33,7 +33,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color

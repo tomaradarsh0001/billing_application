@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
-import 'colors.dart';
+import 'main.dart';
 
 class Resetpassword extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _ResetpasswordState extends State<Resetpassword> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color

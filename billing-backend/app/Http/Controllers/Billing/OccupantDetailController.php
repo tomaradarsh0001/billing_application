@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Billing;
-
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\OccupantDetail;
+use App\Models\OccupantHouseStatus;
 use App\Models\HouseDetail;
 use App\Models\PhoneCode;
 
@@ -17,6 +18,13 @@ class OccupantDetailController extends Controller
         return view('billing.occupant_details.index', compact('occupants'));
     }
 
+    public function indexMapped()
+    {
+        $data = OccupantHouseStatus::with(['occupant', 'house'])->get();
+        return view('billing.mapped_data.index', compact('data'));
+    }
+
+
     public function create()
     {
         $houses = HouseDetail::all();
@@ -24,26 +32,56 @@ class OccupantDetailController extends Controller
         return view('billing.occupant_details.create', compact('houses', 'phoneCodes'));
     }
 
-
+    // public function store(Request $request)
+    // {
+    //     $latestOccupant = OccupantDetail::orderBy('unique_id', 'desc')->first();
+    //     $nextId = $latestOccupant ? (int) substr($latestOccupant->unique_id, 2) + 1 : 1;
+    //     $uniqueId = 'OD' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+    //     $validated = $request->validate([
+    //         'h_id' => 'required|exists:house_details,id',
+    //         'first_name' => 'required|string|max:255',
+    //         'last_name' => 'required|string|max:255',
+    //         'phone_code_id' => 'required|exists:phone_codes,id',
+    //         'mobile' => 'required|string|max:15',
+    //         'email' => 'nullable|email|max:255',
+    //         'occupation_date' => 'required|date',
+    //     ]);
+    
+    //     $validated['unique_id'] = $uniqueId;
+    //     OccupantDetail::create($validated);
+    //     return redirect()->route('occupants.index')->with('success', 'Occupant added successfully.');
+    // }
     public function store(Request $request)
     {
         $latestOccupant = OccupantDetail::orderBy('unique_id', 'desc')->first();
         $nextId = $latestOccupant ? (int) substr($latestOccupant->unique_id, 2) + 1 : 1;
         $uniqueId = 'OD' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+
         $validated = $request->validate([
             'h_id' => 'required|exists:house_details,id',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'phone_code_id' => 'required|exists:phone_codes,id',
             'mobile' => 'required|string|max:15',
-            'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email|max:255|unique:occupant_details,email',
             'occupation_date' => 'required|date',
         ]);
-    
+
         $validated['unique_id'] = $uniqueId;
-        OccupantDetail::create($validated);
-        return redirect()->route('occupants.index')->with('success', 'Occupant added successfully.');
+
+        $occupant = OccupantDetail::create($validated);
+
+        OccupantHouseStatus::create([
+            'occupant_id' => $occupant->id,
+            'house_id' => $validated['h_id'],
+            'status' => 'active', 
+            'added_date' => now(), 
+        ]);
+
+        return redirect()->route('occupants.index')->with('success', 'Occupant and house status added successfully.');
     }
+
+
     
     public function edit($id)
     {

@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->date('occupation_date');
             $table->timestamps();
-
             // Foreign key constraint
             $table->foreign('phone_code_id')->references('id')->on('phone_codes')->onDelete('cascade');
             $table->foreign('h_id')->references('id')->on('house_details')->onDelete('cascade');

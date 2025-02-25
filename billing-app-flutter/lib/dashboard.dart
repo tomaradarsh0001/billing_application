@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'customerview.dart';
-import 'colors.dart';
-import 'package:flutter/services.dart';  // To load the SVG as a string
+import 'main.dart';
+import 'package:flutter/services.dart';
 import 'billing.dart';
 import 'settings.dart';
 
@@ -11,61 +11,69 @@ class DashboardPage extends StatefulWidget {
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
-class _DashboardPageState extends State<DashboardPage> {
+
+class _DashboardPageState extends State<DashboardPage>
+    with TickerProviderStateMixin {
   bool _isAnimationComplete = false;
   int _currentIndex = 0;
   String svgString = '';
   Color? primaryLight;
-  Color? secondaryLight; // Assuming color2 is also a dynamic color
-  Color? primaryDark; // Assuming color3 is also a dynamic color
-  double _tileOpacity = 0; // Start opacity is 0.2
+  Color? secondaryLight;
+  Color? primaryDark;
+  double _tileOpacity = 0;
   double _avatarOpacity = 0;
+  late AnimationController _navBarController;
+  late Animation<double> _navBarAnimation;
 
   @override
   void initState() {
     super.initState();
 
-    // Fetch colors and load SVG, then update opacity
-    AppColors.fetchColors().then((_) {
+    _navBarController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _navBarAnimation = CurvedAnimation(
+      parent: _navBarController,
+      curve: Curves.easeIn,
+    );
+
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight;
         primaryDark = AppColors.primaryDark;
       });
 
-      // Load SVG after colors are fetched
       return loadSvg();
     }).then((_) {
-      // Once SVG is loaded, start animation
       Future.delayed(Duration(milliseconds: 200), () {
         setState(() {
-          _tileOpacity = 1.0; // Make tiles visible
-          _avatarOpacity = 1.0; // Make avatar visible
-          _isAnimationComplete = true; // Mark animation as complete
+          _tileOpacity = 1.0;
+          _avatarOpacity = 1.0;
+          _isAnimationComplete = true;
         });
+        _navBarController.forward();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _navBarController.dispose();
+    super.dispose();
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
     });
-
-    // Navigate to DashboardPage when Home button is tapped (index 0)
-    if (index == 0) {
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => DashboardPage()),
-      // );
-    }
   }
-  // Function to load the SVG and replace placeholders
+
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/dashboard_upper_shape.svg');
       setState(() {
-        // Replace placeholders with actual colors in hex format
         svgString = svg.replaceAll(
           'PLACEHOLDER_COLOR_1', _colorToHex(secondaryLight!),
         ).replaceAll(
@@ -76,11 +84,10 @@ class _DashboardPageState extends State<DashboardPage> {
       });
     }
   }
-  // Helper function to convert Color to Hex string
+
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -88,28 +95,24 @@ class _DashboardPageState extends State<DashboardPage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Top Background Shape
           AnimatedPositioned(
-              duration: const Duration(milliseconds: 1500),
-              curve: Curves.easeInOut,
-              top: _isAnimationComplete ? 0 : -400,
-              left: 0,
-              right: 0,
-              child: SvgPicture.string(
-                svgString,  // Render the modified SVG string with new colors
-                semanticsLabel: 'Animated and Colored SVG',
-                fit: BoxFit.fill,
-                height: 300,  // Height of the SVG
-              )
+            duration: const Duration(milliseconds: 1500),
+            curve: Curves.easeInOut,
+            top: _isAnimationComplete ? 0 : -400,
+            left: 0,
+            right: 0,
+            child: SvgPicture.string(
+              svgString,
+              semanticsLabel: 'Animated and Colored SVG',
+              fit: BoxFit.fill,
+              height: 300,
+            ),
           ),
-
-          // Main Content
           Padding(
             padding: const EdgeInsets.only(top: 90),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Welcome Message
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
@@ -144,14 +147,14 @@ class _DashboardPageState extends State<DashboardPage> {
                         ],
                       ),
                       AnimatedOpacity(
-                        opacity: _avatarOpacity, // Use _avatarOpacity for CircleAvatar
+                        opacity: _avatarOpacity,
                         duration: Duration(seconds: 1),
                         curve: Curves.easeInOut,
                         child: CircleAvatar(
                           radius: 30,
                           backgroundColor: Colors.transparent,
                           child: Image.asset(
-                            'assets/dashboard_user.png', // Replace with actual path to your PNG file
+                            'assets/dashboard_user.png',
                             width: 60,
                             height: 60,
                           ),
@@ -161,14 +164,13 @@ class _DashboardPageState extends State<DashboardPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Scrollable Grid of Dashboard Tiles
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 40.0),
                     child: SingleChildScrollView(
                       child: GridView.count(
-                        shrinkWrap: true, // Makes sure the GridView does not take up more space than needed
-                        physics: NeverScrollableScrollPhysics(), // Disables scrolling of GridView
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
                         crossAxisCount: 2,
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 20,
@@ -189,77 +191,80 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Color(0xFFDEDDDD), width: 1), // Upper black border
+      bottomNavigationBar: FadeTransition(
+        opacity: _navBarAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Color(0xFFDEDDDD), width: 1),
+            ),
           ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: Colors.white,
-          currentIndex: _currentIndex,
-          onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          selectedFontSize: 0,
-          unselectedFontSize: 0,
-          items: [
-            BottomNavigationBarItem(
-              icon: SizedBox(
-                height: kBottomNavigationBarHeight,
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/home.svg',
-                    width: 24,
-                    height: 24,
-                    color: _currentIndex == 0 ? primaryDark : Colors.grey,
+          child: BottomNavigationBar(
+            backgroundColor: Colors.white,
+            currentIndex: _currentIndex,
+            onTap: _onItemTapped,
+            type: BottomNavigationBarType.fixed,
+            selectedFontSize: 0,
+            unselectedFontSize: 0,
+            items: [
+              BottomNavigationBarItem(
+                icon: SizedBox(
+                  height: kBottomNavigationBarHeight,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/home.svg',
+                      width: 24,
+                      height: 24,
+                      color: _currentIndex == 0 ? primaryDark : Colors.grey,
+                    ),
                   ),
                 ),
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: SizedBox(
-                height: kBottomNavigationBarHeight,
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/search.svg',
-                    width: 24,
-                    height: 24,
-                    color: _currentIndex == 1 ? primaryDark : Colors.grey,
+              BottomNavigationBarItem(
+                icon: SizedBox(
+                  height: kBottomNavigationBarHeight,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/search.svg',
+                      width: 24,
+                      height: 24,
+                      color: _currentIndex == 1 ? primaryDark : Colors.grey,
+                    ),
                   ),
                 ),
+                label: "",
               ),
-              label: "",
-            ),
-            BottomNavigationBarItem(
-              icon: SizedBox(
-                height: kBottomNavigationBarHeight,
-                child: Center(
-                  child: SvgPicture.asset(
-                    'assets/settings.svg',
-                    width: 24,
-                    height: 24,
-                    color: _currentIndex == 2 ? primaryDark  : Colors.grey,
+              BottomNavigationBarItem(
+                icon: SizedBox(
+                  height: kBottomNavigationBarHeight,
+                  child: Center(
+                    child: SvgPicture.asset(
+                      'assets/settings.svg',
+                      width: 24,
+                      height: 24,
+                      color: _currentIndex == 2 ? primaryDark : Colors.grey,
+                    ),
                   ),
                 ),
+                label: "",
               ),
-              label: "",
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
-    Color _tileColor = Colors.white; // Initial background color
+    Color _tileColor = Colors.white;
 
     return StatefulBuilder(
       builder: (context, setState) {
         return AnimatedOpacity(
-          opacity: _tileOpacity, // Use _tileOpacity for visibility
-          duration: Duration(milliseconds: 1800), // Adjust duration for smooth transition
-          curve: Curves.easeInOut, // Optional: Add a curve for smoother effect
+          opacity: _tileOpacity,
+          duration: Duration(milliseconds: 1300),
+          curve: Curves.easeInOut,
           child: Material(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(24),
@@ -267,22 +272,22 @@ class _DashboardPageState extends State<DashboardPage> {
               borderRadius: BorderRadius.circular(24),
               onTap: () {
                 setState(() {
-                  _tileColor = Colors.grey.shade200; // Change to grey on tap
+                  _tileColor = Colors.grey.shade200;
                 });
                 Future.delayed(Duration(milliseconds: 200), () {
                   setState(() {
-                    _tileColor = Colors.white; // Revert to white after delay
+                    _tileColor = Colors.white;
                   });
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => destinationPage, // Navigate to the passed page
+                      builder: (context) => destinationPage,
                     ),
                   );
                 });
               },
-              splashColor: Colors.transparent, // Remove ripple effect
-              highlightColor: Colors.transparent, // Disable default highlight
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 200),
                 decoration: BoxDecoration(

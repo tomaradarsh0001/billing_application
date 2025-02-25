@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dashboard.dart';
 import 'customerviewdetails.dart';
 import 'package:flutter/services.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'CustomerDeletedSuccessfullyPage.dart';
@@ -44,7 +44,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight;

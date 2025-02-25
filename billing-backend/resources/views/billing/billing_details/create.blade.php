@@ -37,14 +37,14 @@
                             <div class="row">
                                 <!-- House ID Dropdown -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="h_id" class="form-label">Select House</label>
-                                    <select name="h_id" id="h_id" class="form-control-select" >
+                                    <label for="occ_id" class="form-label">Select House</label>
+                                    <select name="occ_id" id="occ_id" class="form-control-select" >
                                         <option value="" disabled selected>Select a House</option>
-                                        @foreach($houseDetails as $house)
-                                            <option value="{{ $house->id }}">{{ $house->hno ?? 'No Name' }}</option>
+                                        @foreach($occupantHouse as $occ)
+                                            <option value="{{ $occ->id }}">{{"House :- ". $occ->house->hno . " " . $occ->house->area . " " . "Occupant :- " . $occ->occupant->first_name . " " . $occ->occupant->last_name  ?? 'No Name' }}</option>
                                         @endforeach
                                     </select>
-                                    @error('h_id')
+                                    @error('occ_id')
                                         <div class="text-danger">{{ $message }}</div>
                                     @enderror
                                 </div>

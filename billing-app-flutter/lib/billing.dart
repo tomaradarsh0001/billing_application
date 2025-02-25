@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'dashboard.dart';
 import 'package:shimmer/shimmer.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:flutter/services.dart';
 
 class BillingPage extends StatefulWidget {
@@ -41,7 +41,7 @@ class _BillingPageState extends State<BillingPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight;
