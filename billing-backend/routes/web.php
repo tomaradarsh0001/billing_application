@@ -92,6 +92,7 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::delete('billing/occupants/{occupantDetail}', [OccupantDetailController::class, 'destroy'])->name('occupants.destroy');
     Route::post('billing/occupants', [OccupantDetailController::class, 'store'])->name('occupants.store');
     
+    
     //house detail
     Route::get('billing/houses/create', [HouseDetailController::class, 'create'])->name('houses.create');
     Route::post('billing/houses', [HouseDetailController::class, 'store'])->name('houses.store');
@@ -99,8 +100,9 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::put('billing/houses/{houseDetail}', [HouseDetailController::class, 'update'])->name('houses.update');
     Route::delete('billing/houses/{houseDetail}', [HouseDetailController::class, 'destroy'])->name('houses.destroy');
     Route::get('billing/houses', [HouseDetailController::class, 'index'])->name('houses.index');
-
+    
     //billing details
+    Route::get('/get-occupants/{house_id}', [BillingDetailController::class, 'getOccupantsByHouse']);
     Route::post('billing-details', [BillingDetailController::class, 'store'])->name('billing_details.store');
     Route::get('billing-details/{billing_detail}', [BillingDetailController::class, 'show'])->name('billing_details.show');
     Route::get('billing-details/{billing_detail}/edit', [BillingDetailController::class, 'edit'])->name('billing_details.edit');

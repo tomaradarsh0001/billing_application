@@ -378,7 +378,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                           )
                         else
                         // Show actual data when loading is complete
-                          _buildDetailField("First Name", _customerDetails?['first_name']?.toString()),
+                        _buildDetailField("First Name", _customerDetails?['first_name']?.toString()),
                         _buildDetailField("Last Name", _customerDetails?['last_name']?.toString()),_buildDetailField("Gender", _customerDetails?['gender']?.toString()),
                         _buildDetailField("Date of Birth", formattedDob(_customerDetails?['dob']?.toString())),
                         _buildDetailField("Email Address", _customerDetails?['email']?.toString()),

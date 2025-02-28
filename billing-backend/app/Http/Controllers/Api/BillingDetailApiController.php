@@ -22,7 +22,7 @@ class BillingDetailApiController extends Controller
     public function store(Request $request)
     {
         $bills = BillingDetail::create($request->only([
-            'h_id',
+            'occ_id',
             'last_reading',
             'last_pay_date',
             'outstanding_dues',
@@ -41,7 +41,7 @@ class BillingDetailApiController extends Controller
         $bills = BillingDetail::findOrFail($id);
 
         $bills->update($request->only([
-             'h_id',
+             'occ_id',
              'last_reading',
              'last_pay_date',
              'outstanding_dues',

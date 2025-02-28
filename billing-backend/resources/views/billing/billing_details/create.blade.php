@@ -35,29 +35,30 @@
                             @csrf
 
                             <div class="row">
-                                <!-- House ID Dropdown -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="occ_id" class="form-label">Select House</label>
-                                    <select name="occ_id" id="occ_id" class="form-control-select" >
-                                        <option value="" disabled selected>Select a House</option>
-                                        @foreach($occupantHouse as $occ)
-                                            <option value="{{ $occ->id }}">{{"House :- ". $occ->house->hno . " " . $occ->house->area . " " . "Occupant :- " . $occ->occupant->first_name . " " . $occ->occupant->last_name  ?? 'No Name' }}</option>
+                                <!-- House Selection -->
+                                <div class="form-group">
+                                    <label for="house_id">Select House</label>
+                                    <select name="house_id" id="house_id" class="form-control" required>
+                                        <option value="">-- Select House --</option>
+                                        @foreach($houses as $house)
+                                            <option value="{{ $house->id }}">{{ $house->hno  }}  {{ $house->area}}</option>
                                         @endforeach
                                     </select>
-                                    @error('occ_id')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
                                 </div>
-
-                                <!-- Last Reading -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="last_reading" class="form-label">Last Reading</label>
-                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading') }}" >
-                                    @error('last_reading')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            
+                                <!-- Occupant Selection -->
+                                <div class="form-group">
+                                    <label for="occupant_id">Select Occupant</label>
+                                    <select name="occupant_id" id="occupant_id" class="form-control" required>
+                                        <option value="">-- Select Occupant --</option>
+                                        @foreach($occupants as $occupant)
+                                            <option value="{{ $occupant->id }}">{{ $occupant->first_name }}{{ $occupant->last_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                            
                             </div>
+                            
 
                             <div class="row">
                                 <!-- Last Pay Date -->

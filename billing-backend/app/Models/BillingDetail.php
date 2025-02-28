@@ -11,6 +11,7 @@ class BillingDetail extends Model
 
     protected $fillable = [
         'occ_id',
+        'house_id', 'occupant_id',
         'last_reading',
         'last_pay_date',
         'outstanding_dues',
