@@ -10,16 +10,17 @@ class BillingDetail extends Model
     use HasFactory;
 
     protected $fillable = [
-        'occ_id',
-        'house_id', 'occupant_id',
-        'last_reading',
+        'house_id',
+        'occupant_id',
         'last_pay_date',
+        'last_reading',
         'outstanding_dues',
         'current_reading',
         'current_charges',
         'pay_date',
         'status',
     ];
+    
 
     public function houseDetail()
     {
@@ -28,6 +29,16 @@ class BillingDetail extends Model
     public function occupantHouseStatus()
     {
         return $this->belongsTo(OccupantHouseStatus::class, 'occupant_house_status_id');
+    }
+
+    public function occupant()
+    {
+        return $this->belongsTo(OccupantDetail::class, 'occupant_id'); 
+    }
+    
+    public function house()
+    {
+        return $this->belongsTo(HouseDetail::class, 'house_id'); // Explicit foreign key
     }
     
 }

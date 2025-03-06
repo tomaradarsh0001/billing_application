@@ -4,11 +4,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ConfigurationApiController;
 use App\Http\Controllers\Api\BillingDetailApiController;
+use App\Http\Controllers\Api\CustomerApiController;
+use App\Http\Controllers\Api\AuthController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 
 //configuration API
 Route::get('/configuration/{id}', [ConfigurationApiController::class, 'fetchConfiguration']);

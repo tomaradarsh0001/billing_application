@@ -7,6 +7,8 @@ import 'dashboard.dart';
 import 'package:shimmer/shimmer.dart';
 import 'main.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class BillingPage extends StatefulWidget {
   @override
@@ -33,6 +35,7 @@ class _BillingPageState extends State<BillingPage> {
   Color? links;
   Color? textPrimary;
   final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
+  bool? _isDarkMode;
 
 
   // Add a list to track selected customers
@@ -41,6 +44,7 @@ class _BillingPageState extends State<BillingPage> {
   @override
   void initState() {
     super.initState();
+    _loadThemePreference();
     AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
@@ -50,6 +54,7 @@ class _BillingPageState extends State<BillingPage> {
         secondaryDark = AppColors.secondaryDark;
         links = AppColors.links;
         textPrimary = AppColors.textPrimary;
+
       });
       loadSvg();
       loadSvgIcon();
@@ -64,28 +69,44 @@ class _BillingPageState extends State<BillingPage> {
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/billing_upper_shape.svg');
+
       setState(() {
-        // Replace placeholders with actual colors in hex format
+        // If Dark Mode is enabled, use dark theme colors, otherwise use stored colors
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey), // Dark Mode = Dark Grey
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black), // Dark Mode = Black
         );
       });
     }
   }
 
+  Future<bool> _onWillPop() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => DashboardPage()),
+    );
+    return false; // Prevents default back navigation
+  }
   Future<void> loadSvgIcon() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/billing_icon.svg');
       setState(() {
         // Replace placeholders with actual colors in hex format
         svgStringIcon = svg.replaceAll(
-          'PLACEHOLDER', _colorToHex(primaryDark!),
+          'PLACEHOLDER', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
   }
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
+    });
+  }
+
 
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
@@ -111,8 +132,10 @@ class _BillingPageState extends State<BillingPage> {
     }
   }
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+      backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
       body: CustomScrollView(
         controller: _scrollController,
         slivers: [
@@ -260,7 +283,10 @@ class _BillingPageState extends State<BillingPage> {
                           color: _scrollOffset <= 270 ? Colors.white : Colors.white,
                         ),
                         onPressed: () {
-                          Navigator.pop(context); // Handle back button action
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => DashboardPage()),
+                          );
                         },
                       ),
                       // Title Text - hidden when search is active
@@ -346,7 +372,7 @@ class _BillingPageState extends State<BillingPage> {
         ],
       ),
       // Floating Action Button for delete
-
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'customerview.dart';
 import 'main.dart';
 import 'package:flutter/services.dart';
@@ -24,11 +25,12 @@ class _DashboardPageState extends State<DashboardPage>
   double _avatarOpacity = 0;
   late AnimationController _navBarController;
   late Animation<double> _navBarAnimation;
+  bool? _isDarkMode;
 
   @override
   void initState() {
     super.initState();
-
+    _loadThemePreference();
     _navBarController = AnimationController(
       duration: Duration(milliseconds: 800),
       vsync: this,
@@ -58,32 +60,38 @@ class _DashboardPageState extends State<DashboardPage>
     });
   }
 
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
+    });
+  }
+
   @override
   void dispose() {
     _navBarController.dispose();
     super.dispose();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-  }
+
 
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/dashboard_upper_shape.svg');
+
       setState(() {
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(secondaryLight!),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#000000' : _colorToHex(secondaryLight ?? Colors.grey), // Dark mode logic
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.blue),
         ).replaceAll(
-          'PLACEHOLDER_COLOR_3', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_3', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
   }
+
 
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
@@ -92,7 +100,7 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
       body: Stack(
         children: [
           AnimatedPositioned(
@@ -196,13 +204,34 @@ class _DashboardPageState extends State<DashboardPage>
         child: Container(
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: Color(0xFFDEDDDD), width: 1),
+              top: BorderSide(
+                color: _isDarkMode == true ? Colors.grey[800]! : Color(0xFFDEDDDD), // Dark Mode support
+                width: 1,
+              ),
             ),
           ),
           child: BottomNavigationBar(
-            backgroundColor: Colors.white,
+            backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
             currentIndex: _currentIndex,
-            onTap: _onItemTapped,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              // Navigate to the corresponding page
+              if (index == 0) {
+
+              } else if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DashboardPage()),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
+              }
+            },
             type: BottomNavigationBarType.fixed,
             selectedFontSize: 0,
             unselectedFontSize: 0,
@@ -215,7 +244,9 @@ class _DashboardPageState extends State<DashboardPage>
                       'assets/home.svg',
                       width: 24,
                       height: 24,
-                      color: _currentIndex == 0 ? primaryDark : Colors.grey,
+                      color: _currentIndex == 0
+                          ? (_isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue)) // Dark Mode = White, Light Mode = primaryDark
+                          : Colors.grey,
                     ),
                   ),
                 ),
@@ -229,7 +260,10 @@ class _DashboardPageState extends State<DashboardPage>
                       'assets/search.svg',
                       width: 24,
                       height: 24,
-                      color: _currentIndex == 1 ? primaryDark : Colors.grey,
+                      color: _currentIndex == 1
+                          ? (_isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue)) // Dark Mode = White, Light Mode = primaryDark
+                          : Colors.grey,
+
                     ),
                   ),
                 ),
@@ -243,7 +277,10 @@ class _DashboardPageState extends State<DashboardPage>
                       'assets/settings.svg',
                       width: 24,
                       height: 24,
-                      color: _currentIndex == 2 ? primaryDark : Colors.grey,
+                      color: _currentIndex == 2
+                          ? (_isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue)) // Dark Mode = White, Light Mode = primaryDark
+                          : Colors.grey,
+
                     ),
                   ),
                 ),
@@ -257,7 +294,7 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
   Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
-    Color _tileColor = Colors.white;
+    Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
 
     return StatefulBuilder(
       builder: (context, setState) {
@@ -272,7 +309,7 @@ class _DashboardPageState extends State<DashboardPage>
               borderRadius: BorderRadius.circular(24),
               onTap: () {
                 setState(() {
-                  _tileColor = Colors.grey.shade200;
+                  _tileColor = (_isDarkMode ?? false) ? Colors.grey[900]! : Colors.grey.shade200;
                 });
                 Future.delayed(Duration(milliseconds: 200), () {
                   setState(() {
@@ -304,14 +341,14 @@ class _DashboardPageState extends State<DashboardPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(icon, size: 70, color: primaryDark),
+                    Icon(icon, size: 70, color: _isDarkMode == true ? Colors.white70 : (primaryDark)),
                     SizedBox(height: 8),
                     Text(
                       title,
                       style: GoogleFonts.signika(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.grey,
+                        color: _isDarkMode == true ? Colors.white54 : (primaryDark ?? Colors.blue),
                       ),
                     ),
                   ],

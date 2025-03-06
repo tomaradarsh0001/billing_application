@@ -13,20 +13,16 @@ return new class extends Migration
     {
         Schema::create('billing_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('occ_id')->constrained('occupant_house_status')->onDelete('cascade');
-            $table->unsignedBigInteger('house_id'); // Foreign key
-            $table->unsignedBigInteger('occupant_id'); // Foreign key
-            $table->decimal('last_reading', 10, 2);
+            $table->foreignId('house_id')->constrained('house_details')->onDelete('cascade');
+            $table->foreignId('occupant_id')->constrained('occupant_details')->onDelete('cascade');
             $table->date('last_pay_date');
             $table->decimal('outstanding_dues', 10, 2);
+            $table->decimal('last_reading', 10, 2);
             $table->decimal('current_reading', 10, 2);
             $table->decimal('current_charges', 10, 2);
             $table->date('pay_date');
-            $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
+            $table->enum('status', ['paid', 'unpaid', 'partially_paid']);
             $table->timestamps();
-
-            $table->foreign('house_id')->references('id')->on('house_details')->onDelete('cascade');
-            $table->foreign('occupant_id')->references('id')->on('occupant_details')->onDelete('cascade');
         });
     }
 

@@ -6,7 +6,7 @@
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">
                 <div class="QA_section">
-                    <!-- Success and Error Alerts -->
+                    
                     @if(session('success'))
                         <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
@@ -21,7 +21,6 @@
                         </div>
                     @endif
 
-                    <!-- Title and Back Button -->
                     <div class="white_box_tittle list_header">
                         <h4>Add Billing Detail</h4>
                         <div class="box_right d-flex lms_block">
@@ -29,106 +28,91 @@
                         </div>
                     </div>
 
-                    <!-- Form for Adding Billing Detail -->
                     <div class="QA_table mb_30">
                         <form action="{{ route('billing_details.store') }}" method="POST">
                             @csrf
 
                             <div class="row">
-                                <!-- House Selection -->
-                                <div class="form-group">
+                                <div class="col-md-6 mb-3">
                                     <label for="house_id">Select House</label>
                                     <select name="house_id" id="house_id" class="form-control" required>
                                         <option value="">-- Select House --</option>
                                         @foreach($houses as $house)
-                                            <option value="{{ $house->id }}">{{ $house->hno  }}  {{ $house->area}}</option>
+                                            <option value="{{ $house->id }}">{{ $house->hno }} - {{ $house->area }}</option>
                                         @endforeach
                                     </select>
+                                    @error('house_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
-                            
-                                <!-- Occupant Selection -->
-                                <div class="form-group">
+
+                                <div class="col-md-6 mb-3">
                                     <label for="occupant_id">Select Occupant</label>
                                     <select name="occupant_id" id="occupant_id" class="form-control" required>
                                         <option value="">-- Select Occupant --</option>
                                         @foreach($occupants as $occupant)
-                                            <option value="{{ $occupant->id }}">{{ $occupant->first_name }}{{ $occupant->last_name }}</option>
+                                            <option value="{{ $occupant->id }}">{{ $occupant->first_name }} {{ $occupant->last_name }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                            
-                            </div>
-                            
-
-                            <div class="row">
-                                <!-- Last Pay Date -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="last_pay_date" class="form-label">Last Pay Date</label>
-                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" >
-                                    @error('last_pay_date')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <!-- Outstanding Dues -->
-                                <div class="col-md-6 mb-3">
-                                    <label for="outstanding_dues" class="form-label">Outstanding Dues</label>
-                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues') }}" >
-                                    @error('outstanding_dues')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    @error('occupant_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
                             <div class="row">
-                                <!-- Current Reading -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="current_reading" class="form-label">Current Reading</label>
-                                    <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading') }}" >
-                                    @error('current_reading')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <label for="last_pay_date">Last Pay Date</label>
+                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" required>
+                                    @error('last_pay_date') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
-                                <!-- Current Charges -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="current_charges" class="form-label">Current Charges</label>
-                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges') }}" >
-                                    @error('current_charges')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <label for="outstanding_dues">Outstanding Dues</label>
+                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues') }}" required>
+                                    @error('outstanding_dues') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
                             <div class="row">
-                                <!-- Pay Date -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="pay_date" class="form-label">Pay Date</label>
-                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" >
-                                    @error('pay_date')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <label for="current_reading">Current Reading</label>
+                                    <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading') }}" required>
+                                    @error('current_reading') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
-                                <!-- Status Dropdown -->
                                 <div class="col-md-6 mb-3">
-                                    <label for="status" class="form-label">Status</label>
-                                    <select name="status" id="status" class="form-control-select" >
-                                        <option value="" disabled selected>Select Payment Status</option>
-                                        <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
-                                        <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                        <option value="partially_paid" {{ old('status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
-                                    </select>
-                                    @error('status')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                                    <label for="current_charges">Current Charges</label>
+                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges') }}" required>
+                                    @error('current_charges') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
-                            <!-- Submit Button -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_reading">Last Reading</label>
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading') }}" required>
+                                    @error('last_reading') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="pay_date">Pay Date</label>
+                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" required>
+                                    @error('pay_date') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="status">Status</label>
+                                <select name="status" id="status" class="form-control" required>
+                                    <option value="">-- Select Payment Status --</option>
+                                    <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
+                                    <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
+                                    <option value="partially_paid" {{ old('status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
+                                </select>
+                                @error('status') <div class="text-danger">{{ $message }}</div> @enderror
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>

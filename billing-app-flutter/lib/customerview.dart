@@ -10,6 +10,8 @@ import 'main.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'CustomerDeletedSuccessfullyPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CustomerViewPage extends StatefulWidget {
   @override
@@ -36,6 +38,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   Color? links;
   Color? textPrimary;
   final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
+  bool? _isDarkMode;
 
 
   // Add a list to track selected customers
@@ -44,6 +47,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   @override
   void initState() {
     super.initState();
+    _loadThemePreference();
     AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
@@ -66,19 +70,37 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     });
   }
 
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => DashboardPage()),
+    );
+    return false; // Prevents default back navigation
+  }
+
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/billing_upper_shape.svg');
+
       setState(() {
-        // Replace placeholders with actual colors in hex format
+        // If Dark Mode is enabled, use white (#FFFFFF), otherwise use stored colors
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
   }
+
 
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
@@ -317,14 +339,19 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+
+    return WillPopScope(
+    onWillPop: _onWillPop,
+    child: Scaffold(
+      backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              backgroundColor: _scrollOffset <= 280 ? Colors.transparent : primaryDark,
+              backgroundColor: _scrollOffset <= 220
+                  ? Colors.transparent
+                  : (_isDarkMode == true ? Colors.black : (primaryDark ?? Colors.blue)), // Dark Mode = Black, Light Mode = primaryDark
               expandedHeight: 280,
               automaticallyImplyLeading: false,
               floating: false,
@@ -459,7 +486,10 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                               color: _scrollOffset <= 270 ? Colors.white : Colors.white,
                             ),
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => DashboardPage()),
+                              );
                             },
                           ),
                         if (!_isSearchActive)
@@ -497,6 +527,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
           ];
         },
         body: ListView.builder(
+          padding: EdgeInsets.only(top: 10), // REMOVE or set to zero
           itemCount: _filteredCustomers.length,
           itemBuilder: (BuildContext context, int index) {
             if (_isLoading) {
@@ -549,7 +580,9 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
               child: Card(
                 margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
                 elevation: 2,
-                color: isSelected ? Colors.grey.shade300 : Colors.white,
+                color: _isDarkMode == true
+                    ? (isSelected ? Colors.grey.shade800 : Colors.black54) // Dark Mode Colors
+                    : (isSelected ? Colors.grey.shade300 : Colors.white), // Light Mode Colors
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -558,7 +591,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                     width: 60,
                     height: 60,
                     decoration: BoxDecoration(
-                      color: primaryLight,
+                      color: _isDarkMode == true ? Colors.grey.shade700 : (primaryLight ?? Colors.blue), // Dark Mode for leading circle
                       borderRadius: BorderRadius.circular(32),
                     ),
                     child: Center(
@@ -566,7 +599,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                         "${customer['first_name'][0]}${customer['last_name'][0]}",
                         style: GoogleFonts.signika(
                           fontWeight: FontWeight.normal,
-                          color: Colors.grey.shade800,
+                          color: _isDarkMode == true ? Colors.white : Colors.grey.shade800, // Dark Mode text color
                           fontSize: 34,
                         ),
                       ),
@@ -574,27 +607,31 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                   ),
                   title: Text(
                     "Customer Name: ${customer['first_name']} ${customer['last_name']}",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
+                      color: _isDarkMode == true ? Colors.white : Colors.black, // Dark Mode text
                     ),
                   ),
                   subtitle: Text(
                     "Customer ID: ${customer['aadhar_number']}\n"
                         "City: ${customer['city_id']}, ${customer['state_id']}",
-                    style: const TextStyle(fontSize: 13),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: _isDarkMode == true ? Colors.white70 : Colors.black87, // Dark Mode subtitle
+                    ),
                   ),
                   trailing: Container(
                     width: 24,
                     height: 24,
                     decoration: BoxDecoration(
-                      color: primaryDark,
+                      color: _isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue), // Dark Mode trailing button
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_forward_ios,
-                        color: Colors.white,
+                        color: _isDarkMode == true ? Colors.black : Colors.white, // Dark Mode icon
                         size: 9,
                       ),
                       onPressed: () {
@@ -620,12 +657,17 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         onPressed: () {
           showDeleteConfirmationDialog(context);
         },
-        backgroundColor: primaryLight,
-        child: const Icon(Icons.delete),
+        backgroundColor: _isDarkMode == true ? Colors.grey.shade800 : (primaryLight ?? Colors.blue), // Dark Mode support
+        child: Icon(
+          Icons.delete,
+          color: _isDarkMode == true ? Colors.white : Colors.black, // Dark Mode text color
+        ),
         shape: const CircleBorder(),
       )
-          : null,
+          : null, // Ensures no FAB appears when no items are selected
+    ),
     );
+
   }
 
 }

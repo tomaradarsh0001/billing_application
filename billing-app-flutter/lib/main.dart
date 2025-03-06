@@ -1,11 +1,10 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'login.dart';
-
+import 'dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,10 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Billing Application',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: ThemeData.light(),  // Default Light Mode
+      darkTheme: ThemeData.dark(), // Dark Mode
+      themeMode: ThemeMode.system, // Follows system theme
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
@@ -39,6 +37,54 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Future<Map<String, dynamic>> configurationData;
+  bool _isDarkMode = false; // Move _isDarkMode inside State
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemePreference();
+    configurationData = fetchConfiguration();
+
+    // Wait for 3 seconds before checking login status
+    Future.delayed(const Duration(seconds: 3), () async {
+      await AppColors.loadColorsFromPrefs();
+      _checkLoginStatus(); // Now check login status AFTER 3 seconds
+    });
+  }
+
+// Function to check if user is logged in
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('auth_token');
+
+    if (token != null) {
+      // User is logged in, navigate to Dashboard
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardPage()),
+      );
+    } else {
+      // User is NOT logged in, navigate to Login Page
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => LoginPage(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(opacity: animation, child: child);
+          },
+        ),
+      );
+    }
+  }
+
+// Load Dark Mode preference
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    });
+  }
+
 
   Future<Map<String, dynamic>> fetchConfiguration() async {
     final response = await http.get(Uri.parse(
@@ -52,32 +98,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    configurationData = fetchConfiguration();
-    Future.delayed(const Duration(seconds: 3), () async {
-      await AppColors.loadColorsFromPrefs();
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              LoginPage(),
-          transitionsBuilder:
-              (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
-          },
-        ),
-      );
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFFFF),
+      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
       body: FutureBuilder<Map<String, dynamic>>(
         future: configurationData,
         builder: (context, snapshot) {
@@ -112,17 +135,16 @@ class _SplashScreenState extends State<SplashScreen> {
                             style: GoogleFonts.telex(
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
-                              color: const Color(0xFF969696),
+                              color: _isDarkMode ? Colors.white : Colors.grey,
                               height: 1.2,
                             ),
                           ),
                           Text(
-                            data['app_tagline']?.toUpperCase() ??
-                                'Loading tagline...',
+                            data['app_tagline']?.toUpperCase() ?? 'Loading tagline...',
                             style: GoogleFonts.sarabun(
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
-                              color: const Color(0xFF969696),
+                              color: _isDarkMode ? Colors.white54 : Colors.grey,
                               height: 1.0,
                             ),
                           ),
@@ -141,7 +163,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       style: GoogleFonts.sarabun(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
-                        color: const Color(0xFF969696),
+                        color: _isDarkMode ? Colors.white54 : Colors.grey,
                       ),
                     ),
                   ),
@@ -157,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-
+// AppColors Class for Theme Management
 class AppColors {
   static Color? primaryLight;
   static Color? primaryDark;

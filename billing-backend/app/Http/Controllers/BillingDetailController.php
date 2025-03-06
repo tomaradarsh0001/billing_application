@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\HouseDetail;
 use App\Models\OccupantDetail;
 use App\Models\OccupantHouseStatus;
+use Illuminate\Support\Facades\Log;
 
 
 class BillingDetailController extends Controller
@@ -29,25 +30,37 @@ class BillingDetailController extends Controller
     
         return view('billing.billing_details.create', compact('houses', 'occupants'));
     }
+    
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'occ_id' => 'required|exists:occupant_house_status,id',
-            'house_id' => 'required|exists:house_details,id',
-            'occupant_id' => 'required|exists:occupant_details,id',
-            'last_reading' => 'required|numeric|min:0',
-            'last_pay_date' => 'required|date',
-            'outstanding_dues' => 'required|numeric|min:0',
-            'current_reading' => 'required|numeric|min:0',
-            'current_charges' => 'required|numeric|min:0',
-            'pay_date' => 'required|date',
-            'status' => 'required|in:paid,unpaid,partially',
-        ]);
+        Log::info('BillingDetailController@store: Received request data.', ['request_data' => $request->all()]);
     
-       
-        BillingDetail::create($validated);
-        return redirect()->route('billing_details.index')->with('success', 'Billing Detail added successfully!');
+        try {
+            $billingDetail = BillingDetail::create([
+                'house_id' => $request->house_id,
+                'occupant_id' => $request->occupant_id,
+                'last_pay_date' => $request->last_pay_date,
+                'last_reading' => $request->last_reading,
+                'outstanding_dues' => $request->outstanding_dues,
+                'current_reading' => $request->current_reading,
+                'current_charges' => $request->current_charges,
+                'pay_date' => $request->pay_date,
+                'status' => $request->status,
+            ]);
+    
+            if ($billingDetail) {
+                Log::info('BillingDetailController@store: Billing detail successfully created.', ['billing_detail' => $billingDetail]);
+            } else {
+                Log::error('BillingDetailController@store: Failed to create billing detail.');
+            }
+    
+            return redirect()->back()->with('success', 'Billing detail added successfully.');
+        } catch (\Exception $e) {
+            Log::error('BillingDetailController@store: Exception occurred.', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Failed to add billing detail.');
+        }
     }
+    
     
 
     public function show(BillingDetail $billingDetail)

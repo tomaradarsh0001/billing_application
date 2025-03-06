@@ -1,3 +1,4 @@
+import 'package:billing_application/dashboard.dart';
 import 'package:billing_application/otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +8,9 @@ import 'resetPassword.dart';
 import 'otp.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
 import 'main.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,6 +30,9 @@ class _LoginPageState extends State<LoginPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -52,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
       loadSvgPasswordIcon();
       loadSvgEmailIcon();
       loadSvg();
+      _checkLoginStatus();
     });
     // Start the animation after a delay
     Future.delayed(Duration(milliseconds: 200), () {
@@ -60,6 +67,17 @@ class _LoginPageState extends State<LoginPage> {
       });
     });
   }
+
+  // Check if the user is already logged in
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('auth_token');
+    if (token != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => DashboardPage()));
+    }
+  }
+
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/login_upper_shape.svg');
@@ -117,6 +135,59 @@ class _LoginPageState extends State<LoginPage> {
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
   }
+
+  Future<void> _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email and Password cannot be empty")),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // Show CircularProgressIndicator
+    });
+
+    var url = Uri.parse(
+        "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/login");
+
+    try {
+      var response = await http.post(
+        url,
+        body: {"email": email, "password": password},
+      );
+
+      var responseData = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        String token = responseData['token'];
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', token);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(responseData['message'] ?? "Login failed")),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Hide CircularProgressIndicator after response
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -185,56 +256,48 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         // Email Input Field
                         TextField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 14.0),
                               child: SvgPicture.string(
-                                svgStringEmail, // Render the modified SVG string with new colors
-                                semanticsLabel: 'Animated and Colored SVG',
+                                svgStringEmail, // Replace with your SVG icon
+                                semanticsLabel: 'Email Icon',
                                 width: 15,
                                 height: 15,
-                              )
+                              ),
                             ),
                             labelText: 'Email',
                             labelStyle: GoogleFonts.signika(
                               fontSize: 20,
-                              fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
-                              height: 1.5,
                             ),
                             filled: true,
                             fillColor: Colors.transparent,
-                            border: InputBorder.none,
-                            enabledBorder: UnderlineInputBorder(
+                            border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.black),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                           ),
                         ),
                         const SizedBox(height: 20),
+
                         // Password Input Field
                         TextField(
+                          controller: _passwordController,
                           obscureText: _obscureText,
                           decoration: InputDecoration(
                             prefixIcon: Padding(
                               padding: const EdgeInsets.only(right: 18.0),
                               child: SvgPicture.string(
-                                svgStringPass, // Render the modified SVG string with new colors
-                                semanticsLabel: 'Animated and Colored SVG',
+                                svgStringPass, // Replace with your SVG icon
+                                semanticsLabel: 'Password Icon',
                                 width: 25,
                                 height: 25,
-                              )
-                                // Show loading indicator until the SVG is ready
+                              ),
                             ),
-
                             suffixIcon: IconButton(
                               icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
+                                _obscureText ? Icons.visibility_off : Icons.visibility,
                                 color: Colors.grey,
                               ),
                               onPressed: _togglePasswordVisibility,
@@ -242,20 +305,11 @@ class _LoginPageState extends State<LoginPage> {
                             labelText: 'Password',
                             labelStyle: GoogleFonts.signika(
                               fontSize: 20,
-                              fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
-                              height: 1.2,
                             ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            border: InputBorder.none,
-                            enabledBorder: UnderlineInputBorder(
+                            border: UnderlineInputBorder(
                               borderSide: BorderSide(color: Colors.black),
                             ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blue),
-                            ),
-                            contentPadding: EdgeInsets.symmetric(vertical: 0.0),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -302,43 +356,26 @@ class _LoginPageState extends State<LoginPage> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                      OtpPage(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    const begin = Offset(1.0, 0.0);
-                                    const end = Offset.zero;
-                                    const curve = Curves.easeInOut;
-                                    var tween = Tween(begin: begin, end: end)
-                                        .chain(CurveTween(curve: curve));
-                                    var offsetAnimation =
-                                    animation.drive(tween);
-
-                                    return SlideTransition(
-                                      position: offsetAnimation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
+                            onPressed: _isLoading ? null : _login, // Disable button while loading
                             style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              backgroundColor: primaryDark,
+                              shape: CircleBorder(),
+                              backgroundColor: secondaryDark, // Normal state color
+                              disabledBackgroundColor: secondaryDark, // Ensures color stays when disabled
                               padding: const EdgeInsets.all(18),
                             ),
-                            child: const Icon(
-                              Icons.arrow_forward,
-                              color: Colors.white,
-                              size: 28,
-                            ),
+                            child: _isLoading
+                                ? SizedBox(
+                              width: 30, // Make it smaller
+                              height: 30,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2, // Make it thinner
+                              ),
+                            )
+                                : Icon(Icons.arrow_forward, color: Colors.white, size: 28),
                           ),
                         ),
+
                       ],
                     ),
                   ),
