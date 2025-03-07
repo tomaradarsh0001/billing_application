@@ -71,9 +71,9 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary btn-sm">View</a>
-                                                <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('billing_detail', {{ $detail->id }})">Delete</button>
+                                                <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a>
+                                                <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
+                                                <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('billing_detail', {{ $detail->id }})">Delete</button>
                                                 <form method="POST" action="{{ route('billing_details.destroy', $detail->id) }}" class="d-inline" id="deleteForm-{{ $detail->id }}">
                                                     @csrf
                                                     @method('DELETE')

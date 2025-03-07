@@ -13,7 +13,11 @@
                 <table class="table table-bordered">
                     <tr>
                         <th>House Number</th>
-                        <td>{{ $billingDetail->houseDetail->hno }}</td>
+                        <td>{{ $billingDetail->house->hno . " " . $billingDetail->house->area ?? 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Occupant Name</th>
+                        <td>{{ $billingDetail->occupant->first_name  . " " . $billingDetail->occupant->last_name ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <th>Last Reading</th>

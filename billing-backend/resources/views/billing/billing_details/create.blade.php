@@ -35,7 +35,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="house_id">Select House</label>
-                                    <select name="house_id" id="house_id" class="form-control" required>
+                                    <select name="house_id" id="house_id" class="form-control-select" required>
                                         <option value="">-- Select House --</option>
                                         @foreach($houses as $house)
                                             <option value="{{ $house->id }}">{{ $house->hno }} - {{ $house->area }}</option>
@@ -46,7 +46,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="occupant_id">Select Occupant</label>
-                                    <select name="occupant_id" id="occupant_id" class="form-control" required>
+                                    <select name="occupant_id" id="occupant_id" class="form-control-select" required>
                                         <option value="">-- Select Occupant --</option>
                                         @foreach($occupants as $occupant)
                                             <option value="{{ $occupant->id }}">{{ $occupant->first_name }} {{ $occupant->last_name }}</option>
@@ -98,9 +98,9 @@
                                 </div>
 
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control" required>
+                                <select name="status" id="status" class="form-control-select" required>
                                     <option value="">-- Select Payment Status --</option>
                                     <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
                                     <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>

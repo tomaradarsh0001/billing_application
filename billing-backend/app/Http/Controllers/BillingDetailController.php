@@ -54,7 +54,7 @@ class BillingDetailController extends Controller
                 Log::error('BillingDetailController@store: Failed to create billing detail.');
             }
     
-            return redirect()->back()->with('success', 'Billing detail added successfully.');
+            return redirect()->route('billing_details.index')->with('success', 'Billing Details saved successfully!');
         } catch (\Exception $e) {
             Log::error('BillingDetailController@store: Exception occurred.', ['error' => $e->getMessage()]);
             return redirect()->back()->with('error', 'Failed to add billing detail.');
@@ -65,9 +65,14 @@ class BillingDetailController extends Controller
 
     public function show(BillingDetail $billingDetail)
     {
-        $billingDetails = BillingDetail::with('houseDetail')->get();
+        $billingDetail->load([
+            'occupantHouseStatus.house', 
+            'occupantHouseStatus.occupant'
+        ]);
+    
         return view('billing.billing_details.show', compact('billingDetail'));
     }
+    
 
     public function edit(BillingDetail $billingDetail)
     {
@@ -79,7 +84,8 @@ class BillingDetailController extends Controller
     public function update(Request $request, BillingDetail $billingDetail)
     {
         $validated = $request->validate([
-            'occ_id' => 'required|exists:occupant_house_status,id',
+            'house_id' => 'required|exists:house_details,id',
+            'occupant_id' => 'required|exists:occupant_details,id',
             'last_reading' => 'required|numeric',
             'last_pay_date' => 'required|date',
             'outstanding_dues' => 'required|numeric',

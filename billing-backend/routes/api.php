@@ -27,8 +27,10 @@ Route::put('customers/{id}', [CustomerApiController::class, 'update']);
 Route::delete('customers/{id}', [CustomerApiController::class, 'destroy']);
 
 //Billing Details API
-Route::get('billings', [BillingDetailApiController::class, 'index']);
-Route::get('billings/{id}', [BillingDetailApiController::class, 'show']);
-Route::post('billings', [BillingDetailApiController::class, 'store']);
-Route::put('billings/{id}', [BillingDetailApiController::class, 'update']);
-Route::delete('billings/{id}', [BillingDetailApiController::class, 'destroy']);
+Route::prefix('billing-details')->group(function () {
+    Route::get('/', [BillingDetailApiController::class, 'index']); // List all billing details  ***working
+    Route::post('/', [BillingDetailApiController::class, 'store']); // Create a new billing detail   ***working
+    Route::get('{id}', [BillingDetailApiController::class, 'show']); // Get a single billing detail  ***working
+    Route::put('{id}', [BillingDetailApiController::class, 'update']); // Update billing detail   ***working
+    Route::delete('{id}', [BillingDetailApiController::class, 'destroy']); // Delete billing detail ***working
+});
