@@ -37,25 +37,27 @@
                                     <label for="house_id">Select House</label>
                                     <select name="house_id" id="house_id" class="form-control-select" required>
                                         <option value="">-- Select House --</option>
-                                        @foreach($houses as $house)
-                                            <option value="{{ $house->id }}">{{ $house->hno }} - {{ $house->area }}</option>
+                                        @foreach($occupants as $occ)
+                                            <option value="{{ $occ->h_id }}">{{ $occ->house->hno }} - {{ $occ->house->area }}</option>
                                         @endforeach
                                     </select>
                                     @error('house_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
-
+                            
                                 <div class="col-md-6 mb-3">
                                     <label for="occupant_id">Select Occupant</label>
-                                    <select name="occupant_id" id="occupant_id" class="form-control-select" required>
+                                    <select id="occupant_id" class="form-control-select" disabled>
                                         <option value="">-- Select Occupant --</option>
                                         @foreach($occupants as $occupant)
                                             <option value="{{ $occupant->id }}">{{ $occupant->first_name }} {{ $occupant->last_name }}</option>
                                         @endforeach
                                     </select>
+                                    <!-- Hidden field to store the actual occupant_id value -->
+                                    <input type="hidden" name="occupant_id" id="hidden_occupant_id">
                                     @error('occupant_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
-
+                       
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="last_pay_date">Last Pay Date</label>
@@ -63,9 +65,10 @@
                                     @error('last_pay_date') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
+                              
                                 <div class="col-md-6 mb-3">
                                     <label for="outstanding_dues">Outstanding Dues</label>
-                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues') }}" required>
+                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', 0) }}" readonly>
                                     @error('outstanding_dues') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
@@ -87,7 +90,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="last_reading">Last Reading</label>
-                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading') }}" required>
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', 0) }}" readonly>
                                     @error('last_reading') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
@@ -118,4 +121,44 @@
         </div>
     </div>
 </div>
+<script>
+    const occupants = @json($occupants);
+const billingDetails = @json($billingDetails);
+
+$(document).ready(function() {
+    // Set default values and show fields when page loads
+    $('#outstanding_dues').val(0).prop('hidden', false);
+    $('#last_reading').val(0).prop('hidden', false);
+
+    $('#house_id').on('change', function() {
+        const selectedHouseId = $(this).val();
+        const occupant = occupants.find(occ => occ.h_id == selectedHouseId);
+
+        if (occupant) {
+            // Enable occupant selection
+            $('#occupant_id').val(occupant.id).prop('disabled', true).prop('hidden', false);
+            $('#hidden_occupant_id').val(occupant.id); // Set hidden field value
+
+            const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
+            if (billingDetail) {
+                // If billing detail exists, show outstanding dues and last reading
+                $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
+                $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
+            } else {
+                // If no billing detail exists, hide these fields
+                $('#outstanding_dues').val(0).prop('hidden', false);
+                $('#last_reading').val(0).prop('hidden', false);
+            }
+        } else {
+            // Reset the fields if no occupant is found
+            $('#occupant_id').val('').prop('disabled', false).prop('hidden', false);
+            $('#hidden_occupant_id').val('');
+            $('#outstanding_dues').val(0).prop('hidden', false);
+            $('#last_reading').val(0).prop('hidden', false);
+        }
+    });
+});
+
+ </script>
+ 
 @endsection

@@ -18,17 +18,17 @@ class BillingDetailController extends Controller
         'occupantHouseStatus.house', 
         'occupantHouseStatus.occupant'
     ])->get();
-
+    
     return view('billing.billing_details.index', compact('billingDetails'));
 }
 
 
     public function create()
     {
-        $houses = HouseDetail::all(); 
         $occupants = OccupantDetail::all();
-    
-        return view('billing.billing_details.create', compact('houses', 'occupants'));
+        $billingDetails = BillingDetail::all();
+        // dd( $billingDetails);
+        return view('billing.billing_details.create', compact('billingDetails','occupants'));
     }
     
     public function store(Request $request)
