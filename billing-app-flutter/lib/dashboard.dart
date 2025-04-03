@@ -75,6 +75,22 @@ class _DashboardPageState extends State<DashboardPage>
   }
 
 
+  Future<void> loadSvgElectricMeter() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/electric_meter.svg');
+
+      setState(() {
+        svgString = svg.replaceAll(
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#000000' : _colorToHex(secondaryLight ?? Colors.grey), // Dark mode logic
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.blue),
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_3', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+        );
+      });
+    }
+  }
+
 
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
@@ -184,10 +200,10 @@ class _DashboardPageState extends State<DashboardPage>
                         crossAxisSpacing: 20,
                         children: [
                           _buildDashboardTile("Profile", Icons.person, CustomerViewPage()),
-                          _buildDashboardTile("Customers", Icons.group, CustomerViewPage()),
+                          _buildDashboardTile("Houses", Icons.house_rounded, CustomerViewPage()),
                           _buildDashboardTile("Configurations", Icons.build, CustomerViewPage()),
                           _buildDashboardTile("History", Icons.history, CustomerViewPage()),
-                          _buildDashboardTile("Bills", Icons.receipt_long, BillingPage()),
+                          _buildDashboardTile("Meter Reading", "assets/google.svg", BillingPage()),
                           _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
                       ),
@@ -292,14 +308,44 @@ class _DashboardPageState extends State<DashboardPage>
       ),
     );
   }
+  Widget _buildDashboardTile2(String title, dynamic icon, Widget page) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
+      },
+      child: Card(
+        margin: EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            icon is IconData
+                ? Icon(icon, size: 60)
+                : SvgPicture.asset(
+              icon,
+              width: 60,
+              height: 60,
+            ),
+            SizedBox(height: 10),
+            Text(
+              title,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-  Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
+  Widget _buildDashboardTile(String title, dynamic icon, Widget destinationPage) {
     Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
 
     return StatefulBuilder(
       builder: (context, setState) {
         return AnimatedOpacity(
-          opacity: _tileOpacity,
+          opacity: 1.0,
           duration: Duration(milliseconds: 1300),
           curve: Curves.easeInOut,
           child: Material(
@@ -341,14 +387,22 @@ class _DashboardPageState extends State<DashboardPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(icon, size: 70, color: _isDarkMode == true ? Colors.white70 : (primaryDark)),
+                    // Check whether the icon is IconData or an SVG path
+                    icon is IconData
+                        ? Icon(icon, size: 70, color: (_isDarkMode ?? false) ? Colors.white70 : Colors.blue)
+                        : SvgPicture.asset(
+                      icon,
+                      width: 70,
+                      height: 70,
+                      color: (_isDarkMode ?? false) ? Colors.white70 : Colors.blue,
+                    ),
                     SizedBox(height: 8),
                     Text(
                       title,
                       style: GoogleFonts.signika(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: _isDarkMode == true ? Colors.white54 : (primaryDark ?? Colors.blue),
+                        color: (_isDarkMode ?? false) ? Colors.white54 : Colors.blue,
                       ),
                     ),
                   ],

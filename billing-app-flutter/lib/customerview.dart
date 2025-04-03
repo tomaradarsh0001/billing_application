@@ -39,9 +39,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   Color? textPrimary;
   final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
   bool? _isDarkMode;
-
-
-  // Add a list to track selected customers
   List<int> _selectedItems = [];
 
   @override
@@ -335,48 +332,43 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     );
   }
 
-
-  @override
   @override
   Widget build(BuildContext context) {
-
-    return WillPopScope(
-    onWillPop: _onWillPop,
-    child: Scaffold(
-      backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
-      body: NestedScrollView(
+    return Scaffold(
+      body: CustomScrollView(
         controller: _scrollController,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: _scrollOffset <= 220
-                  ? Colors.transparent
-                  : (_isDarkMode == true ? Colors.black : (primaryDark ?? Colors.blue)), // Dark Mode = Black, Light Mode = primaryDark
-              expandedHeight: 280,
-              automaticallyImplyLeading: false,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  children: [
-                    // Top Animated Background Shape
-                    AnimatedPositioned(
-                      duration: const Duration(milliseconds: 900),
-                      curve: Curves.easeInOut,
-                      top: _isAnimationComplete ? 0 : -400,
-                      left: 0,
-                      right: 0,
-                      child: SvgPicture.string(
-                        svgString,
-                        semanticsLabel: 'Animated and Colored SVG',
-                        fit: BoxFit.fill,
-                        height: 300,
-                      ),
+        slivers: [
+          SliverAppBar(
+            backgroundColor: _scrollOffset <= 300 ? Colors.white : primaryDark,
+            expandedHeight: 280,
+            automaticallyImplyLeading: false,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                children: [
+                  AnimatedPositioned(
+                    duration: const Duration(milliseconds: 900),
+                    curve: Curves.easeInOut,
+                    top: _isAnimationComplete ? 0 : -300,
+                    left: 0,
+                    right: 0,
+                    child: SvgPicture.string(
+                      svgString,
+                      semanticsLabel: 'Animated and Colored SVG',
+                      fit: BoxFit.fill,
+                      height: 300,
                     ),
-                    Column(
-                      children: [
-                        const SizedBox(height: 160),
-                        CircleAvatar(
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.end, // Align to the bottom
+                    children: [
+                      const SizedBox(height: 100),
+                      AnimatedOpacity(
+                        opacity: _isAnimationComplete ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 700),
+                        curve: Curves.easeIn,
+                        child: CircleAvatar(
                           radius: 60,
                           backgroundColor: Colors.white,
                           child: ClipOval(
@@ -388,269 +380,271 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(width: 15),
-                            Text(
-                              "Total: ${_customers.length}",
-                              style: GoogleFonts.signika(
-                                color: const Color(0xFFAFB0B1),
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(width: 35),
-                            Text(
-                              "Available Customers",
-                              style: GoogleFonts.signika(
-                                color: const Color(0xFFAFB0B1),
-                                fontSize: 22,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              title: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 0),
-                child: Column(
-                  children: [
-                    // Search bar
-                    if (_isSearchActive)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 0),
-                                child: Stack(
-                                  alignment: Alignment.centerRight,
-                                  children: [
-                                    TextField(
-                                      controller: _searchController,
-                                      autofocus: true,
-                                      decoration: InputDecoration(
-                                        hintText: 'Search by name...',
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Colors.white,
-                                        contentPadding:
-                                        const EdgeInsets.symmetric(horizontal: 16),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(25.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(25.0),
-                                          borderSide: BorderSide.none,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right: 8,
-                                      child: IconButton(
-                                        icon: const Icon(
-                                          Icons.close,
-                                          size: 24,
-                                          color: Colors.grey,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _searchController.clear();
-                                            _isSearchActive = false;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    Row(
-                      children: [
-                        if (!_isSearchActive)
-                          IconButton(
-                            icon: SvgPicture.asset(
-                              'assets/backarrow.svg',
-                              width: 30,
-                              height: 30,
-                              color: _scrollOffset <= 270 ? Colors.white : Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => DashboardPage()),
-                              );
-                            },
-                          ),
-                        if (!_isSearchActive)
-                          Expanded(
-                            child: Text(
-                              "Customers",
-                              style: GoogleFonts.signika(
-                                color: _scrollOffset <= 270 ? Colors.white : Colors.white,
-                                fontSize: 29,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              textAlign: TextAlign.left,
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const SizedBox(width: 20),
+                          Text(
+                            "Total: ${_customers.length}",
+                            style: GoogleFonts.signika(
+                              color: Color(0xFFAFB0B1),
+                              fontSize: 14,
                             ),
                           ),
-                        if (!_isSearchActive)
-                          IconButton(
-                            icon: SvgPicture.asset(
-                              'assets/search.svg',
-                              width: 28,
-                              height: 28,
-                              color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                          const SizedBox(width: 65),
+                          Text(
+                            "Billing Details",
+                            style: GoogleFonts.signika(
+                              color: Color(0xFFAFB0B1),
+                              fontSize: 22,
+                              fontWeight: FontWeight.normal,
                             ),
-                            onPressed: () {
-                              setState(() {
-                                _isSearchActive = true;
-                              });
-                            },
                           ),
-                      ],
-                    ),
-                  ],
-                ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ];
-        },
-        body: ListView.builder(
-          padding: EdgeInsets.only(top: 10), // REMOVE or set to zero
-          itemCount: _filteredCustomers.length,
-          itemBuilder: (BuildContext context, int index) {
-            if (_isLoading) {
-              return Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                child: Card(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                  elevation: 5,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            title: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Column(
+                children: [
+                  if (_isSearchActive)
+                    Padding(
+                      padding: const EdgeInsets.all(0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(0),
+                              child: Stack(
+                                alignment: Alignment.centerRight,
+                                children: [
+                                  TextField(
+                                    controller: _searchController,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      hintText: 'Search by name...',
+                                      border: InputBorder.none,
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(25.0),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(25.0),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 8,
+                                    child: IconButton(
+                                      icon: const Icon(
+                                        Icons.close,
+                                        size: 24,
+                                        color: Colors.grey,
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _searchController.clear();
+                                          _isSearchActive = false;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Row(
+                    children: [
+                      if (!_isSearchActive)
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/backarrow.svg',
+                            width: 30,
+                            height: 30,
+                            color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => DashboardPage()),
+                            );
+                          },
+                        ),
+                      if (!_isSearchActive)
+                        Expanded(
+                          child: Text(
+                            "Billing",
+                            style: GoogleFonts.signika(
+                              color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                              fontSize: 29,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      if (!_isSearchActive)
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/search.svg',
+                            width: 28,
+                            height: 28,
+                            color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isSearchActive = true;
+                            });
+                          },
+                        ),
+                    ],
                   ),
-                  child: Container(
-                    height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                ],
+              ),
+            ),
+          ),
+
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                if (_isLoading) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.grey.shade300,
+                    highlightColor: Colors.grey.shade100,
+                    child: Card(
+                      margin: const EdgeInsets.fromLTRB(15, 10, 15, 15),
+                      elevation: 5,
                       color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Container(
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            }
-
-            if (_filteredCustomers.isEmpty) {
-              return Center(
-                child: Text(
-                  "No customers found.",
-                  style: GoogleFonts.signika(
-                    fontSize: 18,
-                    color: const Color(0xFFAFB0B1),
-                  ),
-                ),
-              );
-            }
-
-            final customer = _filteredCustomers[index];
-            bool isSelected = _selectedItems.contains(customer['id']);
-
-            return GestureDetector(
-              onLongPress: () {
-                setState(() {
-                  if (_selectedItems.contains(customer['id'])) {
-                    _selectedItems.remove(customer['id']);
-                  } else {
-                    _selectedItems.add(customer['id']);
-                  }
-                });
-              },
-              child: Card(
-                margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                elevation: 2,
-                color: _isDarkMode == true
-                    ? (isSelected ? Colors.grey.shade800 : Colors.black54) // Dark Mode Colors
-                    : (isSelected ? Colors.grey.shade300 : Colors.white), // Light Mode Colors
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ListTile(
-                  leading: Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: _isDarkMode == true ? Colors.grey.shade700 : (primaryLight ?? Colors.blue), // Dark Mode for leading circle
-                      borderRadius: BorderRadius.circular(32),
+                  );
+                }
+                if (_filteredCustomers.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "No customers found.",
+                      style: GoogleFonts.signika(
+                        fontSize: 18,
+                        color: const Color(0xFFAFB0B1),
+                      ),
                     ),
-                    child: Center(
-                      child: Text(
-                        "${customer['first_name'][0]}${customer['last_name'][0]}",
-                        style: GoogleFonts.signika(
-                          fontWeight: FontWeight.normal,
-                          color: _isDarkMode == true ? Colors.white : Colors.grey.shade800, // Dark Mode text color
-                          fontSize: 34,
+                  );
+                }
+                final customer = _filteredCustomers[index];
+                bool isSelected = _selectedItems.contains(customer['id']);
+
+                return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      if (_selectedItems.contains(customer['id'])) {
+                        _selectedItems.remove(customer['id']);
+                      } else {
+                        _selectedItems.add(customer['id']);
+                      }
+                    });
+                  },
+                  child: Card(
+                    margin: EdgeInsets.fromLTRB(15, index == 0 ? 15 : 0, 15, 15), // Margin only for the first item
+                    elevation: 2,
+                    color: _isDarkMode == true
+                        ? (isSelected ? Colors.grey.shade800 : Colors.white) // Dark Mode Colors
+                        : (isSelected ? Colors.grey.shade300 : Colors.white), // Light Mode Colors
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(8), // Padding inside ListTile
+                      leading: Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: _isDarkMode == true
+                              ? Colors.grey.shade700
+                              : (primaryLight ?? Colors.blue), // Dark Mode for leading circle
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${customer['first_name'][0]}${customer['last_name'][0]}",
+                            style: GoogleFonts.signika(
+                              fontWeight: FontWeight.normal,
+                              color: _isDarkMode == true ? Colors.white : Colors.grey.shade800, // Dark Mode text color
+                              fontSize: 34,
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        "Customer Name: ${customer['first_name']} ${customer['last_name']}",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: _isDarkMode == true ? Colors.white : Colors.black, // Dark Mode text
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Customer ID: ${customer['aadhar_number']}\n"
+                            "City: ${customer['city_id']}, ${customer['state_id']}",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: _isDarkMode == true ? Colors.white70 : Colors.black87, // Dark Mode subtitle
+                        ),
+                      ),
+                      trailing: Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: _isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue), // Dark Mode trailing button
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: IconButton(
+                          padding: EdgeInsets.zero, // Remove padding from IconButton
+                          icon: Icon(
+                            Icons.arrow_forward_ios,
+                            color: _isDarkMode == true ? Colors.black : Colors.white, // Dark Mode icon
+                            size: 12,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomerDetailsPage(
+                                  customerId: customer['id'],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
                   ),
-                  title: Text(
-                    "Customer Name: ${customer['first_name']} ${customer['last_name']}",
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
-                      color: _isDarkMode == true ? Colors.white : Colors.black, // Dark Mode text
-                    ),
-                  ),
-                  subtitle: Text(
-                    "Customer ID: ${customer['aadhar_number']}\n"
-                        "City: ${customer['city_id']}, ${customer['state_id']}",
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: _isDarkMode == true ? Colors.white70 : Colors.black87, // Dark Mode subtitle
-                    ),
-                  ),
-                  trailing: Container(
-                    width: 24,
-                    height: 24,
-                    decoration: BoxDecoration(
-                      color: _isDarkMode == true ? Colors.white : (primaryDark ?? Colors.blue), // Dark Mode trailing button
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_forward_ios,
-                        color: _isDarkMode == true ? Colors.black : Colors.white, // Dark Mode icon
-                        size: 9,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CustomerDetailsPage(
-                              customerId: customer['id'],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
+
+                );
+              },
+              childCount: _filteredCustomers.isEmpty ? 1 : _filteredCustomers.length,
+            ),
+          ),
+        ],
       ),
       floatingActionButton: _selectedItems.isNotEmpty
           ? FloatingActionButton(
@@ -665,9 +659,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         shape: const CircleBorder(),
       )
           : null, // Ensures no FAB appears when no items are selected
-    ),
     );
-
   }
-
 }

@@ -13,6 +13,7 @@ import 'dashboard.dart';
 class BillingPage extends StatefulWidget {
   @override
   _BillingPageState createState() => _BillingPageState();
+
 }
 
 class _BillingPageState extends State<BillingPage> {
@@ -35,7 +36,10 @@ class _BillingPageState extends State<BillingPage> {
   Color? textPrimary;
   final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing-details";
   bool? _isDarkMode;
-
+  bool _showGeneratedContent = false;
+  double _estCharges = 0.0;
+  double unitCharge = 9.5;
+  Set<int> _openIds = {};
 
   @override
   void initState() {
@@ -312,125 +316,273 @@ class _BillingPageState extends State<BillingPage> {
               ),
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                if (_isLoading) {
-                  return Shimmer.fromColors(
-                    baseColor: Colors.grey.shade300,
-                    highlightColor: Colors.grey.shade100,
-                    child: Card(
-                      margin: const EdgeInsets.fromLTRB(15, 20, 15, 15),
-                      elevation: 5,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Container(
-                        height: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  if (_isLoading) {
+                    return Padding(
+                      padding: EdgeInsets.only(top: 1),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey.shade300,
+                        highlightColor: Colors.grey.shade100,
+                        child: Card(
+                          elevation: 5,
                           color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Container(
+                            height: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                }
+                    );
+                  }
+                  // State variable
 
-                final billing = _billingDetails[index];
-                return Card(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 15),
-                  elevation: 2,
-                  color: Colors.grey.shade800,
 
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: ListTile(
-                    leading: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: _isDarkMode == true ? Colors.grey.shade700 : (primaryLight ?? Colors.blue), // Dark Mode for leading circle
-                        borderRadius: BorderRadius.circular(32),
+                  final billing = _billingDetails[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: billing['status'] == "paid"
+                            ? Colors.green // Green for Paid
+                            : billing['status'] == "unpaid"
+                            ? Colors.red // Red for Unpaid
+                            : Colors.orange,
+                        width: 1.5,
                       ),
-                      child: Center(
-                        child: Text(
-                          "${billing['occupant']['first_name'][0]}${billing['occupant']['last_name'][0]}",
-                          style: GoogleFonts.signika(
-                            fontWeight: FontWeight.normal,
-                            color: _isDarkMode == true ? Colors.white : Colors.grey.shade800, // Dark Mode text color
-                            fontSize: 34,
-                          ),
-                        ),
-                      ),
-                    ),
-                    title: Text(
-                      "Customer Name: ${billing['occupant']['first_name']} ${billing['occupant']['last_name']}",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: _isDarkMode == true ? Colors.white : Colors.black, // Dark Mode text
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "House No: ${billing['house']['hno']}",
-                          style: TextStyle(
-                            color: _isDarkMode == true ? Colors.white : Colors.black87, // Dark Mode color for text
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "Outstanding Dues: ${billing['outstanding_dues']}",
-                          style: TextStyle(
-                            color: _isDarkMode == true ? Colors.white : Colors.black87, // Dark Mode color for text
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          "Current Charges: ${billing['current_charges']}",
-                          style: TextStyle(
-                            color: _isDarkMode == true ? Colors.white : Colors.black87, // Dark Mode color for text
-                            fontSize: 13,
-                          ),
-                        ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        )
                       ],
                     ),
-
-                    trailing: Container(
-                      width: 24,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: _isDarkMode == true ? Colors.white : (Colors.white ?? Colors.blue), // Dark Mode trailing button
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_forward_ios,
-                          color: _isDarkMode == true ? Colors.black : Colors.white, // Dark Mode icon
-                          size: 9,
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DashboardPage(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Status and Index Number Row
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: billing['status'] == "paid" ? Colors.green[100] : Colors.red[100],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                billing['id'].toString(),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: billing['status'] == "paid" ? Colors.green[900] : Colors.red[900],
+                                ),
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                );
+                            Text(
+                              billing['status'] == "paid"
+                                  ? "PAID"
+                                  : billing['status'] == "partially_paid"
+                                  ? "PARTIALLY PAID"
+                                  : "UNPAID",
+                              style: TextStyle(
+                                color: billing['status'] == "paid"
+                                    ? Colors.green
+                                    : billing['status'] == "partially_paid"
+                                    ? Colors.orange
+                                    : Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        // House and Locality Info
+                        Text(
+                          "Occupant Name :- ${billing['occupant']['first_name']} ${billing['occupant']['last_name']}",
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          "House/Locality :- ${billing['house']['hno']} ${billing['house']['area']}",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Text(
+                          "Total Dues :- Rs.${billing['outstanding_dues']}/-",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          "Last Readings :- Rs.${billing['last_reading']}/-",
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        // Buttons Row
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              if (!_openIds.contains(billing['id'])) ...[
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {
+                                      setState(() {
+                                        _openIds.add(billing['id']);
+                                      });
+                                    },
+                                    icon: const Icon(Icons.ads_click, color: Colors.black54, size: 14),
+                                    label: const Text(
+                                      "Tap to Generate",
+                                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey[200],
+                                      padding: const EdgeInsets.symmetric(vertical: 6),
+                                      minimumSize: const Size(0, 28),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.arrow_forward, color: Colors.black54, size: 14),
+                                    label: const Text(
+                                      "View Details",
+                                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey[200],
+                                      padding: const EdgeInsets.symmetric(vertical: 6),
+                                      minimumSize: const Size(0, 28),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(0),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ] else ...[
+                                Expanded(
+                                  child: TextField(
+                                    onChanged: (value) {
+                                      setState(() {
+                                        double? reading = double.tryParse(value);
+                                        _estCharges = (reading ?? 0) * unitCharge;
+                                      });
+                                    },
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      labelText: "New Reading",
+                                      labelStyle: const TextStyle(fontSize: 12),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: TextField(
+                                    enabled: false,
+                                    controller: TextEditingController(text: _estCharges.toStringAsFixed(2)),
+                                    decoration: InputDecoration(
+                                      labelText: "Est. Charges",
+                                      labelStyle: const TextStyle(fontSize: 12),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.grey[300],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    // Your OK action here
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                                    minimumSize: const Size(40, 28),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  child: const Text("OK", style: TextStyle(color: Colors.white)),
+                                ),
+                                const SizedBox(width: 6),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _openIds.remove(billing['id']);
+                                      _estCharges = 0;
+                                    });
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
+                                    minimumSize: const Size(10, 10),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  child: const Text("CANCEL", style: TextStyle(color: Colors.white)),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        if (_estCharges > 0 && _openIds.contains(billing['id'])) ...[
+                          const SizedBox(height: 8),
+                          Text(
+                            "Your current bill + outstanding dues sum is = Rs.${billing['outstanding_dues'].toString()} + ${_estCharges.toStringAsFixed(2)} = Rs.${(double.parse(billing['outstanding_dues'].toString()) + _estCharges).toStringAsFixed(2)}/-",
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.black87,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
 
-                  },
-              childCount: _billingDetails.length,
-            ),
+                      ],
+                    ),
+                  );
+
+
+                },
+            childCount: _billingDetails.length,
           ),
+    ),
         ],
       ),
     );

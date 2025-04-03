@@ -1,8 +1,12 @@
+import 'package:billing_application/modal/faq.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'dashboard.dart';
 import 'login.dart';
+import 'modal/privacy_policy.dart';
+import 'modal/faq.dart';
+import 'modal/help_support.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -45,6 +49,24 @@ class _SettingsPageState extends State<SettingsPage> {
     setState(() {
       _isDarkMode = isDark;
     });
+  }
+  void _showPrivacyPolicy(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const PrivacyPolicyModal(),
+    );
+  }
+  void _showHelpSupport(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const HelpSupportModal(),
+    );
+  }
+  void _showFAQ(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => const FAQModal(),
+    );
   }
 
   void _confirmLogout() {
@@ -151,10 +173,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   MaterialPageRoute(builder: (context) => DashboardPage()),
                 );
               }),
-              _buildListTile(Icons.settings, 'Account Settings', () {}),
+              _buildListTile(Icons.settings, 'Configuration', () {}),
               _buildListTile(Icons.notifications, 'Notifications', () {}),
-              _buildListTile(Icons.privacy_tip, 'Privacy Policy', () {}),
-              _buildListTile(Icons.help, 'Help & Support', () {}),
+              _buildListTile(Icons.privacy_tip, 'Privacy Policy', () => _showPrivacyPolicy(context)),
+              _buildListTile(Icons.help, 'Help & Support', () => _showHelpSupport(context)),
+              _buildListTile(Icons.question_answer, 'FAQ', () => _showFAQ(context)),
               _buildListTile(Icons.logout, 'Logout', _confirmLogout),
             ],
           ),
@@ -188,4 +211,6 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+
 }
