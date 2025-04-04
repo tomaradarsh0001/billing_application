@@ -26,11 +26,13 @@ class _DashboardPageState extends State<DashboardPage>
   late AnimationController _navBarController;
   late Animation<double> _navBarAnimation;
   bool? _isDarkMode;
+  late String svgString2;
 
   @override
   void initState() {
     super.initState();
     _loadThemePreference();
+
     _navBarController = AnimationController(
       duration: Duration(milliseconds: 800),
       vsync: this,
@@ -48,6 +50,24 @@ class _DashboardPageState extends State<DashboardPage>
       });
 
       return loadSvg();
+    }).then((_) {
+      Future.delayed(Duration(milliseconds: 200), () {
+        setState(() {
+          _tileOpacity = 1.0;
+          _avatarOpacity = 1.0;
+          _isAnimationComplete = true;
+        });
+        _navBarController.forward();
+      });
+    });
+    AppColors.loadColorsFromPrefs().then((_) {
+      setState(() {
+        secondaryLight = AppColors.secondaryLight;
+        primaryLight = AppColors.primaryLight;
+        primaryDark = AppColors.primaryDark;
+      });
+
+      return loadSvgMeter();
     }).then((_) {
       Future.delayed(Duration(milliseconds: 200), () {
         setState(() {
@@ -88,6 +108,23 @@ class _DashboardPageState extends State<DashboardPage>
           'PLACEHOLDER_COLOR_3', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
+    }
+  }
+
+
+  Future<void> loadSvgMeter() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/electric_meter.svg');
+
+      svgString2 = svg.replaceAll(
+        'PLACEHOLDER_COLOR_1', _isDarkMode == true ? _colorToHex(Colors.grey[200]!) : _colorToHex(secondaryLight ?? Colors.grey),
+      ).replaceAll(
+        'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.blue),
+      ).replaceAll(
+        'PLACEHOLDER_COLOR_3', _isDarkMode == true ? _colorToHex(Colors.grey[400]!) : _colorToHex(primaryDark ?? Colors.black),
+      );
+
+      setState(() {}); // ensure UI rebuild
     }
   }
 
@@ -182,11 +219,11 @@ class _DashboardPageState extends State<DashboardPage>
                         mainAxisSpacing: 20,
                         crossAxisSpacing: 20,
                         children: [
+                          _buildDashboardTile("Profile", Icons.person, CustomerViewPage()),
                           _buildDashboardTile("Houses", Icons.house_rounded, CustomerViewPage()),
-                          _buildDashboardTile("Customers", Icons.group, CustomerViewPage()),
-                          _buildDashboardTile("Configurations", Icons.build, CustomerViewPage()),
-                          _buildDashboardTile("History", Icons.history, CustomerViewPage()),
-                          _buildDashboardTileWithSvg("Meter Readings", "assets/electric_meter.svg", BillingPage()),
+                          _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, CustomerViewPage()),
+                          _buildDashboardTile("History", Icons.history_rounded, CustomerViewPage()),
+                          _buildDashboardTileWithSvg("Meter Readings", svgString2, BillingPage()),
                           _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
                       ),
@@ -291,7 +328,7 @@ class _DashboardPageState extends State<DashboardPage>
       ),
     );
   }
-  Widget _buildDashboardTileWithSvg(String title, String svgAsset, Widget destinationPage) {
+  Widget _buildDashboardTileWithSvg(String title, String svgData, Widget destinationPage) {
     Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
 
     return StatefulBuilder(
@@ -339,10 +376,10 @@ class _DashboardPageState extends State<DashboardPage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      svgAsset,
-                      width: 70,
-                      height: 70,
+                    SvgPicture.string(
+                      svgData,
+                      width: 67,
+                      height: 67,
                     ),
                     SizedBox(height: 8),
                     Text(
@@ -362,6 +399,7 @@ class _DashboardPageState extends State<DashboardPage>
       },
     );
   }
+
   Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
     Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
 

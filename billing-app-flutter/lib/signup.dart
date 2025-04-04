@@ -151,7 +151,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
           // Main Content
           Padding(
-            padding: const EdgeInsets.only(top: 230),
+            padding: const EdgeInsets.only(top: 250),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -316,68 +316,68 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        // const SizedBox(height: 5),
                         // Continue with Text
-                        Center(
-                          child: Text(
-                            'or Continue with',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
+                        // Center(
+                        //   child: Text(
+                        //     'or Continue with',
+                        //     style: TextStyle(
+                        //       fontSize: 16,
+                        //       color: textPrimary,
+                        //       fontWeight: FontWeight.w500,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF2B48AA),
-                          side: const BorderSide(color: Color(0xFF2B48AA)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(140, 48),
-                        ),
-                        label: const Text(
-                          'Facebook',
-                          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/facebook.svg',
-                          width: 28,
-                          height: 28,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Color.fromRGBO(44, 49, 57, 0.5)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(154, 48),
-                        ),
-                        label: const Text(
-                          'Google',
-                          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/google.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // const SizedBox(height: 20),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     ElevatedButton.icon(
+                  //       onPressed: () {},
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor: Color(0xFF2B48AA),
+                  //         side: const BorderSide(color: Color(0xFF2B48AA)),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(7),
+                  //         ),
+                  //         minimumSize: const Size(140, 48),
+                  //       ),
+                  //       label: const Text(
+                  //         'Facebook',
+                  //         style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400),
+                  //       ),
+                  //       icon: SvgPicture.asset(
+                  //         'assets/facebook.svg',
+                  //         width: 28,
+                  //         height: 28,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 20),
+                  //     ElevatedButton.icon(
+                  //       onPressed: () {},
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor: Colors.white,
+                  //         side: const BorderSide(color: Color.fromRGBO(44, 49, 57, 0.5)),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(7),
+                  //         ),
+                  //         minimumSize: const Size(154, 48),
+                  //       ),
+                  //       label: const Text(
+                  //         'Google',
+                  //         style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
+                  //       ),
+                  //       icon: SvgPicture.asset(
+                  //         'assets/google.svg',
+                  //         width: 24,
+                  //         height: 24,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 30),
                   Center(
                     child: GestureDetector(

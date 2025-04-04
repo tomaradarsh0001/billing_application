@@ -1,11 +1,9 @@
 import 'package:billing_application/dashboard.dart';
-import 'package:billing_application/otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'signup.dart';
 import 'resetPassword.dart';
-import 'otp.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
 import 'main.dart';
 import 'package:http/http.dart' as http;
@@ -33,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  final ScrollController _scrollController = ScrollController();
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -65,6 +64,11 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _isAnimationComplete = true;
       });
+    });
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 50) {
+        _scrollController.jumpTo(50);
+      }
     });
   }
 
@@ -188,18 +192,27 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void signPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SignupPage()), // Replace with your signup page widget
+    );
+  }
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // Dismiss the keyboard and remove focus from input fields
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            // Top SVG Image with Animation
+            // Animated SVG Background
             AnimatedPositioned(
               duration: Duration(milliseconds: 900),
               curve: Curves.easeInOut,
@@ -207,264 +220,187 @@ class _LoginPageState extends State<LoginPage> {
               left: 0,
               right: 0,
               child: SvgPicture.string(
-                svgString,  // Render the modified SVG string with new colors
-                semanticsLabel: 'Animated and Colored SVG',
+                svgString,
+                semanticsLabel: 'Animated Background SVG',
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.fill,
-              )
+              ),
             ),
-            // Main Content
-            Padding(
-              padding: const EdgeInsets.only(top: 280),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: RichText(
-                      textAlign: TextAlign.left,
-                      text: TextSpan(
+
+            SafeArea(
+              child: SingleChildScrollView(
+                controller: _scrollController, // ✅ Added controller
+                padding: const EdgeInsets.only(top: 260, bottom: 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Welcome Text
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Welcome\n',
+                              style: GoogleFonts.signika(
+                                fontSize: 42,
+                                fontWeight: FontWeight.w500,
+                                color: textPrimary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: 'Back',
+                              style: GoogleFonts.signika(
+                                fontSize: 42,
+                                fontWeight: FontWeight.w500,
+                                color: textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
                         children: [
-                          TextSpan(
-                            text: 'Welcome\n',
-                            style: GoogleFonts.signika(
-                              fontSize: 43,
-                              fontWeight: FontWeight.normal,
-                              color: textPrimary,
-                              height: 1.2,
+                          // Email
+                          TextField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: SvgPicture.string(
+                                  svgStringEmail,
+                                  width: 30,
+                                  height: 30,
+                                ),
+                              ),
+                              labelText: 'Email',
+                              labelStyle: GoogleFonts.signika(
+                                fontSize: 20,
+                                color: Colors.grey[700],
+                              ),
+                              border: UnderlineInputBorder(),
                             ),
                           ),
-                          TextSpan(
-                            text: 'Back',
-                            style: GoogleFonts.signika(
-                              fontSize: 43,
-                              fontWeight: FontWeight.normal,
-                              color: textPrimary,
-                              height: 1.2,
+                          const SizedBox(height: 20),
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: _obscureText,
+                            decoration: InputDecoration(
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: SvgPicture.string(
+                                  svgStringPass,
+                                  width: 25,
+                                  height: 25,
+                                ),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                                  color: Colors.grey,
+                                ),
+                                onPressed: _togglePasswordVisibility,
+                              ),
+                              labelText: 'Password',
+                              labelStyle: GoogleFonts.signika(
+                                fontSize: 20,
+                                color: Colors.grey[700],
+                              ),
+                              border: UnderlineInputBorder(),
                             ),
                           ),
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) => Resetpassword(),
+                                    transitionsBuilder: (_, animation, __, child) {
+                                      return SlideTransition(
+                                        position: Tween<Offset>(
+                                          begin: Offset(1.0, 0),
+                                          end: Offset.zero,
+                                        ).animate(CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.easeInOut,
+                                        )),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Forgot Password?',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: links,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Login Button
+                              ElevatedButton(
+                                onPressed: _isLoading ? null : _login,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: secondaryDark,
+                                  disabledBackgroundColor: secondaryDark,
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: _isLoading
+                                    ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                                    : Text(
+                                  "Login",
+                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                              ),
+
+                              const SizedBox(height: 12), // space between buttons
+                              OutlinedButton(
+                                onPressed: _isLoading ? null : signPage, // Call signPage() instead of _login
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  side: BorderSide(color: Colors.black),
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "Signup",
+                                  style: TextStyle(color: Colors.black, fontSize: 16),
+                                ),
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 30),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 48),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Email Input Field
-                        TextField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(right: 14.0),
-                              child: SvgPicture.string(
-                                svgStringEmail, // Replace with your SVG icon
-                                semanticsLabel: 'Email Icon',
-                                width: 15,
-                                height: 15,
-                              ),
-                            ),
-                            labelText: 'Email',
-                            labelStyle: GoogleFonts.signika(
-                              fontSize: 20,
-                              color: Color.fromRGBO(93, 98, 105, 0.7),
-                            ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Password Input Field
-                        TextField(
-                          controller: _passwordController,
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(right: 18.0),
-                              child: SvgPicture.string(
-                                svgStringPass, // Replace with your SVG icon
-                                semanticsLabel: 'Password Icon',
-                                width: 25,
-                                height: 25,
-                              ),
-                            ),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureText ? Icons.visibility_off : Icons.visibility,
-                                color: Colors.grey,
-                              ),
-                              onPressed: _togglePasswordVisibility,
-                            ),
-                            labelText: 'Password',
-                            labelStyle: GoogleFonts.signika(
-                              fontSize: 20,
-                              color: Color.fromRGBO(93, 98, 105, 0.7),
-                            ),
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                      secondaryAnimation) =>
-                                      Resetpassword(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    const begin = Offset(1.0, 0.0);
-                                    const end = Offset.zero;
-                                    const curve = Curves.easeInOut;
-                                    var tween = Tween(begin: begin, end: end)
-                                        .chain(CurveTween(curve: curve));
-                                    var offsetAnimation =
-                                    animation.drive(tween);
-
-                                    return SlideTransition(
-                                      position: offsetAnimation,
-                                      child: child,
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: links,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        // Submit Button
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: ElevatedButton(
-                            onPressed: _isLoading ? null : _login, // Disable button while loading
-                            style: ElevatedButton.styleFrom(
-                              shape: CircleBorder(),
-                              backgroundColor: secondaryDark, // Normal state color
-                              disabledBackgroundColor: secondaryDark, // Ensures color stays when disabled
-                              padding: const EdgeInsets.all(18),
-                            ),
-                            child: _isLoading
-                                ? SizedBox(
-                              width: 30, // Make it smaller
-                              height: 30,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2, // Make it thinner
-                              ),
-                            )
-                                : Icon(Icons.arrow_forward, color: Colors.white, size: 28),
-                          ),
-                        ),
-
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF2B48AA),
-                          side: const BorderSide(color: Color(0xFF2B48AA)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(140, 48),
-                        ),
-                        label: const Text(
-                          'Facebook',
-                          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/facebook.svg',
-                          width: 28,
-                          height: 28,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Color.fromRGBO(44, 49, 57, 0.5)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(154, 48),
-                        ),
-                        label: const Text(
-                          'Google',
-                          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/google.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation,
-                                secondaryAnimation) =>
-                                SignupPage(),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              const begin = Offset(1.0, 0.0);
-                              const end = Offset.zero;
-                              const curve = Curves.easeInOut;
-                              var tween = Tween(begin: begin, end: end)
-                                  .chain(CurveTween(curve: curve));
-                              var offsetAnimation =
-                              animation.drive(tween);
-
-                              return SlideTransition(
-                                position: offsetAnimation,
-                                child: child,
-                              );
-                            },
-                          ),
-                        );
-                      },
-                      child:  Text(
-                        'Are you a new User? Register',
-                        style: TextStyle(
-                          color: links, // Fallback color
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
