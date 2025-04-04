@@ -4,21 +4,21 @@ import 'package:http/http.dart' as http;
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert';
 import 'dashboard.dart';
-import 'customerviewdetails.dart';
 import 'package:flutter/services.dart';
 import 'main.dart';
 import 'package:shimmer/shimmer.dart';
+import 'houseviewdetails.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'CustomerDeletedSuccessfullyPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class CustomerViewPage extends StatefulWidget {
+class HouseViewPage extends StatefulWidget {
   @override
-  _CustomerViewPageState createState() => _CustomerViewPageState();
+  _HouseViewPageState createState() => _HouseViewPageState();
 }
 
-class _CustomerViewPageState extends State<CustomerViewPage> {
+
+class _HouseViewPageState extends State<HouseViewPage> {
   bool _isAnimationComplete = false;
   List<dynamic> _customers = [];
   List<dynamic> _filteredCustomers = [];
@@ -38,9 +38,10 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
+  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing/occupants";
   bool? _isDarkMode;
   List<int> _selectedItems = [];
+
 
   @override
   void initState() {
@@ -103,16 +104,14 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
 
   Future<void> loadSvgIcon() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
-      String svg = await rootBundle.loadString('assets/customer_icon.svg');
+      String svg = await rootBundle.loadString('assets/house.svg');
       setState(() {
         svgStringIcon = svg.replaceAll(
-            'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
-              ).replaceAll(
-                'PLACEHOLDER_2', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
-              ).replaceAll(
-              'PLACEHOLDER_3', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
-              ).replaceAll(
-          'PLACEHOLDER_4', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(textPrimary ?? Colors.black),
+        ).replaceAll(
+          'PLACEHOLDER_COLOR_3', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -143,16 +142,12 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   }
 
   Future<void> _fetchCustomers() async {
-    const String apiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers';
+    const String apiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing/occupants'; // Replace with your API URL
     try {
       final response = await http.get(Uri.parse(apiUrl));
-      print('Status Code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
       if (response.statusCode == 200) {
-        final decoded = json.decode(response.body);
         setState(() {
-          _customers = decoded['data']; // Assuming response has a "data" field
+          _customers = json.decode(response.body);
           _filteredCustomers = _customers;
           _isLoading = false;
         });
@@ -160,7 +155,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         throw Exception('Failed to load customers');
       }
     } catch (e) {
-      print('Error: $e');
       setState(() {
         _isLoading = false;
       });
@@ -169,7 +163,6 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
       );
     }
   }
-
   Future<void> deleteCustomer(int customerId) async {
     final response = await http.delete(Uri.parse('$baseUrl$customerId'));
 
@@ -222,22 +215,17 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
     });
   }
 
-  Future<void> _onRefresh() async {
-    setState(() {
-      _isLoading = true;  // Show loading indicator
-    });
-    await _fetchCustomers();  // Fetch the data again
-  }
+
   // Delete selected customers
   Future<void> _deleteSelectedItems() async {
-    final deleteApiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers'; // Replace with your delete API URL
+    final deleteApiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing/occupants'; // Replace with your delete API URL
 
     try {
       // Navigate to the success page first
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => CustomerDeletedSuccessfullyPage(),
+          builder: (context) => DashboardPage(),
         ),
       );
 
@@ -430,9 +418,9 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                                 fontSize: 14,
                               ),
                             ),
-                            const SizedBox(width: 45),
+                            const SizedBox(width: 60),
                             Text(
-                              "Customer Details",
+                              "House Details",
                               style: GoogleFonts.signika(
                                 color: Color(0xFFAFB0B1),
                                 fontSize: 22,
@@ -529,7 +517,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                         if (!_isSearchActive)
                           Expanded(
                             child: Text(
-                              "Customers",
+                              "Houses",
                               style: GoogleFonts.signika(
                                 color: _scrollOffset <= 270
                                     ? Colors.white
@@ -566,7 +554,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                  // 1. Show shimmer while loading
+                  // Show shimmer while loading
                   if (_isLoading) {
                     return Container(
                       color: Colors.white,
@@ -591,7 +579,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                     );
                   }
 
-                  // 2. Show message if no data
+                  // Show message when no customers found
                   if (_filteredCustomers.isEmpty) {
                     return Container(
                       color: Colors.white,
@@ -610,7 +598,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                     );
                   }
 
-                  // 3. Customer card
+                  // Render each customer item
                   final customer = _filteredCustomers[index];
                   bool isSelected = _selectedItems.contains(customer['id']);
 
@@ -619,90 +607,150 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                     child: GestureDetector(
                       onLongPress: () {
                         setState(() {
-                          if (isSelected) {
+                          if (_selectedItems.contains(customer['id'])) {
                             _selectedItems.remove(customer['id']);
                           } else {
                             _selectedItems.add(customer['id']);
                           }
                         });
                       },
-                      child: Card(
-                        margin: EdgeInsets.fromLTRB(15, index == 0 ? 10 : 0, 15, 10),
-                        elevation: 2,
-                         color: _isDarkMode == true ? Colors.black : Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(8),
-                          leading: CircleAvatar(
-                            radius: 30,
-                            backgroundColor:  _isDarkMode == true ? Colors.black : secondaryDark,
-                            child: Text(
-                              "${customer['first_name'][0]}${customer['last_name'][0]}",
-                              style: GoogleFonts.signika(
-                                fontWeight: FontWeight.normal,
-
-                                color: _isDarkMode == true ? Colors.black : AppColors.background,
-                                fontSize: 18,
-                              ),
+                      child: Stack(
+                        children: [
+                          Card(
+                            margin: EdgeInsets.fromLTRB(15, index == 0 ? 10 : 0, 15, 10),
+                            elevation: 2,
+                            color: _isDarkMode == true
+                                ? (isSelected ? Colors.grey.shade800 : Colors.white)
+                                : (isSelected ? Colors.grey.shade300 : Colors.white),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                          title: Text(
-                            "Customer Name: ${customer['first_name']} ${customer['last_name']}",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.bold,
-                              color: _isDarkMode == true ? Colors.black : Colors.black,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Customer ID: ${customer['aadhar_number']}\n"
-                                "City: ${customer['city']['name']}, "
-                                "${customer['state']['name']}, "
-                                "${customer['country']['name']}",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: _isDarkMode == true ? Colors.black : Colors.black,
-                            ),
-                          ),
-                          trailing: Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: _isDarkMode == true ? Colors.black : primaryDark,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(
-                                Icons.arrow_forward_ios,
-                                color: _isDarkMode == true ? Colors.black : AppColors.background,
-                                size: 12,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => CustomerDetailsPage(
-                                      customerId: customer['id'],
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0, right: 10.0),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(8),
+                                leading: Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: _isDarkMode == true
+                                        ? Colors.grey.shade700
+                                        : (primaryLight ?? Colors.blue),
+                                    borderRadius: BorderRadius.circular(32),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.house,
+                                      size: 28,
+                                      color: _isDarkMode == true ? Colors.white : AppColors.background,
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Occupant: ${customer['first_name']} ${customer['last_name']}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: _isDarkMode == true ? Colors.white : Colors.black,
+                                      ),
+                                    ),
+                                    // Text(
+                                    //   "Email: ${customer['email']}",
+                                    //   style: TextStyle(
+                                    //     fontSize: 13,
+                                    //     color: _isDarkMode == true
+                                    //         ? Colors.white70
+                                    //         : Colors.black87,
+                                    //   ),
+                                    // ),
+                                    Text(
+                                      "Phone: +${customer['phone_code']['phonecode']} ${customer['mobile']}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: _isDarkMode == true
+                                            ? Colors.white70
+                                            : Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      "House: ${customer['house']['hno']}, ${customer['house']['area']}, ${customer['house']['city']}, ${customer['house']['state']}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: _isDarkMode == true
+                                            ? Colors.white70
+                                            : Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                trailing: Container(
+                                  width: 24,
+                                  height: 24,
+                                  decoration: BoxDecoration(
+                                    color: _isDarkMode == true
+                                        ? Colors.white
+                                        : (primaryDark ?? Colors.blue),
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: IconButton(
+                                    padding: EdgeInsets.zero,
+                                    icon: Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: _isDarkMode == true ? Colors.black : Colors.white,
+                                      size: 12,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => HouseViewDetails(
+                                            id: customer['id'], // ✅ Change `customerId` to `id`
+                                          ),
+                                        ),
+                                      );
+                                    },
+
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          // Top-right green badge with Unique ID
+                          Positioned(
+                            top: 15,
+                            right: 20,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade700,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                customer['unique_id'],
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
-                },
+
+
+                    },
                 childCount: _isLoading
-                    ? 5 // Number of shimmer placeholders
-                    : (_filteredCustomers.isEmpty ? 1 : _filteredCustomers.length),
+                    ? 5 // number of shimmer placeholders
+                    : (_filteredCustomers.isEmpty ? 1 : _filteredCustomers
+                    .length),
               ),
             ),
-
 
 
           ],
@@ -726,4 +774,4 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
 
     );
   }
-  }
+}

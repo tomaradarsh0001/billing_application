@@ -13,14 +13,10 @@ class CustomerApiController extends Controller
 {
     public function index()
     {
-        $customers = Customer::all();
-        return response()->json($customers);
+        $customers = Customer::with(['country', 'state', 'city', 'phoneCode'])->get();
+        return response()->json(['success' => true, 'data' => $customers]);
     }
-    public function show($id)
-    {
-        $customer = Customer::with(['city', 'state', 'country', 'phonecode'])->findOrFail($id);
-        return response()->json($customer);
-    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -40,56 +36,78 @@ class CustomerApiController extends Controller
             'city_id' => 'required|exists:cities,id',
         ]);
 
-        $customer = Customer::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'email' => $request->email,
-            'phone_code_id' => $request->phone_code_id,
-            'phone_number' => $request->phone_number,
-            'dob' => $request->dob,
-            'aadhar_number' => $request->aadhar_number,
-            'pan_number' => $request->pan_number,
-            'gender' => $request->gender,
-            'service_address' => $request->service_address,
-            'pincode' => $request->pincode,
-            'country_id' => $request->country_id,
-            'state_id' => $request->state_id,
-            'city_id' => $request->city_id,
-        ]);
+        $customer = Customer::create($request->all());
 
-        return response()->json(['message' => 'Customer created successfully', 'customer' => $customer], 201);
+        return response()->json(['success' => true, 'message' => 'Customer created successfully.', 'data' => $customer]);
+    }
+
+    public function show($id)
+    {
+        $customer = Customer::with(['country', 'state', 'city', 'phoneCode'])->find($id);
+        if (!$customer) {
+            return response()->json(['success' => false, 'message' => 'Customer not found.'], 404);
+        }
+        return response()->json(['success' => true, 'data' => $customer]);
     }
 
     public function update(Request $request, $id)
     {
+        $customer = Customer::findOrFail($id);
+
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:customers,email,' . $id,
+            'email' => 'required|email|unique:customers,email,' . $id,
             'phone_code_id' => 'required|exists:phone_codes,id',
-            'phone_number' => 'required|digits:10|unique:customers,phone_number,' . $id,
+            'phone_number' => 'required|string|max:15|unique:customers,phone_number,' . $id,
             'dob' => 'required|date',
-            'aadhar_number' => 'required|digits:12|unique:customers,aadhar_number,' . $id,
-            'pan_number' => 'required|size:10|unique:customers,pan_number,' . $id,
-            'service_address' => 'required|string',
+            'aadhar_number' => 'required|string|max:12|unique:customers,aadhar_number,' . $id,
+            'pan_number' => 'required|string|max:10|unique:customers,pan_number,' . $id,
             'gender' => 'required|string',
+            'service_address' => 'required|string',
             'country_id' => 'required|exists:countries,id',
             'state_id' => 'required|exists:states,id',
             'city_id' => 'required|exists:cities,id',
             'pincode' => 'required|string|max:10',
         ]);
 
-        $customer = Customer::findOrFail($id);
         $customer->update($request->all());
 
-        return response()->json(['message' => 'Customer updated successfully', 'customer' => $customer]);
+        return response()->json(['success' => true, 'message' => 'Customer updated successfully.', 'data' => $customer]);
     }
 
     public function destroy($id)
     {
-        $customer = Customer::findOrFail($id);
-        $customer->delete();
+        $customer = Customer::find($id);
+        if (!$customer) {
+            return response()->json(['success' => false, 'message' => 'Customer not found.'], 404);
+        }
 
-        return response()->json(['message' => 'Customer deleted successfully']);
+        $customer->delete();
+        return response()->json(['success' => true, 'message' => 'Customer deleted successfully.']);
+    }
+
+    public function getStates(Request $request)
+    {
+        $states = State::where('country_id', $request->country_id)->get();
+        return response()->json(['success' => true, 'data' => $states]);
+    }
+
+    public function getCities(Request $request)
+    {
+        $cities = City::where('state_id', $request->state_id)->get();
+        return response()->json(['success' => true, 'data' => $cities]);
+    }
+
+    public function getCountries()
+    {
+        $countries = Country::all();
+        return response()->json(['success' => true, 'data' => $countries]);
+    }
+
+    public function getPhoneCodes()
+    {
+        $codes = PhoneCode::all();
+        return response()->json(['success' => true, 'data' => $codes]);
     }
 }

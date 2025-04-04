@@ -25,6 +25,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   Map<String, dynamic>? _customerDetails;
   final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
   String svgString = '';
+  String svgStringIcon = '';
   Color? primaryLight;
   Color? secondaryLight; // Assuming color2 is also a dynamic color
   Color? secondaryDark; // Assuming color2 is also a dynamic color
@@ -32,7 +33,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-
+  bool? _isDarkMode;
 
   @override
   void initState() {
@@ -51,6 +52,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       // Load SVG after colors are fetched
       loadSvg();
       _fetchCustomerDetails();
+      loadSvgIcon();
 
     });
     Future.delayed(Duration(milliseconds: 200), () {
@@ -72,23 +74,46 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       });
     }
   }
+  Future<void> loadSvgIcon() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/customer_icon.svg');
+      setState(() {
+        svgStringIcon = svg.replaceAll(
+          'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
+        ).replaceAll(
+          'PLACEHOLDER_2', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+        ).replaceAll(
+          'PLACEHOLDER_3', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+        ).replaceAll(
+          'PLACEHOLDER_4', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+        );
+      });
+    }
+  }
   String _colorToHex(Color color) {
     return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
   }
   // Fetch customer details from the API
   Future<void> _fetchCustomerDetails() async {
     final String apiUrl = '$baseUrl${widget.customerId}';
+    print('API URL: $apiUrl');
+
     try {
       final response = await http.get(Uri.parse(apiUrl));
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
       if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
         setState(() {
-          _customerDetails = json.decode(response.body);
+          _customerDetails = decoded['data']; // adjust if your structure is different
           _isLoading = false;
         });
       } else {
         throw Exception('Failed to load customer details');
       }
     } catch (e) {
+      print('Fetch Error: $e');
       setState(() {
         _isLoading = false;
       });
@@ -97,6 +122,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       );
     }
   }
+
 
   // Delete customer from the API
   Future<void> deleteCustomer(int customerId) async {
@@ -306,16 +332,21 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 90),
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.white,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/dashboard_user.png', // Replace with your PNG file path
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
+                    const SizedBox(height: 115),
+                    AnimatedOpacity(
+                      opacity: _isAnimationComplete ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.easeIn,
+                      child: CircleAvatar(
+                        radius: 60,
+                        child: ClipOval(
+                          child: SvgPicture.string(
+                            svgStringIcon,
+                            semanticsLabel: 'Icon SVG',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -450,7 +481,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.bold,
               color: Color(0xFFAFB0B1),
             ),
@@ -459,8 +490,8 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           Text(
             value ?? "", // Fallback text for null values
             style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
               color: Colors.black,
             ),
           ),

@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ConfigurationApiController;
 use App\Http\Controllers\Api\BillingDetailApiController;
 use App\Http\Controllers\Api\CustomerApiController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\HouseOccupantDetailApiController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -33,4 +34,14 @@ Route::prefix('billing-details')->group(function () {
     Route::get('{id}', [BillingDetailApiController::class, 'show']); // Get a single billing detail  ***working
     Route::put('{id}', [BillingDetailApiController::class, 'update']); // Update billing detail   ***working
     Route::delete('{id}', [BillingDetailApiController::class, 'destroy']); // Delete billing detail ***working
+});
+
+
+//Occupants and Alloted House Details API
+Route::prefix('billing')->group(function () {
+    Route::get('/occupants', [HouseOccupantDetailApiController::class, 'index']);
+    Route::post('/occupants', [HouseOccupantDetailApiController::class, 'store']);
+    Route::get('/occupants/{id}', [HouseOccupantDetailApiController::class, 'show']);
+    Route::put('/occupants/{id}', [HouseOccupantDetailApiController::class, 'update']);
+    Route::delete('/occupants/{id}', [HouseOccupantDetailApiController::class, 'destroy']);
 });

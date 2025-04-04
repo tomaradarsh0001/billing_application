@@ -1,3 +1,4 @@
+import 'package:billing_application/house.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -220,9 +221,9 @@ class _DashboardPageState extends State<DashboardPage>
                         crossAxisSpacing: 20,
                         children: [
                           _buildDashboardTile("Profile", Icons.person, CustomerViewPage()),
-                          _buildDashboardTile("Houses", Icons.house_rounded, CustomerViewPage()),
-                          _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, CustomerViewPage()),
-                          _buildDashboardTile("History", Icons.history_rounded, CustomerViewPage()),
+                          _buildDashboardTile("Houses", Icons.house_rounded, HouseViewPage()),
+                          _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, DashboardPage()),
+                          _buildDashboardTile("History", Icons.history_rounded, DashboardPage()),
                           _buildDashboardTileWithSvg("Meter Readings", svgString2, BillingPage()),
                           _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
