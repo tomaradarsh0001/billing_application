@@ -246,7 +246,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
                       padding: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
                       child: Column(
                         children: [
-                          _buildDetailField("Name", "${data?["first_name"] ?? ""} ${data?["last_name"] ?? ""}"),
+                          _buildDetailField("Occupant Name", "${data?["first_name"] ?? ""} ${data?["last_name"] ?? ""}"),
                           _buildDetailField("Mobile", "+${data?['phone_code']?["phonecode"] ?? ""} ${data?["mobile"] ?? ""}"),
                           _buildDetailField("Email", data?["email"] ?? ""),
                           _buildDetailField("House No", data?["house"]?["hno"] ?? ""),

@@ -650,7 +650,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Occupant: ${customer['first_name']} ${customer['last_name']}",
+                                      "House: ${customer['house']['hno']}, ${customer['house']['area']}, ${customer['house']['city']}, ${customer['house']['state']}",
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -676,7 +676,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                       ),
                                     ),
                                     Text(
-                                      "House: ${customer['house']['hno']}, ${customer['house']['area']}, ${customer['house']['city']}, ${customer['house']['state']}",
+                                      "Occupant: ${customer['first_name']} ${customer['last_name']}",
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: _isDarkMode == true

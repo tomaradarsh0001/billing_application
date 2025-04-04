@@ -152,11 +152,10 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     setState(() {
-      _isLoading = true; // Show CircularProgressIndicator
+      _isLoading = true;
     });
 
-    var url = Uri.parse(
-        "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/login");
+    var url = Uri.parse("http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/login");
 
     try {
       var response = await http.post(
@@ -167,10 +166,16 @@ class _LoginPageState extends State<LoginPage> {
       var responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
+        var user = responseData['user'];
         String token = responseData['token'];
+        String name = user['name'] ?? '';
+        String email = user['email'] ?? '';
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('auth_token', token);
+        await prefs.setString('name', name);
+        await prefs.setString('email', email);
+        await prefs.setInt('user_id', user['id']);
 
         Navigator.pushReplacement(
           context,
@@ -187,10 +192,14 @@ class _LoginPageState extends State<LoginPage> {
       );
     } finally {
       setState(() {
-        _isLoading = false; // Hide CircularProgressIndicator after response
+        _isLoading = false;
       });
     }
   }
+
+
+
+
 
 
   void signPage() {

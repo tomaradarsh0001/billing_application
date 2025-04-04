@@ -28,12 +28,14 @@ class _DashboardPageState extends State<DashboardPage>
   late Animation<double> _navBarAnimation;
   bool? _isDarkMode;
   late String svgString2;
+  String name = '';
+  String email = '';
 
   @override
   void initState() {
     super.initState();
     _loadThemePreference();
-
+    loadUserData();
     _navBarController = AnimationController(
       duration: Duration(milliseconds: 800),
       vsync: this,
@@ -80,7 +82,13 @@ class _DashboardPageState extends State<DashboardPage>
       });
     });
   }
-
+  Future<void> loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name') ?? '';
+      email = prefs.getString('email') ?? '';
+    });
+  }
   Future<void> _loadThemePreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isDark = prefs.getBool('isDarkMode') ?? false;
@@ -167,7 +175,7 @@ class _DashboardPageState extends State<DashboardPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Welcome, Adarsh",
+                            "Welcome, $name",
                             style: GoogleFonts.signika(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -183,7 +191,7 @@ class _DashboardPageState extends State<DashboardPage>
                             ),
                           ),
                           Text(
-                            "Logged in with: tomaradarsh001@gmail.com",
+                            "Logged in with: $email",
                             style: GoogleFonts.signika(
                               fontSize: 10,
                               color: Colors.white.withOpacity(0.9),
