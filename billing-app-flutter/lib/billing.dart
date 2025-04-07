@@ -135,15 +135,20 @@ class _BillingPageState extends State<BillingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _isDarkMode! ? Colors.grey[700] : Colors.white,
-      body: CustomScrollView(
+        body: Container(
+        color: Colors.white, // Set red background here
+        child: CustomScrollView(
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            backgroundColor: _scrollOffset <= 300 ? Colors.transparent : primaryDark,
-            expandedHeight: 350,
+            backgroundColor: _scrollOffset <= 300
+                ? Colors.white
+                : primaryDark,
+            expandedHeight: 280,
             automaticallyImplyLeading: false,
             floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
@@ -151,7 +156,7 @@ class _BillingPageState extends State<BillingPage> {
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 900),
                     curve: Curves.easeInOut,
-                    top: _isAnimationComplete ? 0 : -400,
+                    top: _isAnimationComplete ? 0 : -300,
                     left: 0,
                     right: 0,
                     child: SvgPicture.string(
@@ -162,8 +167,10 @@ class _BillingPageState extends State<BillingPage> {
                     ),
                   ),
                   Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    // Align to the bottom
                     children: [
-                      const SizedBox(height: 170),
+                      const SizedBox(height: 100),
                       AnimatedOpacity(
                         opacity: _isAnimationComplete ? 1.0 : 0.0,
                         duration: const Duration(milliseconds: 700),
@@ -181,6 +188,7 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -188,13 +196,13 @@ class _BillingPageState extends State<BillingPage> {
                           Text(
                             "Total: ${_billingDetails.length}",
                             style: GoogleFonts.signika(
-                              color: Color(0xFFAFB0B1),
+                              color: Colors.grey.shade600,
                               fontSize: 14,
                             ),
                           ),
-                          const SizedBox(width: 65),
+                          const SizedBox(width: 45),
                           Text(
-                            "Billing Details",
+                            "Billing Details Details",
                             style: GoogleFonts.signika(
                               color: Color(0xFFAFB0B1),
                               fontSize: 22,
@@ -209,18 +217,17 @@ class _BillingPageState extends State<BillingPage> {
               ),
             ),
             title: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 0),
+              padding: const EdgeInsets.all(0),
               child: Column(
                 children: [
-                  // Search bar
                   if (_isSearchActive)
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                      padding: const EdgeInsets.all(0),
                       child: Row(
                         children: [
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 0),
+                              padding: const EdgeInsets.all(10),
                               child: Stack(
                                 alignment: Alignment.centerRight,
                                 children: [
@@ -232,14 +239,16 @@ class _BillingPageState extends State<BillingPage> {
                                       border: InputBorder.none,
                                       filled: true,
                                       fillColor: Colors.white,
-                                      contentPadding:
-                                      const EdgeInsets.symmetric(horizontal: 16),
+                                      contentPadding: const EdgeInsets
+                                          .symmetric(horizontal: 8),
                                       enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25.0),
+                                        borderRadius: BorderRadius.circular(
+                                            25.0),
                                         borderSide: BorderSide.none,
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(25.0),
+                                        borderRadius: BorderRadius.circular(
+                                            25.0),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
@@ -275,21 +284,26 @@ class _BillingPageState extends State<BillingPage> {
                             'assets/backarrow.svg',
                             width: 30,
                             height: 30,
-                            color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                            color: _scrollOffset <= 270
+                                ? Colors.white
+                                : Colors.white,
                           ),
                           onPressed: () {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => DashboardPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => DashboardPage()),
                             );
                           },
                         ),
                       if (!_isSearchActive)
                         Expanded(
                           child: Text(
-                            "Billing",
+                            "Billing Details",
                             style: GoogleFonts.signika(
-                              color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                              color: _scrollOffset <= 270
+                                  ? Colors.white
+                                  : Colors.white,
                               fontSize: 29,
                               fontWeight: FontWeight.normal,
                             ),
@@ -302,7 +316,9 @@ class _BillingPageState extends State<BillingPage> {
                             'assets/search.svg',
                             width: 28,
                             height: 28,
-                            color: _scrollOffset <= 270 ? Colors.white : Colors.white,
+                            color: _scrollOffset <= 270
+                                ? Colors.white
+                                : Colors.white,
                           ),
                           onPressed: () {
                             setState(() {
@@ -375,37 +391,102 @@ class _BillingPageState extends State<BillingPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            // Index as badge
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: billing['status'] == "paid" ? Colors.green[100] : Colors.red[100],
-                                borderRadius: BorderRadius.circular(4),
+                                color: billing['status'] == "paid"
+                                    ? Colors.green.shade100
+                                    : billing['status'] == "partially_paid"
+                                    ? Colors.orange.shade100
+                                    : Colors.red.shade100,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
-                              child: Text(
-                                billing['id'].toString(),
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: billing['status'] == "paid" ? Colors.green[900] : Colors.red[900],
-                                ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.receipt_long,
+                                    size: 16,
+                                    color: billing['status'] == "paid"
+                                        ? Colors.green.shade900
+                                        : billing['status'] == "partially_paid"
+                                        ? Colors.orange.shade900
+                                        : Colors.red.shade900,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    (index + 1).toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: billing['status'] == "paid"
+                                          ? Colors.green.shade900
+                                          : billing['status'] == "partially_paid"
+                                          ? Colors.orange.shade900
+                                          : Colors.red.shade900,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Text(
-                              billing['status'] == "paid"
-                                  ? "PAID"
-                                  : billing['status'] == "partially_paid"
-                                  ? "PARTIALLY PAID"
-                                  : "UNPAID",
-                              style: TextStyle(
+
+                            // Status label
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
                                 color: billing['status'] == "paid"
-                                    ? Colors.green
+                                    ? Colors.green.shade50
                                     : billing['status'] == "partially_paid"
-                                    ? Colors.orange
-                                    : Colors.red,
-                                fontWeight: FontWeight.bold,
+                                    ? Colors.orange.shade50
+                                    : Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    billing['status'] == "paid"
+                                        ? Icons.check_circle
+                                        : billing['status'] == "partially_paid"
+                                        ? Icons.hourglass_bottom
+                                        : Icons.cancel,
+                                    color: billing['status'] == "paid"
+                                        ? Colors.green
+                                        : billing['status'] == "partially_paid"
+                                        ? Colors.orange
+                                        : Colors.red,
+                                    size: 16,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    billing['status'] == "paid"
+                                        ? "PAID"
+                                        : billing['status'] == "partially_paid"
+                                        ? "PARTIALLY PAID"
+                                        : "UNPAID",
+                                    style: TextStyle(
+                                      color: billing['status'] == "paid"
+                                          ? Colors.green
+                                          : billing['status'] == "partially_paid"
+                                          ? Colors.orange
+                                          : Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
+
+
                         const SizedBox(height: 6),
                         // House and Locality Info
                         Text(
@@ -424,27 +505,30 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         Text(
-                          "Total Dues :- Rs.${billing['outstanding_dues']}/-",
+                          "Total Dues :- Rs.${double.parse(billing['outstanding_dues']).toInt()}/-  (${double.parse(billing['last_reading']).toInt()} Units)",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black,
                           ),
                         ),
-                        Text(
-                          "Last Readings :- Rs.${billing['last_reading']}/-",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
+                        // Text(
+                        //   "Last Readings :- Rs.${billing['last_reading']}/-",
+                        //   style: const TextStyle(
+                        //     fontSize: 14,
+                        //     color: Colors.black,
+                        //   ),
+                        // ),
                         const SizedBox(height: 2),
                         // Buttons Row
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              if (!_openIds.contains(billing['id'])) ...[
+                          child: AnimatedCrossFade(
+                            duration: const Duration(milliseconds: 300),
+                            crossFadeState: _openIds.contains(billing['id'])
+                                ? CrossFadeState.showSecond
+                                : CrossFadeState.showFirst,
+                            firstChild: Row(
+                              children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () {
@@ -452,41 +536,46 @@ class _BillingPageState extends State<BillingPage> {
                                         _openIds.add(billing['id']);
                                       });
                                     },
-                                    icon: const Icon(Icons.ads_click, color: Colors.black54, size: 14),
+                                    icon: const Icon(Icons.touch_app, color: Colors.indigo),
                                     label: const Text(
-                                      "Tap to Generate",
-                                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                                      "Generate Bill",
+                                      style: TextStyle(color: Colors.indigo, fontSize: 13, fontWeight: FontWeight.w500),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.grey[200],
-                                      padding: const EdgeInsets.symmetric(vertical: 6),
-                                      minimumSize: const Size(0, 28),
+                                      backgroundColor: Colors.indigo.shade50,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 6),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
-                                    icon: const Icon(Icons.arrow_forward, color: Colors.black54, size: 14),
+                                    onPressed: () {
+                                      // View Details logic
+                                    },
+                                    icon: const Icon(Icons.visibility, color: Colors.teal),
                                     label: const Text(
                                       "View Details",
-                                      style: TextStyle(color: Colors.black54, fontSize: 12),
+                                      style: TextStyle(color: Colors.teal, fontSize: 13, fontWeight: FontWeight.w500),
                                     ),
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.grey[200],
-                                      padding: const EdgeInsets.symmetric(vertical: 6),
-                                      minimumSize: const Size(0, 28),
+                                      backgroundColor: Colors.teal.shade50,
+                                      elevation: 0,
+                                      padding: const EdgeInsets.symmetric(vertical: 10),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(0),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ] else ...[
+                              ],
+                            ),
+                            secondChild: Row(
+                              children: [
                                 Expanded(
                                   child: TextField(
                                     onChanged: (value) {
@@ -498,47 +587,46 @@ class _BillingPageState extends State<BillingPage> {
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       labelText: "New Reading",
-                                      labelStyle: const TextStyle(fontSize: 12),
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                                      labelStyle: const TextStyle(fontSize: 13),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       filled: true,
-                                      fillColor: Colors.white,
+                                      fillColor: Colors.grey.shade50,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 6),
+                                const SizedBox(width: 10),
                                 Expanded(
                                   child: TextField(
                                     enabled: false,
                                     controller: TextEditingController(text: _estCharges.toStringAsFixed(2)),
                                     decoration: InputDecoration(
                                       labelText: "Est. Charges",
-                                      labelStyle: const TextStyle(fontSize: 12),
-                                      contentPadding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                                      labelStyle: const TextStyle(fontSize: 13),
+                                      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
                                       filled: true,
-                                      fillColor: Colors.grey[300],
+                                      fillColor: Colors.grey.shade200,
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 6),
+                                const SizedBox(width: 10),
                                 ElevatedButton(
                                   onPressed: () {
-                                    // Your OK action here
+                                    // ✅ Confirm action
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.green,
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                                    minimumSize: const Size(40, 28),
+                                    backgroundColor: Colors.green.shade600,
+                                    padding: const EdgeInsets.all(10),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  child: const Text("OK", style: TextStyle(color: Colors.white)),
+                                  child: const Icon(Icons.check, color: Colors.white, size: 20),
                                 ),
                                 const SizedBox(width: 6),
                                 ElevatedButton(
@@ -549,18 +637,19 @@ class _BillingPageState extends State<BillingPage> {
                                     });
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6),
-                                    minimumSize: const Size(10, 10),
+                                    backgroundColor: Colors.red.shade600,
+                                    padding: const EdgeInsets.all(10),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  child: const Text("CANCEL", style: TextStyle(color: Colors.white)),
+                                  child: const Icon(Icons.close, color: Colors.white, size: 20),
                                 ),
                               ],
-                            ],
+                            ),
                           ),
+
+
                         ),
                         if (_estCharges > 0 && _openIds.contains(billing['id'])) ...[
                           const SizedBox(height: 8),
@@ -585,6 +674,7 @@ class _BillingPageState extends State<BillingPage> {
     ),
         ],
       ),
+    ),
     );
   }
 }
