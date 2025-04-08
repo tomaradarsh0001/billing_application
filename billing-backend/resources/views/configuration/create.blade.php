@@ -43,7 +43,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="mb-3 col-md-12">
+                            <div class="mb-3 col-md-6">
+                                <label for="app_purpose" class="form-label">Application Purpose</label>
+                                <input type="text" class="form-control" id="app_purpose" name="app_purpose" placeholder="Enter Application Purpose">
+                            </div>
+                            <div class="mb-3 col-md-6">
                                 <label for="app_tagline" class="form-label">Application Tagline</label>
                                 <input type="text" class="form-control" id="app_tagline" name="app_tagline" placeholder="Enter Application Tagline">
                             </div>
@@ -55,9 +59,8 @@
                                     @foreach ($fonts as $font)
                                         @php
                                             $fontFamily = strtolower($font['family']);
-                                            $fontFamily = preg_replace_callback('/\s(\w)/', function ($matches) {
-                                                return strtoupper($matches[1]);
-                                            }, $fontFamily);
+                                            $spaced = preg_replace('/(?<!^)([A-Z])/', ' $1', $fontFamily);
+                                            $fontFamily = ucwords($spaced);
                                         @endphp
                                         <option value="{{ $fontFamily }}" data-font-family="{{ $font['family'] }}" style="font-family: '{{ $font['family'] }}'"
                                         @if($font['family'] == 'Signika') selected @endif>
@@ -77,9 +80,8 @@
                                     @foreach ($fonts as $font)
                                         @php
                                             $fontFamily = strtolower($font['family']);
-                                            $fontFamily = preg_replace_callback('/\s(\w)/', function ($matches) {
-                                                return strtoupper($matches[1]);
-                                            }, $fontFamily);
+                                            $spaced = preg_replace('/(?<!^)([A-Z])/', ' $1', $fontFamily);
+                                            $fontFamily = ucwords($spaced);
                                         @endphp
                                          <option value="{{ $fontFamily }}" data-font-family="{{ $font['family'] }}" style="font-family: '{{ $font['family'] }}'"
                                          @if($font['family'] == 'Signika') selected @endif>

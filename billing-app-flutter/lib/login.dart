@@ -32,6 +32,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   final ScrollController _scrollController = ScrollController();
+  String? primaryFont;
+  String? secondaryFont;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -51,6 +53,8 @@ class _LoginPageState extends State<LoginPage> {
         secondaryDark = AppColors.secondaryDark; // Replace with actual dynamic color
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
       });
 
       // Load SVG after colors are fetched
@@ -197,11 +201,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-
-
-
-
-
   void signPage() {
     Navigator.push(
       context,
@@ -253,7 +252,8 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             TextSpan(
                               text: 'Welcome\n',
-                              style: GoogleFonts.signika(
+                              style: GoogleFonts.getFont(
+                                primaryFont ?? 'Signika',
                                 fontSize: 42,
                                 fontWeight: FontWeight.w500,
                                 color: textPrimary,
@@ -261,7 +261,8 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             TextSpan(
                               text: 'Back',
-                              style: GoogleFonts.signika(
+                              style: GoogleFonts.getFont(
+                                primaryFont ?? 'Signika',
                                 fontSize: 42,
                                 fontWeight: FontWeight.w500,
                                 color: textPrimary,
@@ -290,7 +291,8 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                               labelText: 'Email',
-                              labelStyle: GoogleFonts.signika(
+                              labelStyle: GoogleFonts.getFont(
+                                  primaryFont ?? 'Signika',
                                 fontSize: 20,
                                 color: Colors.grey[700],
                               ),
@@ -318,7 +320,8 @@ class _LoginPageState extends State<LoginPage> {
                                 onPressed: _togglePasswordVisibility,
                               ),
                               labelText: 'Password',
-                              labelStyle: GoogleFonts.signika(
+                              labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                                 fontSize: 20,
                                 color: Colors.grey[700],
                               ),
@@ -351,7 +354,8 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               child: Text(
                                 'Forgot Password?',
-                                style: TextStyle(
+                                style: GoogleFonts.getFont(
+                                  AppColors.secondaryFont ?? 'Roboto',
                                   fontSize: 15,
                                   color: links,
                                   fontWeight: FontWeight.w500,
@@ -384,10 +388,13 @@ class _LoginPageState extends State<LoginPage> {
                                 )
                                     : Text(
                                   "Login",
-                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                  style: GoogleFonts.getFont(
+                                    AppColors.secondaryFont ?? 'Roboto',
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
-
                               const SizedBox(height: 12), // space between buttons
                               OutlinedButton(
                                 onPressed: _isLoading ? null : signPage, // Call signPage() instead of _login
@@ -401,7 +408,11 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 child: Text(
                                   "Signup",
-                                  style: TextStyle(color: Colors.black, fontSize: 16),
+                                  style: GoogleFonts.getFont(
+                                    AppColors.secondaryFont ?? 'Roboto',
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                    ),
                                 ),
                               ),
                             ],

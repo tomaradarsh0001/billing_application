@@ -40,6 +40,8 @@ class _BillingPageState extends State<BillingPage> {
   double _estCharges = 0.0;
   double unitCharge = 9.5;
   Set<int> _openIds = {};
+  String? primaryFont;
+  String? secondaryFont;
 
   @override
   void initState() {
@@ -54,6 +56,8 @@ class _BillingPageState extends State<BillingPage> {
         secondaryDark = AppColors.secondaryDark;
         links = AppColors.links;
         textPrimary = AppColors.textPrimary;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
       });
       loadSvg();
       loadSvgIcon();
@@ -195,15 +199,17 @@ class _BillingPageState extends State<BillingPage> {
                           const SizedBox(width: 20),
                           Text(
                             "Total: ${_billingDetails.length}",
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               color: Colors.grey.shade600,
                               fontSize: 14,
                             ),
                           ),
-                          const SizedBox(width: 45),
+                          const SizedBox(width: 65),
                           Text(
-                            "Billing Details Details",
-                            style: GoogleFonts.signika(
+                            "Billing Details",
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               color: Color(0xFFAFB0B1),
                               fontSize: 22,
                               fontWeight: FontWeight.normal,
@@ -300,7 +306,8 @@ class _BillingPageState extends State<BillingPage> {
                         Expanded(
                           child: Text(
                             "Billing Details",
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               color: _scrollOffset <= 270
                                   ? Colors.white
                                   : Colors.white,
@@ -491,7 +498,8 @@ class _BillingPageState extends State<BillingPage> {
                         // House and Locality Info
                         Text(
                           "Occupant Name :- ${billing['occupant']['first_name']} ${billing['occupant']['last_name']}",
-                          style: const TextStyle(
+                          style: GoogleFonts.getFont(
+                            secondaryFont ?? 'Roboto',
                             fontSize: 15,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -499,14 +507,16 @@ class _BillingPageState extends State<BillingPage> {
                         ),
                         Text(
                           "House/Locality :- ${billing['house']['hno']} ${billing['house']['area']}",
-                          style: const TextStyle(
+                          style: GoogleFonts.getFont(
+                            secondaryFont ?? 'Roboto',
                             fontSize: 14,
                             color: Colors.black87,
                           ),
                         ),
                         Text(
                           "Total Dues :- Rs.${double.parse(billing['outstanding_dues']).toInt()}/-  (${double.parse(billing['last_reading']).toInt()} Units)",
-                          style: const TextStyle(
+                          style: GoogleFonts.getFont(
+                            secondaryFont ?? 'Roboto',
                             fontSize: 14,
                             color: Colors.black,
                           ),
@@ -537,10 +547,15 @@ class _BillingPageState extends State<BillingPage> {
                                       });
                                     },
                                     icon: const Icon(Icons.touch_app, color: Colors.indigo),
-                                    label: const Text(
+                                    label: Text(
                                       "Generate Bill",
-                                      style: TextStyle(color: Colors.indigo, fontSize: 13, fontWeight: FontWeight.w500),
+                                      style: GoogleFonts.getFont(
+                                        secondaryFont ?? 'Roboto',
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
+
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.indigo.shade50,
                                       elevation: 0,
@@ -558,9 +573,13 @@ class _BillingPageState extends State<BillingPage> {
                                       // View Details logic
                                     },
                                     icon: const Icon(Icons.visibility, color: Colors.teal),
-                                    label: const Text(
+                                    label: Text(
                                       "View Details",
-                                      style: TextStyle(color: Colors.teal, fontSize: 13, fontWeight: FontWeight.w500),
+                                      style: GoogleFonts.getFont(
+                                        secondaryFont ?? 'Roboto',
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.teal.shade50,
@@ -648,26 +667,22 @@ class _BillingPageState extends State<BillingPage> {
                               ],
                             ),
                           ),
-
-
                         ),
                         if (_estCharges > 0 && _openIds.contains(billing['id'])) ...[
                           const SizedBox(height: 8),
                           Text(
                             "Your current bill + outstanding dues sum is = Rs.${billing['outstanding_dues'].toString()} + ${_estCharges.toStringAsFixed(2)} = Rs.${(double.parse(billing['outstanding_dues'].toString()) + _estCharges).toStringAsFixed(2)}/-",
-                            style: const TextStyle(
+                            style: GoogleFonts.getFont(
+                              secondaryFont ?? 'Roboto',
                               fontSize: 14,
                               color: Colors.black87,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
-
                       ],
                     ),
                   );
-
-
                 },
             childCount: _billingDetails.length,
           ),

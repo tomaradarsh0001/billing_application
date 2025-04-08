@@ -30,6 +30,9 @@ class _DashboardPageState extends State<DashboardPage>
   late String svgString2;
   String name = '';
   String email = '';
+  String? primaryFont;
+  String? secondaryFont;
+  String? appPurpose;
 
   @override
   void initState() {
@@ -50,6 +53,9 @@ class _DashboardPageState extends State<DashboardPage>
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight;
         primaryDark = AppColors.primaryDark;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
+        appPurpose = AppColors.appPurpose;
       });
 
       return loadSvg();
@@ -68,6 +74,9 @@ class _DashboardPageState extends State<DashboardPage>
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight;
         primaryDark = AppColors.primaryDark;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
+        appPurpose = AppColors.appPurpose;
       });
 
       return loadSvgMeter();
@@ -176,7 +185,8 @@ class _DashboardPageState extends State<DashboardPage>
                         children: [
                           Text(
                             "Welcome, $name",
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
                               color: Colors.white,
@@ -184,7 +194,8 @@ class _DashboardPageState extends State<DashboardPage>
                           ),
                           Text(
                             "Dashboard",
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -192,7 +203,8 @@ class _DashboardPageState extends State<DashboardPage>
                           ),
                           Text(
                             "Logged in with: $email",
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 10,
                               color: Colors.white.withOpacity(0.9),
                             ),
@@ -232,7 +244,7 @@ class _DashboardPageState extends State<DashboardPage>
                           _buildDashboardTile("Houses", Icons.house_rounded, HouseViewPage()),
                           _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, DashboardPage()),
                           _buildDashboardTile("History", Icons.history_rounded, DashboardPage()),
-                          _buildDashboardTileWithSvg("Meter Readings", svgString2, BillingPage()),
+                          _buildDashboardTileWithSvg(appPurpose ?? "Meter Readings", svgString2, BillingPage()),
                           _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
                       ),
@@ -337,11 +349,11 @@ class _DashboardPageState extends State<DashboardPage>
       ),
     );
   }
-  Widget _buildDashboardTileWithSvg(String title, String svgData, Widget destinationPage) {
-    Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
-
+  Widget _buildDashboardTileWithSvg(String appPurpose, String svgData, Widget destinationPage) {
     return StatefulBuilder(
       builder: (context, setState) {
+        Color tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
+
         return AnimatedOpacity(
           opacity: _tileOpacity,
           duration: Duration(milliseconds: 1300),
@@ -353,17 +365,13 @@ class _DashboardPageState extends State<DashboardPage>
               borderRadius: BorderRadius.circular(24),
               onTap: () {
                 setState(() {
-                  _tileColor = (_isDarkMode ?? false) ? Colors.grey[900]! : Colors.grey.shade200;
+                  tileColor = (_isDarkMode ?? false) ? Colors.grey[900]! : Colors.grey.shade200;
                 });
+
                 Future.delayed(Duration(milliseconds: 200), () {
-                  setState(() {
-                    _tileColor = Colors.white;
-                  });
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => destinationPage,
-                    ),
+                    MaterialPageRoute(builder: (context) => destinationPage),
                   );
                 });
               },
@@ -372,7 +380,7 @@ class _DashboardPageState extends State<DashboardPage>
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 200),
                 decoration: BoxDecoration(
-                  color: _tileColor,
+                  color: tileColor,
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
@@ -392,11 +400,14 @@ class _DashboardPageState extends State<DashboardPage>
                     ),
                     SizedBox(height: 8),
                     Text(
-                      title,
-                      style: GoogleFonts.signika(
+                      appPurpose,
+                      style: GoogleFonts.getFont(
+                        primaryFont ?? 'Signika',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: _isDarkMode == true ? Colors.white54 : (primaryDark ?? Colors.blue),
+                        color: _isDarkMode == true
+                            ? Colors.white54
+                            : (primaryDark ?? Colors.blue),
                       ),
                     ),
                   ],
@@ -409,9 +420,9 @@ class _DashboardPageState extends State<DashboardPage>
     );
   }
 
+
   Widget _buildDashboardTile(String title, IconData icon, Widget destinationPage) {
     Color _tileColor = (_isDarkMode ?? false) ? Colors.grey[800]! : Colors.white;
-
     return StatefulBuilder(
       builder: (context, setState) {
         return AnimatedOpacity(
@@ -461,7 +472,8 @@ class _DashboardPageState extends State<DashboardPage>
                     SizedBox(height: 8),
                     Text(
                       title,
-                      style: GoogleFonts.signika(
+                      style: GoogleFonts.getFont(
+                        primaryFont ?? 'Signika',
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: _isDarkMode == true ? Colors.white54 : (primaryDark ?? Colors.blue),

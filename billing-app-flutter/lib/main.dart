@@ -38,6 +38,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   late Future<Map<String, dynamic>> configurationData;
   bool _isDarkMode = false; // Move _isDarkMode inside State
+  // String? fontPrimary = 'Sedgwick Ave Display'; // from config or API
 
   @override
   void initState() {
@@ -132,7 +133,8 @@ class _SplashScreenState extends State<SplashScreen> {
                           const SizedBox(height: 10),
                           Text(
                             data['app_name']?.toUpperCase() ?? 'Loading...',
-                            style: GoogleFonts.telex(
+                            style: GoogleFonts.getFont(
+                              data['app_font_primary'] ?? 'Roboto',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: _isDarkMode ? Colors.white : Colors.grey,
@@ -141,7 +143,8 @@ class _SplashScreenState extends State<SplashScreen> {
                           ),
                           Text(
                             data['app_tagline']?.toUpperCase() ?? 'Loading tagline...',
-                            style: GoogleFonts.sarabun(
+                            style: GoogleFonts.getFont(
+                              data['app_font_secondary'] ?? 'Roboto',
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
                               color: _isDarkMode ? Colors.white54 : Colors.grey,
@@ -160,7 +163,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   child: Center(
                     child: Text(
                       '${data['app_version'] ?? 'v1.01'}',
-                      style: GoogleFonts.sarabun(
+                      style: GoogleFonts.sacramento(
                         fontSize: 13,
                         fontWeight: FontWeight.w400,
                         color: _isDarkMode ? Colors.white54 : Colors.grey,
@@ -191,6 +194,9 @@ class AppColors {
   static Color? svgLogin;
   static Color? svgSignup;
   static Color? links;
+  static String? primaryFont;
+  static String? secondaryFont;
+  static String? appPurpose;
 
   static Future<void> fetchColorsAndSave() async {
     final response = await http.get(Uri.parse(
@@ -201,7 +207,7 @@ class AppColors {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       data.forEach((key, value) {
-        if (key.contains('app_theme')) {
+        if (key.contains('app_theme') || key == 'app_font_primary' || key == 'app_font_secondary' || key == 'app_purpose') {
           prefs.setString(key, value);
         }
       });
@@ -223,6 +229,9 @@ class AppColors {
     svgLogin = _getColorFromPrefs(prefs, 'app_theme_svg_login');
     svgSignup = _getColorFromPrefs(prefs, 'app_theme_svg_signup');
     links = _getColorFromPrefs(prefs, 'app_theme_links');
+    primaryFont = prefs.getString('app_font_primary');
+    secondaryFont = prefs.getString('app_font_secondary');
+    appPurpose = prefs.getString('app_purpose');
   }
 
   static Color? _getColorFromPrefs(SharedPreferences prefs, String key) {

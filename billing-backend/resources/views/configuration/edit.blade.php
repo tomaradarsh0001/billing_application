@@ -36,6 +36,27 @@
                             <label for="app_tagline" class="form-label">Application Tagline</label>
                             <input type="text" class="form-control" id="app_tagline" name="app_tagline" value="{{ $configuration->app_tagline }}">
                         </div>
+                        <div class="mb-3">
+                            <label for="app_purpose" class="form-label">Application Pupose</label>
+                            <input type="text" class="form-control" id="app_purpose" name="app_purpose" value="{{ $configuration->app_purpose }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="app_font_primary" class="form-label">Primary Font</label>
+                            <select name="app_font_primary" id="app_font_primary" class="form-control-select">
+                                @foreach($googleFonts as $font)
+                                    <option value="{{ $font }}" {{ $configuration->app_font_primary == $font ? 'selected' : '' }}>{{ $font }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="app_font_secondary" class="form-label">Secondary Font</label>
+                            <select name="app_font_secondary" id="app_font_secondary" class="form-control-select">
+                                @foreach($googleFonts as $font)
+                                    <option value="{{ $font }}" {{ $configuration->app_font_secondary == $font ? 'selected' : '' }}>{{ $font }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         
                         <div class="mb-3">
                             <label for="app_theme" class="form-label">Application Theme</label>

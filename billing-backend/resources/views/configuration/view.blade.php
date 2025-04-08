@@ -95,6 +95,9 @@
                         <strong>Application Name:</strong> {{ $configuration->app_name }}
                     </div>
                     <div class="mb-3">
+                        <strong>Application Purpose:</strong> {{ $configuration->app_purpose }}
+                    </div>
+                    <div class="mb-3">
                         <strong>Tagline:</strong> {{ $configuration->app_tagline }}
                     </div>
                     

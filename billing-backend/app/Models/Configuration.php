@@ -11,6 +11,7 @@ class Configuration extends Model
 
     protected $fillable = [
         'app_name',
+        'app_purpose',
         'app_logo',
         'app_tagline',
         'app_font_primary',

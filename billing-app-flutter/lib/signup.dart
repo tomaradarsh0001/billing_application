@@ -23,6 +23,8 @@ class _SignupPageState extends State<SignupPage> {
   Color? svgSignup;
   Color? links;
   Color? textPrimary;
+  String? primaryFont;
+  String? secondaryFont;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -42,6 +44,8 @@ class _SignupPageState extends State<SignupPage> {
         secondaryDark = AppColors.secondaryDark; // Replace with actual dynamic color
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
       });
 
       // Load SVG after colors are fetched
@@ -164,7 +168,8 @@ class _SignupPageState extends State<SignupPage> {
                         children: [
                           TextSpan(
                             text: 'Create\n',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -173,7 +178,8 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextSpan(
                             text: 'Account',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -205,7 +211,8 @@ class _SignupPageState extends State<SignupPage> {
                               // Show loading indicator until the SVG is ready
                             ),
                             labelText: 'Name',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -237,7 +244,7 @@ class _SignupPageState extends State<SignupPage> {
 
                             ),
                             labelText: 'Email',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -280,7 +287,8 @@ class _SignupPageState extends State<SignupPage> {
                               onPressed: _togglePasswordVisibility,
                             ),
                             labelText: 'Password',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -403,7 +411,8 @@ class _SignupPageState extends State<SignupPage> {
                       },
                       child: Text(
                         'Are you already a User? Login',
-                        style: TextStyle(
+                        style: GoogleFonts.getFont(
+                          secondaryFont ?? 'Roboto',
                           color: textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
