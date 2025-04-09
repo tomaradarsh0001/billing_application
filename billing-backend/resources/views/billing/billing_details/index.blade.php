@@ -50,7 +50,6 @@
                                         <th>Current Reading</th>
                                         <th>Current Charges</th>
                                         <th>Pay Date</th>
-                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -65,11 +64,11 @@
                                             <td>{{ $detail->current_reading }}</td>
                                             <td>₹{{ number_format($detail->current_charges, 2) }}</td>
                                             <td>{{ \Carbon\Carbon::parse($detail->pay_date)->format('d M, Y') }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 <span class="badge bg-{{ $detail->status == 'paid' ? 'success' : 'danger' }}">
                                                     {{ ucfirst($detail->status) }}
                                                 </span>
-                                            </td>
+                                            </td> --}}
                                             <td>
                                                 <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a>
                                                 <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>

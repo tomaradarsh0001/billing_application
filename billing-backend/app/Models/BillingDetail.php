@@ -18,7 +18,7 @@ class BillingDetail extends Model
         'current_reading',
         'current_charges',
         'pay_date',
-        'status',
+        // 'status',
     ];
     
 

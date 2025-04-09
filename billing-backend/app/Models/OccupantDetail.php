@@ -30,4 +30,5 @@ class OccupantDetail extends Model
     {
         return $this->belongsTo(PhoneCode::class);
     }
+  
 }

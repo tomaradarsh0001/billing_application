@@ -35,7 +35,7 @@ class BillingDetailApiController extends Controller
                 'current_reading' => $detail->current_reading,
                 'current_charges' => $detail->current_charges,
                 'pay_date' => $detail->pay_date,
-                'status' => $detail->status,
+                // 'status' => $detail->status,
             ];
         });
 
@@ -49,13 +49,13 @@ class BillingDetailApiController extends Controller
         $validated = $request->validate([
             'house_id' => 'required|exists:house_details,id',
             'occupant_id' => 'required|exists:occupant_details,id',
-            'last_pay_date' => 'required|date',
-            'last_reading' => 'required|numeric',
-            'outstanding_dues' => 'required|numeric',
+            'last_pay_date' => 'nullable|date',
+            'last_reading' => 'nullable|numeric',
+            'outstanding_dues' => 'nullable|numeric',
             'current_reading' => 'required|numeric',
-            'current_charges' => 'required|numeric',
-            'pay_date' => 'required|date',
-            'status' => 'required|in:partially,paid,unpaid',
+            'current_charges' => 'nullable|numeric',
+            'pay_date' => 'nullable|date',
+            // 'status' => 'required|in:partially,paid,unpaid',
         ]);
     
         try {
@@ -93,7 +93,7 @@ class BillingDetailApiController extends Controller
             'current_reading' => $billingDetail->current_reading,
             'current_charges' => $billingDetail->current_charges,
             'pay_date' => $billingDetail->pay_date,
-            'status' => $billingDetail->status,
+            // 'status' => $billingDetail->status,
         ];
     
         return response()->json(['success' => true, 'data' => $data], 200);
@@ -117,7 +117,7 @@ class BillingDetailApiController extends Controller
             'current_reading' => 'required|numeric',
             'current_charges' => 'required|numeric',
             'pay_date' => 'required|date',
-            'status' => 'required|in:partially,paid,unpaid',
+            // 'status' => 'required|in:partially,paid,unpaid',
         ]);
     
         $billingDetail->update($validated);

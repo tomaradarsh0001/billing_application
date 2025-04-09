@@ -112,7 +112,7 @@
                                     </div>
 
                                     <!-- Status -->
-                                    <div class="mb-3">
+                                    {{-- <div class="mb-3">
                                         <label for="status" class="form-label">Status</label>
                                         <select name="status" id="status" class="form-control-select" required>
                                             <option value="" disabled selected>Select Status</option>
@@ -123,7 +123,7 @@
                                         @error('status')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
 

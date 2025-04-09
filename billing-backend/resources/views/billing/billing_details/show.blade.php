@@ -39,10 +39,10 @@
                         <th>Pay Date</th>
                         <td>{{ $billingDetail->pay_date }}</td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <th>Status</th>
                         <td>{{ ucfirst($billingDetail->status) }}</td>
-                    </tr>
+                    </tr> --}}
                 </table>
                 <a href="{{ route('billing_details.index') }}" class="btn btn-secondary">Back to List</a>
             </div>

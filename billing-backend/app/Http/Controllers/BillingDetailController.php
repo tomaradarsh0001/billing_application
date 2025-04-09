@@ -45,7 +45,7 @@ class BillingDetailController extends Controller
                 'current_reading' => $request->current_reading,
                 'current_charges' => $request->current_charges,
                 'pay_date' => $request->pay_date,
-                'status' => $request->status,
+                // 'status' => $request->status,
             ]);
     
             if ($billingDetail) {
@@ -92,7 +92,7 @@ class BillingDetailController extends Controller
             'current_reading' => 'required|numeric',
             'current_charges' => 'required|numeric',
             'pay_date' => 'required|date',
-            'status' => 'required|in:partially,paid,unpaid',
+            // 'status' => 'required|in:partially,paid,unpaid',
         ]);
 
         $billingDetail->update($validated);

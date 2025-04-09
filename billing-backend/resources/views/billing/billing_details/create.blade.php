@@ -61,7 +61,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="last_pay_date">Last Pay Date</label>
-                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" required>
+                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date') }}" readonly>
                                     @error('last_pay_date') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
@@ -96,12 +96,12 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="pay_date">Pay Date</label>
-                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" required>
+                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date') }}" readonly>
                                     @error('pay_date') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
                             </div>
-                            <div class="col-md-12 mb-3">
+                            {{-- <div class="col-md-12 mb-3">
                                 <label for="status">Status</label>
                                 <select name="status" id="status" class="form-control-select" required>
                                     <option value="">-- Select Payment Status --</option>
@@ -110,7 +110,7 @@
                                     <option value="partially_paid" {{ old('status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
                                 </select>
                                 @error('status') <div class="text-danger">{{ $message }}</div> @enderror
-                            </div>
+                            </div> --}}
 
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
@@ -123,12 +123,13 @@
 </div>
 <script>
     const occupants = @json($occupants);
-const billingDetails = @json($billingDetails);
+    const billingDetails = @json($billingDetails);
 
 $(document).ready(function() {
     // Set default values and show fields when page loads
     $('#outstanding_dues').val(0).prop('hidden', false);
     $('#last_reading').val(0).prop('hidden', false);
+    $('#last_pay_date').val(0).prop('hidden', false);
 
     $('#house_id').on('change', function() {
         const selectedHouseId = $(this).val();
@@ -144,10 +145,12 @@ $(document).ready(function() {
                 // If billing detail exists, show outstanding dues and last reading
                 $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
                 $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
+                $('#last_pay_date').val(billingDetail.last_reading).prop('hidden', false);
             } else {
                 // If no billing detail exists, hide these fields
                 $('#outstanding_dues').val(0).prop('hidden', false);
                 $('#last_reading').val(0).prop('hidden', false);
+                $('#last_pay_date').val(0).prop('hidden', false);
             }
         } else {
             // Reset the fields if no occupant is found
@@ -155,6 +158,7 @@ $(document).ready(function() {
             $('#hidden_occupant_id').val('');
             $('#outstanding_dues').val(0).prop('hidden', false);
             $('#last_reading').val(0).prop('hidden', false);
+            $('#last_pay_date').val(0).prop('hidden', false);
         }
     });
 });
