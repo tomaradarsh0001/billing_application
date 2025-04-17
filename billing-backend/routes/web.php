@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\BillingDetailController;
 use App\Http\Controllers\Billing\OccupantDetailController;
 use App\Http\Controllers\Billing\HouseDetailController;
+use App\Http\Controllers\PerUnitRateWebController;
 
 
 Route::get('/', function () {
@@ -111,6 +112,18 @@ Route::middleware(['role:superadmin'])->group(function () {
     Route::delete('billing-details/{billing_detail}', [BillingDetailController::class, 'destroy'])->name('billing_details.destroy');
     Route::get('billing_details/create', [BillingDetailController::class, 'create'])->name('billing_details.create');
     Route::get('/api/fonts', [ConfigurationController::class, 'getFonts'])->name('fonts.api');
+
+    //Per unit rate 
+    Route::prefix('per_unit_rates')->group(function () {
+        Route::get('/', [PerUnitRateWebController::class, 'index'])->name('per_unit_rates.index');
+        Route::get('/create', [PerUnitRateWebController::class, 'create'])->name('per_unit_rates.create');
+        Route::post('/', [PerUnitRateWebController::class, 'store'])->name('per_unit_rates.store');
+        Route::get('/{id}/edit', [PerUnitRateWebController::class, 'edit'])->name('per_unit_rates.edit');
+        Route::put('/{id}', [PerUnitRateWebController::class, 'update'])->name('per_unit_rates.update');
+        Route::delete('/{id}', [PerUnitRateWebController::class, 'destroy'])->name('per_unit_rates.destroy');
+        Route::patch('/per_unit_rates/{id}/status', [PerUnitRateWebController::class, 'toggleStatus'])->name('per_unit_rates.toggleStatus');
+
+    });
 
 
 });

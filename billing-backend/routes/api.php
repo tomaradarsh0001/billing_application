@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BillingDetailApiController;
 use App\Http\Controllers\Api\CustomerApiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HouseOccupantDetailApiController;
+use App\Http\Controllers\Api\PerUnitRateController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -44,4 +45,14 @@ Route::prefix('billing')->group(function () {
     Route::get('/occupants/{id}', [HouseOccupantDetailApiController::class, 'show']);
     Route::put('/occupants/{id}', [HouseOccupantDetailApiController::class, 'update']);
     Route::delete('/occupants/{id}', [HouseOccupantDetailApiController::class, 'destroy']);
+});
+
+   //Per Unit Rate Routes 
+
+   Route::prefix('per-unit-rate')->group(function () {
+    Route::get('/', [PerUnitRateController::class, 'index']);
+    Route::post('/', [PerUnitRateController::class, 'store']);
+    Route::get('/{id}', [PerUnitRateController::class, 'show']);
+    Route::put('/{id}', [PerUnitRateController::class, 'update']);
+    Route::delete('/{id}', [PerUnitRateController::class, 'destroy']);
 });
