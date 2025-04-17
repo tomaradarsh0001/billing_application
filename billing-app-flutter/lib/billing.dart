@@ -452,7 +452,7 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         Text(
-                          "House/Locality :- ${billing['house']['hno']} ${billing['house']['area']}",
+                          "Bungalow No. :- #${billing['house']['hno']}",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
