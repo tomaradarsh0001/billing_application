@@ -23,29 +23,29 @@ class PerUnitRateWebController extends Controller
     {
         $validated = $request->validate([
             'unit_rate' => 'required|numeric',
-            'status' => 'required|boolean',
             'from_date' => 'nullable|date',  
             'till_date' => 'nullable|date', 
         ]);
     
-        if ($validated['status'] == 1) {
-            $existingActive = PerUnitRate::where('status', 1)->first();
+        // Always deactivate existing active rate
+        $existingActive = PerUnitRate::where('status', 1)->first();
     
-            if ($existingActive) {
-                $existingActive->status = 0;
-                $existingActive->till_date = now(); 
-                $existingActive->save();
-            }
+        if ($existingActive) {
+            $existingActive->status = 0;
+            $existingActive->till_date = now(); 
+            $existingActive->save();
         }
     
         $perUnitRate = new PerUnitRate();
         $perUnitRate->unit_rate = $validated['unit_rate'];
-        $perUnitRate->status = $validated['status'];
+        $perUnitRate->status = 1; // Always set status to 1
         $perUnitRate->from_date = $validated['from_date'] ?? null;  
-        $perUnitRate->till_date = $validated['status'] == 1 ? null : $validated['till_date'];  
+        $perUnitRate->till_date = null; // Since it's active, till_date is null
         $perUnitRate->save();
+    
         return redirect()->route('per_unit_rates.index')->with('success', 'Per Unit Rate added successfully.');
     }
+    
     
 
     public function edit($id)

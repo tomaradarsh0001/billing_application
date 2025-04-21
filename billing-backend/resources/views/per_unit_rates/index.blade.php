@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Customers')
+@section('title', 'Per unit Charge')
 @section('content')
 @include('include.alerts.delete-confirmation')
 <div class="main_content_iner">

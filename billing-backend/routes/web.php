@@ -11,6 +11,8 @@ use App\Http\Controllers\BillingDetailController;
 use App\Http\Controllers\Billing\OccupantDetailController;
 use App\Http\Controllers\Billing\HouseDetailController;
 use App\Http\Controllers\PerUnitRateWebController;
+use App\Http\Controllers\TaxChargeController;
+
 
 
 Route::get('/', function () {
@@ -123,6 +125,17 @@ Route::middleware(['role:superadmin'])->group(function () {
         Route::delete('/{id}', [PerUnitRateWebController::class, 'destroy'])->name('per_unit_rates.destroy');
         Route::patch('/per_unit_rates/{id}/status', [PerUnitRateWebController::class, 'toggleStatus'])->name('per_unit_rates.toggleStatus');
 
+    });
+
+    // tax Charges 
+    Route::prefix('tax-charges')->name('tax-charges.')->group(function () {
+        Route::get('/', [TaxChargeController::class, 'index'])->name('index');
+        Route::get('/create', [TaxChargeController::class, 'create'])->name('create');
+        Route::post('/', [TaxChargeController::class, 'store'])->name('store');
+        Route::get('/{tax_charge}/edit', [TaxChargeController::class, 'edit'])->name('edit');
+        Route::put('/{tax_charge}', [TaxChargeController::class, 'update'])->name('update');
+        Route::delete('/{tax_charge}', [TaxChargeController::class, 'destroy'])->name('destroy');
+        Route::patch('/tax-charges/{id}/status', [TaxChargeController::class, 'toggleStatus'])->name('toggleStatus');
     });
 
 

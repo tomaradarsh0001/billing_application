@@ -37,6 +37,9 @@ function confirmDelete(itemType, itemId) {
     else if (itemType === 'per_unit_rate') {
         message = 'Are you sure you want to delete this Unit Rate?';
     }
+    else if (itemType === 'taxation') {
+        message = 'Are you sure you want to delete this Tax Charge?';
+    }
         document.getElementById('customConfirmationMessage').innerText = message;
         $('#ModalDelete').modal('show');
         $('#confirmDelete').off('click').on('click', function() {

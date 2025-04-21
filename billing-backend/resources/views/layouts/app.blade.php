@@ -202,13 +202,13 @@
                                                                     <li><a href="{{ route('configuration.index') }}"><i class='fab fa-reddit-alien'></i> Config</a></li>
                                                                     <li><a href="{{ route('customers.index') }}"><i class='fab fa-fort-awesome'></i> Customers</a></li>
                                                                     <li><a href="{{ route('per_unit_rates.index') }}"><i class="fas fa-user-edit"></i> Unit Rate</a></li>
-                                                                    <li><a href="{{ route('per_unit_rates.index') }}"><i class="fas fa-spider"></i> Tax & Charges</a></li>
+                                                                    <li><a href="{{ route('tax-charges.index') }}"><i class="fas fa-spider"></i> Tax & Charges</a></li>
                                                                 </ul>
                                                             </div>
                                                         </div>
                                                     </div>
-                                    </div>
-                                </li>
+                                                </div>
+                                            </li>
                                 <li>
                                     <a class="bell_notification_clicker nav-link-notify" href="#">
                                         <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">
