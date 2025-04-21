@@ -5,8 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\BillingDetail;
 use Illuminate\Http\Request;
 use App\Models\HouseDetail;
+use App\Models\TaxCharge;
 use App\Models\OccupantDetail;
+use App\Models\PerUnitRate;
 use App\Models\OccupantHouseStatus;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 
@@ -22,13 +27,13 @@ class BillingDetailController extends Controller
     return view('billing.billing_details.index', compact('billingDetails'));
 }
 
-
     public function create()
     {
         $occupants = OccupantDetail::all();
         $billingDetails = BillingDetail::all();
-        // dd( $billingDetails);
-        return view('billing.billing_details.create', compact('billingDetails','occupants'));
+        $unitRate = PerUnitRate::where('status', 1)->value('unit_rate');
+        $taxation = TaxCharge::where('status', 1)->get();
+        return view('billing.billing_details.create', compact('billingDetails','occupants', 'unitRate', 'taxation'));
     }
     
     public function store(Request $request)
@@ -36,6 +41,11 @@ class BillingDetailController extends Controller
         Log::info('BillingDetailController@store: Received request data.', ['request_data' => $request->all()]);
     
         try {
+            $lastReading = $request->last_reading;
+            $currentReading = $request->current_reading;
+            $remission = $request->remission;
+            $totalUnits = $lastReading + $currentReading;
+            $unitAfterRemission = $totalUnits - $remission;
             $billingDetail = BillingDetail::create([
                 'house_id' => $request->house_id,
                 'occupant_id' => $request->occupant_id,
@@ -45,7 +55,8 @@ class BillingDetailController extends Controller
                 'current_reading' => $request->current_reading,
                 'current_charges' => $request->current_charges,
                 'pay_date' => $request->pay_date,
-                // 'status' => $request->status,
+                'remission' => $request->remission,
+                'unit_after_remission' => $unitAfterRemission,
             ]);
     
             if ($billingDetail) {
@@ -76,29 +87,40 @@ class BillingDetailController extends Controller
 
     public function edit(BillingDetail $billingDetail)
     {
-        $houseDetails = HouseDetail::all();
-        $occupantHouse = OccupantHouseStatus::all();
-        return view('billing.billing_details.edit', compact('billingDetail', 'houseDetails', 'occupantHouse'));
+        $occupants = OccupantDetail::all();
+        $unitRate = PerUnitRate::where('status', 1)->value('unit_rate');
+        $taxation = TaxCharge::where('status', 1)->get();
+        return view('billing.billing_details.edit', compact('billingDetail', 'occupants',  'unitRate', 'taxation'));
     }
 
     public function update(Request $request, BillingDetail $billingDetail)
-    {
-        $validated = $request->validate([
-            'house_id' => 'required|exists:house_details,id',
-            'occupant_id' => 'required|exists:occupant_details,id',
-            'last_reading' => 'required|numeric',
-            'last_pay_date' => 'required|date',
-            'outstanding_dues' => 'required|numeric',
-            'current_reading' => 'required|numeric',
-            'current_charges' => 'required|numeric',
-            'pay_date' => 'required|date',
-            // 'status' => 'required|in:partially,paid,unpaid',
-        ]);
+        {
+            try {
+                $validated = $request->validate([
+                    'house_id' => 'nullable|exists:house_details,id',
+                    'occupant_id' => 'nullable|exists:occupant_details,id',
+                    'last_reading' => 'nullable|numeric',
+                    'last_pay_date' => 'nullable|date',
+                    'outstanding_dues' => 'nullable|numeric',
+                    'current_reading' => 'nullable|numeric',
+                    'current_charges' => 'nullable|numeric',
+                    'pay_date' => 'nullable|date',
+                    'remission' => 'nullable|numeric',
+                ]);
 
-        $billingDetail->update($validated);
-
-        return redirect()->route('billing_details.index')->with('success', 'Billing Detail updated successfully!');
-    }
+                $lastReading = $request->last_reading ?? $billingDetail->last_reading;
+                $currentReading = $request->current_reading ?? $billingDetail->current_reading;
+                $remission = $request->remission ?? $billingDetail->remission;
+                $totalUnits = $currentReading - $lastReading;
+                $unitAfterRemission = $totalUnits - $remission;
+                $validated['unit_after_remission'] = $unitAfterRemission;
+                $billingDetail->update($validated);
+                return redirect()->route('billing_details.index')->with('success', 'Billing Detail updated successfully!');
+            } catch (\Exception $e) {
+                \Log::error('BillingDetailController@update: Failed to update.', ['error' => $e->getMessage()]);
+                return redirect()->back()->with('error', 'Failed to update Billing Detail.');
+            }
+        }
 
     public function destroy(BillingDetail $billingDetail)
     {
@@ -106,4 +128,45 @@ class BillingDetailController extends Controller
 
         return redirect()->route('billing_details.index')->with('success', 'Billing Detail deleted successfully!');
     }
+
+    
+    public function generateBillingPdf(Request $request)
+    {
+        $currentReading = $request->current_reading;
+        $lastReading = $request->last_reading;
+        $remission = $request->remission;
+        $outstandingDues = $request->outstanding_dues;
+        $totalWithTax = $request->total_with_tax;
+
+        $totalUnits = $currentReading + $lastReading;
+        $unitAfterRemission = $totalUnits - $remission;
+
+        $taxation = TaxCharge::all();
+        $totalAmountWithTax = $request->current_charges + $taxation->sum('tax_amount');
+
+        $data = [
+            'house_id' => $request->house_id,
+            'occupant_id' => $request->occupant_id,
+            'last_pay_date' => $request->last_pay_date,
+            'last_reading' => $lastReading,
+            'outstanding_dues' => $outstandingDues,
+            'current_reading' => $currentReading,
+            'current_charges' => $request->current_charges,
+            'pay_date' => $request->pay_date,
+            'remission' => $remission,
+            'unit_after_remission' => $unitAfterRemission,
+            'total_units' => $totalUnits,
+            'taxation' => $taxation,
+            'total_amount_with_tax' => $totalAmountWithTax,
+        ];
+
+        $pdf = Pdf::loadView('generatepdf', $data);
+        $fileName = 'billing_summary_' . now()->format('Ymd_His') . '_' . Str::random(5) . '.pdf';
+        $filePath = 'public/billing_pdfs/' . $fileName;
+        Storage::put($filePath, $pdf->output());
+
+        return $pdf->download($fileName);
+    }
+
+    
 }

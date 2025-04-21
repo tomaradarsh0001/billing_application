@@ -6,7 +6,8 @@
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">
                 <div class="QA_section">
-                    <!-- Success and Error Alerts -->
+
+                    {{-- Alerts --}}
                     @if(session('success'))
                         <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
@@ -21,7 +22,7 @@
                         </div>
                     @endif
 
-                    <!-- Title and Back Button -->
+                    {{-- Header --}}
                     <div class="white_box_tittle list_header">
                         <h4>Edit Billing Detail</h4>
                         <div class="box_right d-flex lms_block">
@@ -29,106 +30,133 @@
                         </div>
                     </div>
 
-                    <!-- Form for Editing Billing Detail -->
+                    {{-- Form --}}
                     <div class="QA_table mb_30">
                         <form action="{{ route('billing_details.update', $billingDetail->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 
                             <div class="row">
-                                <!-- Left Column -->
-                                <div class="col-md-6">
-                                    <!-- House ID Dropdown -->
-                                    <div class="mb-3">
-                                        <label for="occ_id" class="form-label">House ID</label>
-                                        <select name="occ_id" id="occ_id" class="form-control-select" required>
-                                            <option value="" disabled selected>Select a House</option>
-                                            @foreach($occupantHouse as $occ)
-                                                <option value="{{ $occ->id }}" 
-                                                    {{ old('occ_id', $occ->id) == $occ->id ? 'selected' : '' }}>{{ "House :- ". $occ->house->hno . " " . $occ->house->area . " " . "Occupant :- " . $occ->occupant->first_name . " " . $occ->occupant->last_name ?? 'No Name' }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        @error('occ_id')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Last Reading -->
-                                    <div class="mb-3">
-                                        <label for="last_reading" class="form-label">Last Reading</label>
-                                        <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', $billingDetail->last_reading) }}" required>
-                                        @error('last_reading')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Last Pay Date -->
-                                    <div class="mb-3">
-                                        <label for="last_pay_date" class="form-label">Last Pay Date</label>
-                                        <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date', $billingDetail->last_pay_date) }}" required>
-                                        @error('last_pay_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-
-                                    <!-- Outstanding Dues -->
-                                    <div class="mb-3">
-                                        <label for="outstanding_dues" class="form-label">Outstanding Dues</label>
-                                        <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', $billingDetail->outstanding_dues) }}" required>
-                                        @error('outstanding_dues')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                {{-- Left Column --}}
+                                <div class="col-md-6 mb-3">
+                                    <label for="house_id">Select House</label>
+                                    <select name="house_id" id="house_id" class="form-control-select" disabled>
+                                        <option value="">-- Select House --</option>
+                                        @foreach($occupants as $occ)
+                                            <option value="{{ $occ->h_id }}" {{ $billingDetail->house_id == $occ->h_id ? 'selected' : '' }}>
+                                                {{ $occ->house->hno }} - {{ $occ->house->area }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('house_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
-                                <!-- Right Column -->
-                                <div class="col-md-6">
-                                    <!-- Current Reading -->
-                                    <div class="mb-3">
-                                        <label for="current_reading" class="form-label">Current Reading</label>
-                                        <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading', $billingDetail->current_reading) }}" required>
-                                        @error('current_reading')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="occupant_id">Select Occupant</label>
+                                    <select id="occupant_id" class="form-control-select" disabled>
+                                        <option value="">-- Select Occupant --</option>
+                                        @foreach($occupants as $occupant)
+                                            <option value="{{ $occupant->id }}" {{ $billingDetail->occupant_id == $occupant->id ? 'selected' : '' }}>
+                                                {{ $occupant->first_name }} {{ $occupant->last_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" name="occupant_id" id="hidden_occupant_id" value="{{ $billingDetail->occupant_id }}">
+                                    @error('occupant_id') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
 
-                                    <!-- Current Charges -->
-                                    <div class="mb-3">
-                                        <label for="current_charges" class="form-label">Current Charges</label>
-                                        <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges', $billingDetail->current_charges) }}" required>
-                                        @error('current_charges')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_reading" class="form-label">Last Reading</label>
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', $billingDetail->last_reading) }}">
+                                    @error('last_reading') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
 
-                                    <!-- Pay Date -->
-                                    <div class="mb-3">
-                                        <label for="pay_date" class="form-label">Pay Date</label>
-                                        <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date', $billingDetail->pay_date) }}" required>
-                                        @error('pay_date')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last_pay_date" class="form-label">Last Pay Date</label>
+                                    <input type="date" name="last_pay_date" id="last_pay_date" class="form-control" value="{{ old('last_pay_date', $billingDetail->last_pay_date) }}">
+                                    @error('last_pay_date') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
 
-                                    <!-- Status -->
-                                    {{-- <div class="mb-3">
-                                        <label for="status" class="form-label">Status</label>
-                                        <select name="status" id="status" class="form-control-select" required>
-                                            <option value="" disabled selected>Select Status</option>
-                                            <option value="paid" {{ old('status', $billingDetail->status) == 'paid' ? 'selected' : '' }}>Paid</option>
-                                            <option value="partially" {{ old('status', $billingDetail->status) == 'partially' ? 'selected' : '' }}>Partially Paid</option>
-                                            <option value="unpaid" {{ old('status', $billingDetail->status) == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                        </select>
-                                        @error('status')
-                                            <div class="text-danger">{{ $message }}</div>
-                                        @enderror
-                                    </div> --}}
+                                <div class="col-md-6 mb-3">
+                                    <label for="outstanding_dues" class="form-label">Outstanding Dues</label>
+                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', $billingDetail->outstanding_dues) }}">
+                                    @error('outstanding_dues') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                                {{-- Right Column --}}
+                                <div class="col-md-6 mb-3">
+                                    <label for="current_reading" class="form-label">Current Reading</label>
+                                    <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading', $billingDetail->current_reading) }}" required>
+                                    @error('current_reading') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="current_charges" class="form-label">Current Charges</label>
+                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges', $billingDetail->current_charges) }}" readonly>
+                                    @error('current_charges') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="pay_date" class="form-label">Pay Date</label>
+                                    <input type="date" name="pay_date" id="pay_date" class="form-control" value="{{ old('pay_date', $billingDetail->pay_date) }}">
+                                    @error('pay_date') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="remission" class="form-label">Remission</label>
+                                    <input type="number" name="remission" id="remission" class="form-control" value="{{ old('remission', $billingDetail->remission) }}">
+                                    @error('remission') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
                             </div>
 
-                            <!-- Submit Button -->
-                            <button type="submit" class="btn btn-primary">Update</button>
+                            {{-- Bill Summary --}}
+                            <div class="bill_card">
+                                <div class="receipt">
+                                    <header class="receipt__header">
+                                        <p class="receipt__title">Bill Summary</p>
+                                        <p class="receipt__date">{{ now()->format('d F Y') }}</p>
+                                    </header>
+                                    <dl class="receipt__list">
+                                        <div class="receipt__list-row">
+                                            <dt class="receipt__item">Last Units</dt>
+                                            <dd class="receipt__cost"><span id="last_units">0</span></dd>
+                                        </div>
+                                        <div class="receipt__list-row">
+                                            <dt class="receipt__item">Total Units</dt>
+                                            <dd class="receipt__cost"><span id="total_units">0</span></dd>
+                                        </div>
+                                        <div class="receipt__list-row">
+                                            <dt class="receipt__item">After Remission</dt>
+                                            <dd class="receipt__cost"><span id="total_after_remission">0</span></dd>
+                                        </div>
+                                        <div class="receipt__list-row">
+                                            <dt class="receipt__item">Current Amount</dt>
+                                            <dd class="receipt__cost"><span id="currentAmount">₹ 0</span></dd>
+                                        </div>
+                                        <div class="receipt__list-row">
+                                            <dt class="receipt__item">Outstanding Dues</dt>
+                                            <dd class="receipt__cost"><span id="outstanding_dues_span">₹ 0</span></dd>
+                                        </div>
+
+                                        @foreach ($taxation as $tax)
+                                            <div class="receipt__list-row">
+                                                <dt class="receipt__item">{{ $tax->tax_name }} ({{ $tax->tax_percentage }}%)</dt>
+                                                <dd class="receipt__cost"><span id="tax_{{ $tax->id }}">₹ 0</span></dd>
+                                            </div>
+                                        @endforeach
+
+                                        <div class="receipt__list-row receipt__list-row--total">
+                                            <dt class="receipt__item">Total Bill + Tax</dt>
+                                            <dd class="receipt__cost"><span id="total_bill_with_tax">₹ 0</span></dd>
+                                        </div>
+                                    </dl>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <button type="submit" class="btn btn-primary mx-2">Update</button>
+                                        <button type="submit" class="btn btn-success mx-2">Approve</button>
+                                    </div>
+                                </div>
+                            </div>
+
                         </form>
                     </div>
                 </div>
@@ -136,4 +164,41 @@
         </div>
     </div>
 </div>
+
+{{-- Scripts --}}
+<script>
+    const billingDetails = @json($billingDetail);
+    const amout = @json($unitRate);
+    const taxes = @json($taxation);
+
+    $(document).ready(function () {
+        function calculateSummary() {
+            let current = parseFloat($('#current_reading').val()) || 0;
+            let last = parseFloat($('#last_reading').val()) || 0;
+            let remission = parseFloat($('#remission').val()) || 0;
+            let dues = parseFloat($('#outstanding_dues').val()) || 0;
+
+            let totalUnits = current + last;
+            let afterRemission = totalUnits - remission;
+            let baseAmount = afterRemission * amout;
+
+            let taxTotal = 0;
+            taxes.forEach(tax => {
+                let taxAmt = (baseAmount * tax.tax_percentage) / 100;
+                taxTotal += taxAmt;
+                $(`#tax_${tax.id}`).text(`₹ ${taxAmt.toFixed(2)}`);
+            });
+
+            $('#last_units').text(last);
+            $('#total_units').text(totalUnits);
+            $('#total_after_remission').text(afterRemission);
+            $('#currentAmount').text(`₹ ${baseAmount.toFixed(2)}`);
+            $('#outstanding_dues_span').text(`₹ ${dues.toFixed(2)}`);
+            $('#total_bill_with_tax').text(`₹ ${(baseAmount + taxTotal + dues).toFixed(2)}`);
+        }
+
+        $('#current_reading, #last_reading, #remission, #outstanding_dues').on('input', calculateSummary);
+        calculateSummary();
+    });
+</script>
 @endsection

@@ -40,7 +40,8 @@ class _BillingPageState extends State<BillingPage> {
   bool? _isDarkMode;
   bool _showGeneratedContent = false;
   double _estCharges = 0.0;
-  double unitCharge = 9.5;
+  // double unitCharge = 10;
+  double? unitCharge;
   Set<int> _openIds = {};
   String? primaryFont;
   String? secondaryFont;
@@ -65,6 +66,7 @@ class _BillingPageState extends State<BillingPage> {
       });
       loadSvg();
       loadSvgIcon();
+      fetchUnitRate();
     });
     _scrollController.addListener(_scrollListener);
     Future.delayed(Duration(milliseconds: 200), () {
@@ -73,6 +75,28 @@ class _BillingPageState extends State<BillingPage> {
       });
     });
     fetchBillingDetails(); // Fetch billing data when the page loads
+  }
+
+  Future<void> fetchUnitRate() async {
+    final url = Uri.parse('http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/per-unit-rate');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        if (data.isNotEmpty) {
+          setState(() {
+            unitCharge = double.tryParse(data[0]['unit_rate']);
+          });
+        }
+      } else {
+        print('Failed to fetch data. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred: $e');
+    }
   }
 
   Future<void> fetchBillingDetails() async {
@@ -595,7 +619,7 @@ class _BillingPageState extends State<BillingPage> {
                                           onChanged: (value) {
                                             setState(() {
                                               double? reading = double.tryParse(value);
-                                              _estCharges = (reading ?? 0) * unitCharge;
+                                              _estCharges = (reading ?? 0) * unitCharge!;
                                             });
                                           },
                                           keyboardType: TextInputType.number,
@@ -660,7 +684,7 @@ class _BillingPageState extends State<BillingPage> {
                                           onPressed: () async {
                                             final double? currentReading = double.tryParse(_readingController.text);
                                             if (currentReading != null) {
-                                              double currentCharges = currentReading * unitCharge;
+                                              double currentCharges = currentReading * unitCharge!;
 
                                               final response = await http.post(
                                                 Uri.parse("http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing-details"),

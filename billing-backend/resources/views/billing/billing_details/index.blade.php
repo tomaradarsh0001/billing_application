@@ -48,8 +48,7 @@
                                         <th>Last Reading</th>
                                         <th>Outstanding Dues</th>
                                         <th>Current Reading</th>
-                                        <th>Current Charges</th>
-                                        <th>Pay Date</th>
+                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -62,16 +61,15 @@
                                             <td>{{ $detail->last_reading ?? 'N/A' }}</td>
                                             <td>₹{{ number_format($detail->outstanding_dues, 2) }}</td>
                                             <td>{{ $detail->current_reading }}</td>
-                                            <td>₹{{ number_format($detail->current_charges, 2) }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($detail->pay_date)->format('d M, Y') }}</td>
+                                            <td>₹</td>
                                             {{-- <td>
                                                 <span class="badge bg-{{ $detail->status == 'paid' ? 'success' : 'danger' }}">
                                                     {{ ucfirst($detail->status) }}
                                                 </span>
                                             </td> --}}
                                             <td>
-                                                <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a>
-                                                <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
+                                                {{-- <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a> --}}
+                                                <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Update</a>
                                                 <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('billing_detail', {{ $detail->id }})">Delete</button>
                                                 <form method="POST" action="{{ route('billing_details.destroy', $detail->id) }}" class="d-inline" id="deleteForm-{{ $detail->id }}">
                                                     @csrf

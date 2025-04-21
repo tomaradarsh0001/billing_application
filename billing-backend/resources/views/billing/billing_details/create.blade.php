@@ -6,14 +6,12 @@
         <div class="white_card card_height_100 p-4">
             <div class="white_card_body">
                 <div class="QA_section">
-                    
                     @if(session('success'))
                         <div class="alert text-white bg-success alert-dismissible fade show" role="alert">
                             {{ session('success') }}
                             <button type="button" class="btn-close text-white" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     @endif
-
                     @if(session('error'))
                         <div class="alert text-white bg-danger alert-dismissible fade show" role="alert">
                             {{ session('error') }}
@@ -52,7 +50,6 @@
                                             <option value="{{ $occupant->id }}">{{ $occupant->first_name }} {{ $occupant->last_name }}</option>
                                         @endforeach
                                     </select>
-                                    <!-- Hidden field to store the actual occupant_id value -->
                                     <input type="hidden" name="occupant_id" id="hidden_occupant_id">
                                     @error('occupant_id') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
@@ -65,7 +62,6 @@
                                     @error('last_pay_date') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
-                              
                                 <div class="col-md-6 mb-3">
                                     <label for="outstanding_dues">Outstanding Dues</label>
                                     <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', 0) }}" readonly>
@@ -82,8 +78,16 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="current_charges">Current Charges</label>
-                                    <input type="number" name="current_charges" id="current_charges" class="form-control" value="{{ old('current_charges') }}" required>
-                                    @error('current_charges') <div class="text-danger">{{ $message }}</div> @enderror
+                                    <input type="number" 
+                                           name="current_charges" 
+                                           id="current_charges" 
+                                           class="form-control" 
+                                           value="{{ old('current_charges', $unitRate) }}" 
+                                           readonly 
+                                           required>
+                                    @error('current_charges') 
+                                        <div class="text-danger">{{ $message }}</div> 
+                                    @enderror
                                 </div>
                             </div>
 
@@ -101,21 +105,74 @@
                                 </div>
 
                             </div>
-                            {{-- <div class="col-md-12 mb-3">
-                                <label for="status">Status</label>
-                                <select name="status" id="status" class="form-control-select" required>
-                                    <option value="">-- Select Payment Status --</option>
-                                    <option value="paid" {{ old('status') == 'paid' ? 'selected' : '' }}>Paid</option>
-                                    <option value="unpaid" {{ old('status') == 'unpaid' ? 'selected' : '' }}>Unpaid</option>
-                                    <option value="partially_paid" {{ old('status') == 'partially_paid' ? 'selected' : '' }}>Partially Paid</option>
-                                </select>
-                                @error('status') <div class="text-danger">{{ $message }}</div> @enderror
-                            </div> --}}
 
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="remission">Remission</label>
+                                    <input type="number" name="remission" id="remission" class="form-control" value="{{ old('remission') }}">
+                                    @error('remission') <div class="text-danger">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="bill_card">
+                                <div class="receipt">
+                                    <header class="receipt__header">
+                                      <p class="receipt__title">
+                                        Bill Summary
+                                      </p>
+                                      <p class="receipt__date">{{ now()->format('d F Y') }}</p>
+                                    </header>
+                                    <dl class="receipt__list">
+                                      <div class="receipt__list-row">
+                                        <dt class="receipt__item">Last Units (Units)</dt>
+                                        <dd class="receipt__cost"><span id="last_units">0</span></dd>
+                                      </div>
+                                      <div class="receipt__list-row">
+                                        <dt class="receipt__item">Total Units (Units)</dt>
+                                        <dd class="receipt__cost"><span id="total_units">0</span></dd>
+                                      </div>
+                                      <div class="receipt__list-row">
+                                        <dt class="receipt__item">Total After Remission (Units)</dt>
+                                        <dd class="receipt__cost"><span id="total_after_remission">0</span></dd>
+                                      </div>
+                                      <div class="receipt__list-row">
+                                        <dt class="receipt__item">Current Amount (INR)</dt>
+                                        <dd class="receipt__cost"><span id="currentAmout">₹ 0</span></dd>
+                                      </div>
+                                      <div class="receipt__list-row">
+                                        <dt class="receipt__item">Outstanding Dues (INR)</dt>
+                                        <dd class="receipt__cost"><span id="outstanding_duess">₹ 0</span></dd>
+                                      </div>
+                                  
+                                      @foreach ($taxation as $tax)
+                                        <div class="receipt__list-row">
+                                          <dt class="receipt__item">{{ $tax->tax_name }} ({{ $tax->tax_percentage }}%)</dt>
+                                          <dd class="receipt__cost"><span id="tax_{{ $tax->id }}">₹ 0</span></dd>
+                                        </div>
+                                      @endforeach
+                                  
+                                      <div class="receipt__list-row receipt__list-row--total">
+                                        <dt class="receipt__item">Total Bill + Tax (INR)</dt>
+                                        <dd class="receipt__cost"><span id="total_bill_with_tax">₹ 0</span></dd>
+                                      </div>
+                                    </dl>
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <button type="submit" class="btn btn-primary mx-2">Generate</button>
+                                        <button type="button" class="btn btn-success mx-2" id="approveBtn">Approve</button>
+                                    </div>
+                                  </div>
+                            </div>
                         </form>
+                        <form id="pdfForm" method="POST" action="{{ route('generate-billing-pdf') }}">
+                            @csrf
+                            <input type="hidden" name="current_reading" id="currentReadingInput">
+                            <input type="hidden" name="last_reading" id="lastReadingInput">
+                            <input type="hidden" name="remission" id="remissionInput">
+                            <input type="hidden" name="outstanding_dues" id="outstandingDuesInput">
+                            <input type="hidden" name="total_with_tax" id="totalWithTaxInput">
+                            <!-- Add other hidden inputs as needed -->
+                        </form>                        
                     </div>
-
                 </div>
             </div>
         </div>
@@ -124,45 +181,72 @@
 <script>
     const occupants = @json($occupants);
     const billingDetails = @json($billingDetails);
+    const amout = @json($unitRate);
+    const taxes = @json($taxation);
 
-$(document).ready(function() {
-    // Set default values and show fields when page loads
-    $('#outstanding_dues').val(0).prop('hidden', false);
-    $('#last_reading').val(0).prop('hidden', false);
-    $('#last_pay_date').val(0).prop('hidden', false);
+    $(document).ready(function () {
+        $('#outstanding_dues').val(0).prop('hidden', false);
+        $('#last_reading').val(0).prop('hidden', false);
+        $('#last_pay_date').val(0).prop('hidden', false);
 
-    $('#house_id').on('change', function() {
-        const selectedHouseId = $(this).val();
-        const occupant = occupants.find(occ => occ.h_id == selectedHouseId);
+        $('#house_id').on('change', function () {
+            const selectedHouseId = $(this).val();
+            const occupant = occupants.find(occ => occ.h_id == selectedHouseId);
+            if (occupant) {
+                $('#occupant_id').val(occupant.id).prop('disabled', true).prop('hidden', false);
+                $('#hidden_occupant_id').val(occupant.id); 
 
-        if (occupant) {
-            // Enable occupant selection
-            $('#occupant_id').val(occupant.id).prop('disabled', true).prop('hidden', false);
-            $('#hidden_occupant_id').val(occupant.id); // Set hidden field value
-
-            const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
-            if (billingDetail) {
-                // If billing detail exists, show outstanding dues and last reading
-                $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
-                $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
-                $('#last_pay_date').val(billingDetail.last_reading).prop('hidden', false);
+                const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
+                if (billingDetail) {
+                    $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
+                    $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
+                    $('#last_pay_date').val(billingDetail.last_reading).prop('hidden', false);
+                } else {
+                    $('#outstanding_dues').val(0).prop('hidden', false);
+                    $('#last_reading').val(0).prop('hidden', false);
+                    $('#last_pay_date').val(0).prop('hidden', false);
+                }
             } else {
-                // If no billing detail exists, hide these fields
+                $('#occupant_id').val('').prop('disabled', false).prop('hidden', false);
+                $('#hidden_occupant_id').val('');
                 $('#outstanding_dues').val(0).prop('hidden', false);
                 $('#last_reading').val(0).prop('hidden', false);
                 $('#last_pay_date').val(0).prop('hidden', false);
             }
-        } else {
-            // Reset the fields if no occupant is found
-            $('#occupant_id').val('').prop('disabled', false).prop('hidden', false);
-            $('#hidden_occupant_id').val('');
-            $('#outstanding_dues').val(0).prop('hidden', false);
-            $('#last_reading').val(0).prop('hidden', false);
-            $('#last_pay_date').val(0).prop('hidden', false);
-        }
-    });
-});
+        });
 
- </script>
- 
+        $('#current_reading, #last_reading, #remission').on('input', function () {
+            let currentReading = parseFloat($('#current_reading').val()) || 0;
+            let lastReading = parseFloat($('#last_reading').val()) || 0;
+            let remission = parseFloat($('#remission').val()) || 0;
+            let outstanding_duess = parseFloat($('#outstanding_dues').val()) || 0;
+
+            let totalUnits = currentReading + lastReading;
+            let totalAfterRemission = totalUnits - remission;
+            let AfterRemission = currentReading - remission;
+            let finalAmout = AfterRemission * amout;
+            let totalBill = finalAmout + outstanding_duess;
+            
+            let totalTax = 0;
+
+            taxes.forEach(tax => {
+                let taxAmount = (finalAmout * parseFloat(tax.tax_percentage)) / 100;
+                $(`#tax_${tax.id}`).text('₹ ' + taxAmount.toFixed(2));
+                totalTax += taxAmount;
+            });
+
+            let totalWithTax = totalBill + totalTax;
+
+            $('#total_units').text(totalUnits.toFixed(2));
+            $('#last_units').text(lastReading.toFixed(2));
+            $('#total_after_remission').text(totalAfterRemission.toFixed(2));
+            $('#outstanding_duess').text('₹ ' + outstanding_duess.toFixed(2));
+            $('#currentAmout').text('₹ ' + finalAmout.toFixed(2));
+            $('#total_bill_with_tax').text('₹ ' + totalWithTax.toFixed(2));
+        });
+    });
+    document.getElementById('approveBtn').addEventListener('click', function () {
+    window.location.href = "{{ route('generate-billing-pdf') }}";
+  });
+</script>
 @endsection
