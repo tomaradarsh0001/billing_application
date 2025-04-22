@@ -132,18 +132,28 @@ class BillingDetailController extends Controller
     
     public function generateBillingPdf(Request $request)
     {
+        // dd($request);
         $currentReading = $request->current_reading;
         $lastReading = $request->last_reading;
         $remission = $request->remission;
         $outstandingDues = $request->outstanding_dues;
-        $totalWithTax = $request->total_with_tax;
-
         $totalUnits = $currentReading + $lastReading;
         $unitAfterRemission = $totalUnits - $remission;
-
+        $currentCharges = $request->current_charges;
         $taxation = TaxCharge::all();
-        $totalAmountWithTax = $request->current_charges + $taxation->sum('tax_amount');
-
+        $totalTax = 0;
+        $taxDetails = [];
+        foreach ($taxation as $tax) {
+            $taxAmount = ($currentCharges * $tax->tax_percentage) / 100;
+            $totalTax += $taxAmount;
+            $taxDetails[] = [
+                'name' => $tax->tax_name,
+                'percentage' => $tax->tax_percentage,
+                'amount' => $taxAmount,
+            ];
+        }
+        dd($taxDetails);
+        $totalAmountWithTax = $currentCharges + $totalTax;
         $data = [
             'house_id' => $request->house_id,
             'occupant_id' => $request->occupant_id,
@@ -151,15 +161,14 @@ class BillingDetailController extends Controller
             'last_reading' => $lastReading,
             'outstanding_dues' => $outstandingDues,
             'current_reading' => $currentReading,
-            'current_charges' => $request->current_charges,
+            'current_charges' => $currentCharges,
             'pay_date' => $request->pay_date,
             'remission' => $remission,
             'unit_after_remission' => $unitAfterRemission,
             'total_units' => $totalUnits,
-            'taxation' => $taxation,
+            'taxes' => $taxDetails,
             'total_amount_with_tax' => $totalAmountWithTax,
         ];
-
         $pdf = Pdf::loadView('generatepdf', $data);
         $fileName = 'billing_summary_' . now()->format('Ymd_His') . '_' . Str::random(5) . '.pdf';
         $filePath = 'public/billing_pdfs/' . $fileName;

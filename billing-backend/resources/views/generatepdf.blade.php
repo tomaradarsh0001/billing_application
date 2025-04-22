@@ -116,7 +116,7 @@
       </tr>
       <tr>
         <th>Amount Due</th>
-        <td>₹{{ number_format($total_amount_with_tax, 2) }}</td>
+        <td>₹{{ $outstanding_dues }}</td>
       </tr>
     </table>
 
@@ -150,21 +150,20 @@
         </tr>
         <tr>
           <td>Current Charges</td>
-          <td>₹{{ number_format($current_charges, 2) }}</td>
+          <td>₹{{ $current_charges }}</td>
         </tr>
         <tr>
           <td>Outstanding Dues</td>
-          <td>₹{{ number_format($outstanding_dues, 2) }}</td>
+          <td>₹{{ $outstanding_dues }}</td>
         </tr>
-        @foreach ($taxation as $tax)
+        @foreach ($taxes as $tax)
         <tr>
-          <td>{{ $tax->tax_name }}</td>
-          <td>₹{{ number_format($tax->tax_amount, 2) }}</td>
+          <td>{{ $tax['name'] }} ({{ $tax['percentage'] }}%)</td>
+          <td>₹{{ number_format($tax['amount'], 2) }}</td>
         </tr>
         @endforeach
       </tbody>
     </table>
-
     <table class="balance">
       <tr>
         <th>Total Amount (with Tax)</th>

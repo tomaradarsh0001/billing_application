@@ -246,7 +246,34 @@
         });
     });
     document.getElementById('approveBtn').addEventListener('click', function () {
-    window.location.href = "{{ route('generate-billing-pdf') }}";
-  });
+    const data = {
+        house_id: $('#house_id').val(),
+        occupant_id: $('#hidden_occupant_id').val(),
+        current_reading: parseFloat($('#current_reading').val()) || 0,
+        last_reading: parseFloat($('#last_reading').val()) || 0,
+        remission: parseFloat($('#remission').val()) || 0,
+        outstanding_dues: parseFloat($('#outstanding_dues').val()) || 0,
+        unit_rate: amout,
+        taxes: taxes,
+        billingDetails: billingDetails,
+        occupants: occupants
+    };
+
+    fetch("{{ route('generate-billing-pdf') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank'); 
+    })
+    .catch(error => console.error('Error generating PDF:', error));
+});
+
 </script>
 @endsection
