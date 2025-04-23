@@ -61,12 +61,21 @@
                                             <td>{{ $detail->last_reading ?? 'N/A' }}</td>
                                             <td>₹{{ number_format($detail->outstanding_dues, 2) }}</td>
                                             <td>{{ $detail->current_reading }}</td>
-                                            <td>₹</td>
-                                            {{-- <td>
-                                                <span class="badge bg-{{ $detail->status == 'paid' ? 'success' : 'danger' }}">
+                                            <td>
+                                                @php
+                                                    $badgeClass = match($detail->status) {
+                                                        'New' => 'secondary',     // Grey
+                                                        'Generated' => 'primary', // Blue
+                                                        'Approved' => 'success',  // Green
+                                                        default => 'light'        // Fallback
+                                                    };
+                                                @endphp
+                                            
+                                                <span class="badge bg-{{ $badgeClass }}">
                                                     {{ ucfirst($detail->status) }}
                                                 </span>
-                                            </td> --}}
+                                            </td>
+                                            
                                             <td>
                                                 {{-- <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a> --}}
                                                 <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Update</a>

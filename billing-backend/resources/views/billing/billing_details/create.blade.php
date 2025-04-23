@@ -189,8 +189,10 @@
                                         <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                                       </div>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <button type="submit" class="btn btn-primary mx-2" id="generateBtn">Generate</button>
-                                        <button type="button" class="btn btn-success mx-2" id="approveBtn">Approve</button>
+                                          <!-- Hidden input to store the status -->
+                                            <input type="hidden" name="status" id="statusInput">
+                                            <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
+                                            {{-- <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button> --}}
                                     </div>
                                 </div>
                             </form>
@@ -329,7 +331,7 @@
     progressBarWrapper.style.display = 'block';
     progressBar.style.width = '0%';
     progressBar.setAttribute('aria-valuenow', 0);
-    progressBar.innerText = ''; // ✅ clear any text inside
+    progressBar.innerText = '';
 
     let width = 0;
     const interval = setInterval(function () {
@@ -338,12 +340,12 @@
             button.innerHTML = 'Approved';
             progressBar.style.width = '100%';
             progressBar.setAttribute('aria-valuenow', 100);
-            progressBar.innerText = ''; // ✅ make sure it's empty even at end
+            progressBar.innerText = ''; 
         } else {
             width++;
             progressBar.style.width = width + '%';
             progressBar.setAttribute('aria-valuenow', width);
-            progressBar.innerText = ''; // ✅ prevent any text update
+            progressBar.innerText = ''; 
         }
     }, 30);
 
@@ -360,7 +362,7 @@
         billingDetails: billingDetails,
         occupants: occupants
     };
-    console.log(data);
+    // console.log(data);
     
     fetch("{{ route('generate-billing-pdf') }}", {
         method: 'POST',
@@ -377,5 +379,8 @@
     })
     .catch(error => console.error('Error generating PDF:', error));
 });
+    function setStatus(status) {
+        document.getElementById('statusInput').value = status;
+  }
 </script>
 @endsection

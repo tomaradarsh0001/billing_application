@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CommunicationService;
 use App\Models\BillingDetail;
 use Illuminate\Http\Request;
 use App\Models\HouseDetail;
@@ -60,8 +61,8 @@ class BillingDetailController extends Controller
                 'pay_date' => $request->pay_date,
                 'remission' => $request->remission,
                 'unit_after_remission' => $unitAfterRemission,
+                'status' => $request->status,
             ]);
-    
             if ($billingDetail) {
                 Log::info('BillingDetailController@store: Billing detail successfully created.', ['billing_detail' => $billingDetail]);
             } else {
@@ -109,6 +110,8 @@ class BillingDetailController extends Controller
                     'current_charges' => 'nullable|numeric',
                     'pay_date' => 'nullable|date',
                     'remission' => 'nullable|numeric',
+                    'unit_after_remission' => 'nullable|numeric',
+                    'status' => 'nullable',
                 ]);
 
                 $lastReading = $request->last_reading ?? $billingDetail->last_reading;
@@ -166,6 +169,9 @@ class BillingDetailController extends Controller
             'occupant_id' => $request->occupant_id,
             'first_name' => $occupant?->first_name,
             'last_name' => $occupant?->last_name,
+            'mobile' => $occupant?->mobile,
+            'email' => $occupant?->email,
+            'unique_id' => $occupant?->unique_id,
             'hno' => $houses?->hno,
             'area' => $houses?->area,
             'last_pay_date' => $request->last_pay_date,
@@ -185,10 +191,19 @@ class BillingDetailController extends Controller
         $filePath = 'public/billing_pdfs/' . $fileName;
         Storage::put($filePath, $pdf->output());
         // Send email
-        Mail::to('tomaradarsh0001@gmail.com')->send(new BillingSummaryMail($data, $pdf->output(), $fileName));
-
+        $email = isset($data['email']) ? $data['email'] : 'example@gmail.com';
+        Mail::to($email)->send(new BillingSummaryMail($data, $pdf->output(), $fileName));
+        
+        // Send SMS/WhatsApp 
+        $phoneNumber = $data['mobile'];  
+        $email = $data['email'];  
+        $name = $data['first_name'] . " " . $data['last_name'];  
+        $pdfFileName =  $fileName; 
+        
+        $communicationService = new CommunicationService();
+        $communicationService->sendBillingMessages($name, $phoneNumber, $email, $pdfFileName);
         return $pdf->download($fileName);
     }
-
+    
     
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('current_reading', 10, 2);
             $table->decimal('current_charges', 10, 2);
             $table->date('pay_date');
-            $table->enum('status', ['paid', 'unpaid', 'partially_paid']);
+            $table->enum('status', ['New', 'Generated', 'Approved'])->default('New');
             $table->timestamps();
         });
     }

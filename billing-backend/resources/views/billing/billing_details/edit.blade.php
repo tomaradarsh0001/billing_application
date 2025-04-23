@@ -151,8 +151,10 @@
                                         </div>
                                     </dl>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <button type="submit" class="btn btn-primary mx-2">Update</button>
-                                        <button type="button" class="btn btn-success mx-2" id="approveBtn">Approve</button>
+                                         <!-- Hidden input to store the status -->
+                                         <input type="hidden" name="status" id="statusInput">
+                                        <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
+                                        <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button>
                                     </div>
                                 </div>
                             </div>
@@ -249,5 +251,31 @@
         })
         .catch(error => console.error('Error generating PDF:', error));
     });
+    function setStatus(newStatus) {
+        document.getElementById('status').value = newStatus;
+        checkStatusAndToggleButtons();
+    }
+  function checkStatusAndToggleButtons() {
+        const status = document.getElementById('status').value;
+        console.Log("statttsus is ": status);
+        const generateBtn = document.getElementById('generateBtn');
+        const approveBtn = document.getElementById('approveBtn');
+
+        if (status === 'New') {
+            generateBtn.style.display = 'inline-block';
+            approveBtn.style.display = 'inline-block';
+            approveBtn.disabled = true;
+        } else if (status === 'Generated') {
+            generateBtn.style.display = 'inline-block';
+            approveBtn.style.display = 'inline-block';
+            approveBtn.disabled = false;
+        } else if (status === 'Approved') {
+            generateBtn.style.display = 'none';
+            approveBtn.style.display = 'none';
+        }
+    }
+
+    // Call it on page load
+    window.onload = checkStatusAndToggleButtons;
 </script>
 @endsection
