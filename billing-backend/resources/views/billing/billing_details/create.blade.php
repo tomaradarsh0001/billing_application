@@ -1,6 +1,35 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+/* Button animation */
+#approveBtn:active {
+    transform: scale(0.95);
+    transition: transform 0.2s ease;
+}
+
+/* Progress bar styling */
+.progress {
+    height: 20px;
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #28a745;
+    transition: width 0.5s ease-in-out;
+}
+.progress-bar {
+    height: 100%;
+    width: 0;
+    background-color: #28a745;
+    transition: width 0.5s ease-in-out;
+}
+</style>
 <div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
@@ -27,7 +56,7 @@
                     </div>
 
                     <div class="QA_table mb_30">
-                        <form action="{{ route('billing_details.store') }}" method="POST">
+                        <form id="myForm" action="{{ route('billing_details.store') }}" method="POST">
                             @csrf
 
                             <div class="row">
@@ -156,13 +185,16 @@
                                         <dd class="receipt__cost"><span id="total_bill_with_tax">₹ 0</span></dd>
                                       </div>
                                     </dl>
+                                    <div id="progress" class="progress" style="display:none; margin-top: 10px; height: 25px;">
+                                        <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                      </div>
                                     <div class="d-flex justify-content-center mt-3">
-                                        <button type="submit" class="btn btn-primary mx-2">Generate</button>
+                                        <button type="submit" class="btn btn-primary mx-2" id="generateBtn">Generate</button>
                                         <button type="button" class="btn btn-success mx-2" id="approveBtn">Approve</button>
                                     </div>
-                                  </div>
-                            </div>
-                        </form>
+                                </div>
+                            </form>
+                          </div>
                         <form id="pdfForm" method="POST" action="{{ route('generate-billing-pdf') }}">
                             @csrf
                             <input type="hidden" name="current_reading" id="currentReadingInput">
@@ -171,7 +203,6 @@
                             <input type="hidden" name="outstanding_dues" id="outstandingDuesInput">
                             <input type="hidden" name="total_with_tax" id="totalWithTaxInput">
                             <input type="hidden" id="currentAmountHidden">
-                            <!-- Add other hidden inputs as needed -->
                         </form>                        
                     </div>
                 </div>
@@ -237,7 +268,6 @@
             });
 
             let totalWithTax = totalBill + totalTax;
-
             $('#total_units').text(totalUnits.toFixed(2));
             $('#last_units').text(lastReading.toFixed(2));
             $('#total_after_remission').text(totalAfterRemission.toFixed(2));
@@ -246,6 +276,40 @@
             $('#total_bill_with_tax').text('₹ ' + totalWithTax.toFixed(2));
         });
     });
+    document.getElementById('generateBtn').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const button = this;
+    const form = document.getElementById('myForm');
+    const progressBarWrapper = document.getElementById('progress');
+    const progressBar = document.getElementById('progress-bar');
+
+    button.innerHTML = 'Generating...';
+    button.disabled = true;
+
+    progressBarWrapper.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', 0);
+    progressBar.innerText = '';
+
+    let width = 0;
+    const interval = setInterval(function () {
+        if (width >= 100) {
+            clearInterval(interval);
+            button.innerHTML = 'Generated';
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            progressBar.innerText = '';
+            form.submit();
+        } else {
+            width++;
+            progressBar.style.width = width + '%';
+            progressBar.setAttribute('aria-valuenow', width);
+            progressBar.innerText = '';
+        }
+    }, 30);
+});
+
     document.getElementById('approveBtn').addEventListener('click', function () {
     const currentReading = parseFloat($('#current_reading').val()) || 0;
     const lastReading = parseFloat($('#last_reading').val()) || 0;
@@ -254,10 +318,37 @@
 
     const AfterRemission = currentReading - remission;
     const finalAmout = AfterRemission * amout;
+    
+    const button = this;
+    const progressBarWrapper = document.getElementById('progress');
+    const progressBar = document.getElementById('progress-bar');
+
+    button.innerHTML = 'Processing...';
+    button.disabled = true;
+
+    progressBarWrapper.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', 0);
+    progressBar.innerText = ''; // ✅ clear any text inside
+
+    let width = 0;
+    const interval = setInterval(function () {
+        if (width >= 100) {
+            clearInterval(interval);
+            button.innerHTML = 'Approved';
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            progressBar.innerText = ''; // ✅ make sure it's empty even at end
+        } else {
+            width++;
+            progressBar.style.width = width + '%';
+            progressBar.setAttribute('aria-valuenow', width);
+            progressBar.innerText = ''; // ✅ prevent any text update
+        }
+    }, 30);
 
     const data = {
         house_id: $('#house_id').val(),
-        
         occupant_id: $('#hidden_occupant_id').val(),
         current_reading: currentReading,
         last_reading: lastReading,
@@ -286,7 +377,5 @@
     })
     .catch(error => console.error('Error generating PDF:', error));
 });
-
-
 </script>
 @endsection

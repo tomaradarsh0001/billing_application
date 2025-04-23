@@ -13,6 +13,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use App\Mail\BillingSummaryMail;
+use Illuminate\Support\Facades\Mail;
 
 
 
@@ -153,9 +155,12 @@ class BillingDetailController extends Controller
                 'amount' => $taxAmount,
             ];
         }
-        $totalAmountWithTax = $currentCharges + $totalTax;
         $occupant = OccupantDetail::where('h_id', $request->house_id)->first();
         $houses = HouseDetail::where('id', $request->house_id)->first();
+        $sum = $currentReading - $remission;
+       
+        $totalSum = $sum * $currentCharges;
+        $grossTotal = $totalSum + $outstandingDues + $totalTax;
         $data = [
             'house_id' => $request->house_id,
             'occupant_id' => $request->occupant_id,
@@ -173,12 +178,14 @@ class BillingDetailController extends Controller
             'unit_after_remission' => $unitAfterRemission,
             'total_units' => $totalUnits,
             'taxes' => $taxDetails,
-            'total_amount_with_tax' => $totalAmountWithTax,
+            'grossTotal' => $grossTotal
         ];
         $pdf = Pdf::loadView('generatepdf', $data);
         $fileName = 'billing_summary_' . now()->format('Ymd_His') . '_' . Str::random(5) . '.pdf';
         $filePath = 'public/billing_pdfs/' . $fileName;
         Storage::put($filePath, $pdf->output());
+        // Send email
+        Mail::to('tomaradarsh0001@gmail.com')->send(new BillingSummaryMail($data, $pdf->output(), $fileName));
 
         return $pdf->download($fileName);
     }
