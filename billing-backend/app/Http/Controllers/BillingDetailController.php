@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 
 
+
 class BillingDetailController extends Controller
 {
     public function index()
@@ -132,19 +133,19 @@ class BillingDetailController extends Controller
     
     public function generateBillingPdf(Request $request)
     {
-        // dd($request);
         $currentReading = $request->current_reading;
         $lastReading = $request->last_reading;
         $remission = $request->remission;
         $outstandingDues = $request->outstanding_dues;
         $totalUnits = $currentReading + $lastReading;
         $unitAfterRemission = $totalUnits - $remission;
-        $currentCharges = $request->current_charges;
+        $currentCharges = PerUnitRate::where('status', 1)->value('unit_rate');
+        $currentAmount = $request->currentAmount;
         $taxation = TaxCharge::all();
         $totalTax = 0;
         $taxDetails = [];
         foreach ($taxation as $tax) {
-            $taxAmount = ($currentCharges * $tax->tax_percentage) / 100;
+            $taxAmount = ($currentAmount * $tax->tax_percentage) / 100;
             $totalTax += $taxAmount;
             $taxDetails[] = [
                 'name' => $tax->tax_name,
@@ -152,11 +153,16 @@ class BillingDetailController extends Controller
                 'amount' => $taxAmount,
             ];
         }
-        dd($taxDetails);
         $totalAmountWithTax = $currentCharges + $totalTax;
+        $occupant = OccupantDetail::where('h_id', $request->house_id)->first();
+        $houses = HouseDetail::where('id', $request->house_id)->first();
         $data = [
             'house_id' => $request->house_id,
             'occupant_id' => $request->occupant_id,
+            'first_name' => $occupant?->first_name,
+            'last_name' => $occupant?->last_name,
+            'hno' => $houses?->hno,
+            'area' => $houses?->area,
             'last_pay_date' => $request->last_pay_date,
             'last_reading' => $lastReading,
             'outstanding_dues' => $outstandingDues,

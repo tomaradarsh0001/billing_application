@@ -2,21 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  
   <title>Invoice</title>
   <style>
-    /* Your existing styles stay unchanged */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      
     }
 
     body {
-      padding-right: 50px;
-      padding-left: 50px;
-      padding-bottom: 50px;
-      padding-top: 40px;
+      padding: 40px 50px 50px 50px;
       background: #fff;
       color: #000;
       box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5);
@@ -56,7 +54,7 @@
     th, td {
       border: 1px solid #ccc;
       padding: 8px;
-      width: 160px
+      width: 160px;
     }
 
     th {
@@ -98,10 +96,10 @@
 
   <header>
     <address>
-        <p>Occupant Name: {{ $house_id }}</p>
-        <p>Bunglaw No. {{ $occupant_id }}</p>
-        <p>Contact No. {{ $last_pay_date }}</p>
-      </address>
+        <p>Occupant Name: {{ $first_name  . " " . $last_name ?? 'N/A' }}</p>
+        <p>Bunglaw No: {{  $hno }} {{  $area }}</p>
+        <p>Last Payment Date: {{ $last_pay_date ?? 'N/A' }}</p>
+    </address>
   </header>
 
   <article>
@@ -111,20 +109,16 @@
         <td>{{ uniqid('INV-') }}</td>
       </tr>
       <tr>
-        <th>Date</th>
+        <th>Invoice Date</th>
         <td>{{ now()->format('d F Y') }}</td>
-      </tr>
-      <tr>
-        <th>Amount Due</th>
-        <td>₹{{ $outstanding_dues }}</td>
       </tr>
     </table>
 
     <table class="inventory">
       <thead>
         <tr>
-          <th>Item</th>
-          <th>Details</th>
+          <th>Bill Detail</th>
+          <th>Reading</th>
         </tr>
       </thead>
       <tbody>
@@ -150,32 +144,57 @@
         </tr>
         <tr>
           <td>Current Charges</td>
-          <td>₹{{ $current_charges }}</td>
+          <td>Rs.{{ number_format($current_charges, 2) }} Per Unit</td>
         </tr>
         <tr>
           <td>Outstanding Dues</td>
-          <td>₹{{ $outstanding_dues }}</td>
+          <td>Rs.{{ number_format($outstanding_dues, 2) }}</td>
         </tr>
+        @php
+            $totalAmount = 0;
+            $totalSum = 0;
+            $grossTotal = 0;
+            $grossTotal = $totalSum + $outstanding_dues + $totalAmount;
+        @endphp
         @foreach ($taxes as $tax)
+        @php
+        $totalAmount += $tax['amount'];
+        @endphp
         <tr>
           <td>{{ $tax['name'] }} ({{ $tax['percentage'] }}%)</td>
-          <td>₹{{ number_format($tax['amount'], 2) }}</td>
+          <td>Rs.{{ number_format($tax['amount'], 2) }}</td>
         </tr>
         @endforeach
       </tbody>
     </table>
+    @php
+    $sum = $current_reading - $remission;
+    $totalSum = $sum * $current_charges;
+    @endphp
     <table class="balance">
       <tr>
-        <th>Total Amount (with Tax)</th>
-        <td>₹{{ number_format($total_amount_with_tax, 2) }}</td>
+        <th>Current Total (without Tax)</th>
+        <td>Rs.{{ number_format($totalSum, 2) }}</td>
       </tr>
       <tr>
-        <th>Amount Paid</th>
-        <td>₹0.00</td>
+        <th>Outstanding</th>
+        <td>Rs.{{ number_format($outstanding_dues, 2) }}</td>
       </tr>
       <tr>
-        <th>Balance Due</th>
-        <td>₹{{ number_format($total_amount_with_tax, 2) }}</td>
+        <th>Charges</th>
+        <td>Rs.{{ number_format($totalAmount, 2) }}</td>
+      </tr>
+      @php
+      $grossTotal = 0;
+      $grossTotal = $totalSum + $outstanding_dues + $totalAmount;
+     @endphp
+      <tr>
+        <th>Gross Total</th>
+        <td>Rs.{{ number_format($grossTotal, 2) }}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>UNPAID</td>
       </tr>
     </table>
   </article>

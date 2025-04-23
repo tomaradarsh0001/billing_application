@@ -170,6 +170,7 @@
                             <input type="hidden" name="remission" id="remissionInput">
                             <input type="hidden" name="outstanding_dues" id="outstandingDuesInput">
                             <input type="hidden" name="total_with_tax" id="totalWithTaxInput">
+                            <input type="hidden" id="currentAmountHidden">
                             <!-- Add other hidden inputs as needed -->
                         </form>                        
                     </div>
@@ -246,19 +247,30 @@
         });
     });
     document.getElementById('approveBtn').addEventListener('click', function () {
+    const currentReading = parseFloat($('#current_reading').val()) || 0;
+    const lastReading = parseFloat($('#last_reading').val()) || 0;
+    const remission = parseFloat($('#remission').val()) || 0;
+    const outstanding_dues = parseFloat($('#outstanding_dues').val()) || 0;
+
+    const AfterRemission = currentReading - remission;
+    const finalAmout = AfterRemission * amout;
+
     const data = {
         house_id: $('#house_id').val(),
+        
         occupant_id: $('#hidden_occupant_id').val(),
-        current_reading: parseFloat($('#current_reading').val()) || 0,
-        last_reading: parseFloat($('#last_reading').val()) || 0,
-        remission: parseFloat($('#remission').val()) || 0,
-        outstanding_dues: parseFloat($('#outstanding_dues').val()) || 0,
+        current_reading: currentReading,
+        last_reading: lastReading,
+        remission: remission,
+        outstanding_dues: outstanding_dues,
+        currentAmount: finalAmout,
         unit_rate: amout,
         taxes: taxes,
         billingDetails: billingDetails,
         occupants: occupants
     };
-
+    console.log(data);
+    
     fetch("{{ route('generate-billing-pdf') }}", {
         method: 'POST',
         headers: {
@@ -270,10 +282,11 @@
     .then(response => response.blob())
     .then(blob => {
         const url = window.URL.createObjectURL(blob);
-        window.open(url, '_blank'); 
+        window.open(url, '_blank');
     })
     .catch(error => console.error('Error generating PDF:', error));
 });
+
 
 </script>
 @endsection

@@ -152,12 +152,21 @@
                                     </dl>
                                     <div class="d-flex justify-content-center mt-3">
                                         <button type="submit" class="btn btn-primary mx-2">Update</button>
-                                        <button type="submit" class="btn btn-success mx-2">Approve</button>
+                                        <button type="button" class="btn btn-success mx-2" id="approveBtn">Approve</button>
                                     </div>
                                 </div>
                             </div>
-
                         </form>
+                        <form id="pdfForm" method="POST" action="{{ route('generate-billing-pdf') }}">
+                            @csrf
+                            <input type="hidden" name="current_reading" id="currentReadingInput">
+                            <input type="hidden" name="last_reading" id="lastReadingInput">
+                            <input type="hidden" name="remission" id="remissionInput">
+                            <input type="hidden" name="outstanding_dues" id="outstandingDuesInput">
+                            <input type="hidden" name="total_with_tax" id="totalWithTaxInput">
+                            <input type="hidden" id="currentAmountHidden">
+                            <!-- Add other hidden inputs as needed -->
+                        </form>            
                     </div>
                 </div>
             </div>
@@ -170,7 +179,7 @@
     const billingDetails = @json($billingDetail);
     const amout = @json($unitRate);
     const taxes = @json($taxation);
-
+    const occupants = @json($occupants);
     $(document).ready(function () {
         function calculateSummary() {
             let current = parseFloat($('#current_reading').val()) || 0;
@@ -179,7 +188,8 @@
             let dues = parseFloat($('#outstanding_dues').val()) || 0;
 
             let totalUnits = current + last;
-            let afterRemission = totalUnits - remission;
+            // let afterRemission = totalUnits - remission;
+            let afterRemission = current - remission;
             let baseAmount = afterRemission * amout;
 
             let taxTotal = 0;
@@ -199,6 +209,45 @@
 
         $('#current_reading, #last_reading, #remission, #outstanding_dues').on('input', calculateSummary);
         calculateSummary();
+    });
+        document.getElementById('approveBtn').addEventListener('click', function () {
+        const current = parseFloat($('#current_reading').val()) || 0;
+        const last = parseFloat($('#last_reading').val()) || 0;
+        const remission = parseFloat($('#remission').val()) || 0;
+        const dues = parseFloat($('#outstanding_dues').val()) || 0;
+
+        const afterRemission = current - remission;
+        const baseAmount = afterRemission * amout;
+
+        const data = {
+            house_id: $('#house_id').val(),
+            occupant_id: $('#hidden_occupant_id').val(),
+            current_reading: current,
+            last_reading: last,
+            remission: remission,
+            outstanding_dues: dues,
+            currentAmount: baseAmount,
+            unit_rate: amout,
+            taxes: taxes,
+            billingDetails: billingDetails,
+            occupants: occupants
+        };
+        console.log(data);
+        
+        fetch("{{ route('generate-billing-pdf') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+        })
+        .catch(error => console.error('Error generating PDF:', error));
     });
 </script>
 @endsection
