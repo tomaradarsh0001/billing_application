@@ -64,7 +64,7 @@
                                             <td>
                                                 @php
                                                     $badgeClass = match($detail->status) {
-                                                        'New' => 'secondary',     // Grey
+                                                        'New' => 'warning',     // Grey
                                                         'Generated' => 'primary', // Blue
                                                         'Approved' => 'success',  // Green
                                                         default => 'light'        // Fallback

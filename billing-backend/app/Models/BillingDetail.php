@@ -20,7 +20,8 @@ class BillingDetail extends Model
         'pay_date',
         'remission',
         'unit_after_remission',
-        'status'
+        'status',
+        'pdf_path'
     ];
     
 

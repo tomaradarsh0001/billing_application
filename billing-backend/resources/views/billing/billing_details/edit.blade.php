@@ -1,6 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .material-btn {
+    background: linear-gradient(145deg, #f44336, #d32f2f); /* Red gradient */
+    color: white; /* White text */
+    border-radius: 12px; /* Rounded corners */
+    padding: 16px 24px; /* More padding for a material feel */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    text-align: center; /* Center text */
+    transition: all 0.3s ease; /* Smooth transition on hover */
+}
+.p-4 {
+    padding: 1.1rem !important;
+}
+.material-btn:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+    transform: translateY(-4px); /* Slight upward movement on hover */
+    background: linear-gradient(145deg, #d32f2f, #f44336); /* Reversed gradient on hover */
+}
+
+.material-btn:active {
+    transform: translateY(2px); /* Simulates button press */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reduces shadow when clicked */
+}
+.fa-2x {
+    font-size: 1.5em !important;
+}
+</style>
 <div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
@@ -107,6 +134,36 @@
                                     <input type="number" name="remission" id="remission" class="form-control" value="{{ old('remission', $billingDetail->remission) }}">
                                     @error('remission') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
+                                <div class="col-md-3 mb-3">
+                                    <div class="border p-2 rounded shadow-sm">
+                                        <label for="status" class="form-label mb-1">Status</label> {{-- Reduced bottom margin --}}
+                                        @php
+                                            $status = old('status', $billingDetail->status);
+                                            $badgeClass = match($status) {
+                                                'Approved' => 'text-success',
+                                                'Generated' => 'text-primary',
+                                                'New' => 'text-warning',
+                                                default => 'text-secondary',
+                                            };
+                                        @endphp
+                                        <p class="fw-bold {{ $badgeClass }}" style="margin-bottom: 0;">{{ $status }}</p> {{-- Removed extra spacing --}}
+                                        @error('status') 
+                                            <div class="text-danger mt-1">{{ $message }}</div> 
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    @if($billingDetail->status == 'Approved') 
+                                        <a href="{{ asset('storage/billing_pdfs/' . $billingDetail->pdf_path) }}" class="btn material-btn d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all" target="_blank">
+                                            <i class="fas fa-file-pdf fa-2x mr-3 text-white"></i> 
+                                            <span class="fw-bold mx-3">Download PDF</span>
+                                        </a>
+                                    @endif
+                                </div>
+                                
+                                
+                                
+                                
                             </div>
 
                             {{-- Bill Summary --}}
@@ -151,10 +208,13 @@
                                         </div>
                                     </dl>
                                     <div class="d-flex justify-content-center mt-3">
-                                         <!-- Hidden input to store the status -->
-                                         <input type="hidden" name="status" id="statusInput">
-                                        <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
-                                        <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button>
+                                        <input type="hidden" name="status" id="statusInput">
+                                        @if ($billingDetail->status === 'New')
+                                            <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
+                                        @elseif ($billingDetail->status === 'Generated')
+                                            <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
+                                            <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +250,6 @@
             let dues = parseFloat($('#outstanding_dues').val()) || 0;
 
             let totalUnits = current + last;
-            // let afterRemission = totalUnits - remission;
             let afterRemission = current - remission;
             let baseAmount = afterRemission * amout;
 
@@ -251,31 +310,9 @@
         })
         .catch(error => console.error('Error generating PDF:', error));
     });
-    function setStatus(newStatus) {
-        document.getElementById('status').value = newStatus;
-        checkStatusAndToggleButtons();
-    }
-  function checkStatusAndToggleButtons() {
-        const status = document.getElementById('status').value;
-        console.Log("statttsus is ": status);
-        const generateBtn = document.getElementById('generateBtn');
-        const approveBtn = document.getElementById('approveBtn');
-
-        if (status === 'New') {
-            generateBtn.style.display = 'inline-block';
-            approveBtn.style.display = 'inline-block';
-            approveBtn.disabled = true;
-        } else if (status === 'Generated') {
-            generateBtn.style.display = 'inline-block';
-            approveBtn.style.display = 'inline-block';
-            approveBtn.disabled = false;
-        } else if (status === 'Approved') {
-            generateBtn.style.display = 'none';
-            approveBtn.style.display = 'none';
-        }
-    }
-
-    // Call it on page load
-    window.onload = checkStatusAndToggleButtons;
+   
+    function setStatus(status) {
+        document.getElementById('statusInput').value = status;
+  }
 </script>
 @endsection

@@ -111,9 +111,9 @@ class BillingDetailController extends Controller
                     'pay_date' => 'nullable|date',
                     'remission' => 'nullable|numeric',
                     'unit_after_remission' => 'nullable|numeric',
-                    'status' => 'nullable',
+                    'status' => 'nullable|in:New,Generated,Approved', // Ensure status is one of the enum values
                 ]);
-
+                $validated['status'] = $request->status ?? 'Generated';
                 $lastReading = $request->last_reading ?? $billingDetail->last_reading;
                 $currentReading = $request->current_reading ?? $billingDetail->current_reading;
                 $remission = $request->remission ?? $billingDetail->remission;
@@ -190,19 +190,26 @@ class BillingDetailController extends Controller
         $fileName = 'billing_summary_' . now()->format('Ymd_His') . '_' . Str::random(5) . '.pdf';
         $filePath = 'public/billing_pdfs/' . $fileName;
         Storage::put($filePath, $pdf->output());
+
+        $billingDetail = BillingDetail::where('house_id', $request->house_id)->first();
+        if ($billingDetail) {
+            $billingDetail->pdf_path = $fileName;
+            $billingDetail->save();
+        }
+
         // Send email
         $email = isset($data['email']) ? $data['email'] : 'example@gmail.com';
         Mail::to($email)->send(new BillingSummaryMail($data, $pdf->output(), $fileName));
         
-        // Send SMS/WhatsApp 
-        $phoneNumber = $data['mobile'];  
-        $email = $data['email'];  
-        $name = $data['first_name'] . " " . $data['last_name'];  
-        $pdfFileName =  $fileName; 
-        
-        $communicationService = new CommunicationService();
-        $communicationService->sendBillingMessages($name, $phoneNumber, $email, $pdfFileName);
-        return $pdf->download($fileName);
+         // Send SMS/WhatsApp 
+         $phoneNumber = $data['mobile'];  
+         $email = $data['email'];  
+         $name = $data['first_name'] . " " . $data['last_name'];  
+         $pdfFileName =  $fileName; 
+         
+         $communicationService = new CommunicationService();
+         $communicationService->sendBillingMessages($name, $phoneNumber, $email, $pdfFileName);
+         return $pdf->download($fileName);
     }
     
     

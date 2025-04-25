@@ -58,31 +58,31 @@ class CommunicationService
 
     public function sendBillingMessages(string $name, string $phoneNumber, string $email, string $pdfFileName)
     {
-        $downloadLink = asset('storage/billing_pdfs/' . $pdfFileName);
-        $name = $name;
-        $email = $email;
-        $number = $phoneNumber;
-        $date = date('d-m-Y');
+    $downloadLink = asset('storage/billing_pdfs/' . $pdfFileName);
+    $name = $name;
+    $email = $email;
+    $number = $phoneNumber;
+    $date = date('d-m-Y');
 
-        $message = "Dear $name,
+    $message = "Dear $name,
 
-        We hope you're doing well. Your electricity bill has been generated on $date.
-        
-        📄 *Bill Details*:
-        • Name: $name  
-        • Email: $email  
-        • Mobile: $number
-        
-        🔗 You can download your bill from the link below, or check WhatsApp for the attached PDF:  
-        $downloadLink
-        
-        Thank you for choosing our service.
-        
-        Warm regards,  
-        Electricity Board";
-        
-        $this->sendMessage($phoneNumber, $message . ' ' . $downloadLink, false);
-        $this->sendMessage($phoneNumber, $message, true, $downloadLink);
+    We hope you're doing well. Your electricity bill has been generated on $date.
+
+    📄 *Bill Details*:
+    • Name: $name  
+    • Email: $email  
+    • Mobile: $number
+
+    🔗 You can download your bill from the link below, or check WhatsApp for the attached PDF:  
+    $downloadLink
+
+    Thank you for choosing our service.
+
+    Warm regards,  
+    Electricity Board";
+
+    $this->sendMessage($phoneNumber, $message . ' ' . $downloadLink, false);
+    $this->sendMessage($phoneNumber, $message, true, $downloadLink);
 }
 
 }
