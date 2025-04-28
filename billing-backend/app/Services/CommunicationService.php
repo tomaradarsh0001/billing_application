@@ -40,7 +40,7 @@ class CommunicationService
             ->post($url, $formData);
     
         $responseData = $response->json();
-         dd($responseData);
+        //  dd($responseData);
         if (isset($responseData['sid'])) {
             $status = $this->checkMessageStatus($responseData['sid']);
             Log::info('Message Status:', $status);

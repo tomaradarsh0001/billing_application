@@ -27,7 +27,7 @@ class StripeController extends Controller
                             'product_data' => [
                                 'name' => 'Product Name', 
                             ],
-                            'unit_amount' => 25,
+                            'unit_amount' => 50,
                         ],
                         'quantity' => 1, 
                     ],
