@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CustomerApiController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\HouseOccupantDetailApiController;
 use App\Http\Controllers\Api\PerUnitRateController;
+use App\Http\Controllers\StripeController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -56,3 +57,4 @@ Route::prefix('billing')->group(function () {
     Route::put('/{id}', [PerUnitRateController::class, 'update']);
     Route::delete('/{id}', [PerUnitRateController::class, 'destroy']);
 });
+Route::post('/create-payment-session', [StripeController::class, 'createPaymentSession']);

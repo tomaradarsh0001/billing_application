@@ -11,6 +11,15 @@
     text-align: center; /* Center text */
     transition: all 0.3s ease; /* Smooth transition on hover */
 }
+.material-btn-green {
+    background: linear-gradient(145deg, #0cb143, #09c250); /* Red gradient */
+    color: white; /* White text */
+    border-radius: 12px; /* Rounded corners */
+    padding: 16px 24px; /* More padding for a material feel */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    text-align: center; /* Center text */
+    transition: all 0.3s ease; /* Smooth transition on hover */
+}
 .p-4 {
     padding: 1.1rem !important;
 }
@@ -24,9 +33,21 @@
     transform: translateY(2px); /* Simulates button press */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reduces shadow when clicked */
 }
+
+.material-btn-green:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* More pronounced shadow on hover */
+    transform: translateY(-4px); /* Slight upward movement on hover */
+    background: linear-gradient(145deg, #0f862d, #0fc53d); /* Reversed gradient on hover */
+}
+
+.material-btn-green:active {
+    transform: translateY(2px); /* Simulates button press */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Reduces shadow when clicked */
+}
 .fa-2x {
     font-size: 1.5em !important;
 }
+
 </style>
 <div class="main_content_iner">
     <div class="col-lg-12">
@@ -59,7 +80,7 @@
 
                     {{-- Form --}}
                     <div class="QA_table mb_30">
-                        <form action="{{ route('billing_details.update', $billingDetail->id) }}" method="POST">
+                        <form id="myForm" action="{{ route('billing_details.update', $billingDetail->id) }}" method="POST">
                             @csrf
                             @method('PUT')
 
@@ -152,20 +173,23 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-md-3 mb-3">
+                                <div class="col-md-3 mb-3 d-flex flex-column">
+                                    <!-- PDF Download Button -->
                                     @if($billingDetail->status == 'Approved') 
-                                        <a href="{{ asset('storage/billing_pdfs/' . $billingDetail->pdf_path) }}" class="btn material-btn d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all" target="_blank">
+                                        <a href="{{ asset('storage/billing_pdfs/' . $billingDetail->pdf_path) }}" class="btn material-btn d-flex align-items-center justify-content-center p-4 mb-3 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all" target="_blank">
                                             <i class="fas fa-file-pdf fa-2x mr-3 text-white"></i> 
                                             <span class="fw-bold mx-3">Download PDF</span>
                                         </a>
                                     @endif
+                                    
+                                    <!-- Send Payment Link Button -->
+                                    <a href="" class="btn material-btn-green d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all bg-success" target="_blank">
+                                        <i class="fas fa-link fa-2x mr-3 text-white"></i> 
+                                        <span class="fw-bold mx-3">Send Payment Link</span>
+                                    </a>
                                 </div>
-                                
-                                
-                                
-                                
+                                                      
                             </div>
-
                             {{-- Bill Summary --}}
                             <div class="bill_card">
                                 <div class="receipt">
@@ -207,6 +231,9 @@
                                             <dd class="receipt__cost"><span id="total_bill_with_tax">₹ 0</span></dd>
                                         </div>
                                     </dl>
+                                    <div id="progress" class="progress" style="display:none; margin-top: 10px; height: 25px;">
+                                        <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                      </div>
                                     <div class="d-flex justify-content-center mt-3">
                                         <input type="hidden" name="status" id="statusInput">
                                         @if ($billingDetail->status === 'New')
@@ -310,6 +337,73 @@
         })
         .catch(error => console.error('Error generating PDF:', error));
     });
+    document.getElementById('generateBtn').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const button = this;
+    const form = document.getElementById('myForm');
+    const progressBarWrapper = document.getElementById('progress');
+    const progressBar = document.getElementById('progress-bar');
+
+    button.innerHTML = 'Generating...';
+    button.disabled = true;
+
+    progressBarWrapper.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', 0);
+    progressBar.innerText = '';
+
+    let width = 0;
+    const interval = setInterval(function () {
+        if (width >= 100) {
+            clearInterval(interval);
+            button.innerHTML = 'Generated';
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            progressBar.innerText = '';
+            form.submit();
+        } else {
+            width++;
+            progressBar.style.width = width + '%';
+            progressBar.setAttribute('aria-valuenow', width);
+            progressBar.innerText = '';
+        }
+    }, 30);
+});
+
+document.getElementById('approveBtn').addEventListener('click', function (event) {
+    event.preventDefault();
+
+    const button = this;
+    const form = document.getElementById('myForm');
+    const progressBarWrapper = document.getElementById('progress');
+    const progressBar = document.getElementById('progress-bar');
+
+    button.innerHTML = 'Generating...';
+    button.disabled = true;
+
+    progressBarWrapper.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressBar.setAttribute('aria-valuenow', 0);
+    progressBar.innerText = '';
+
+    let width = 0;
+    const interval = setInterval(function () {
+        if (width >= 100) {
+            clearInterval(interval);
+            button.innerHTML = 'Generated';
+            progressBar.style.width = '100%';
+            progressBar.setAttribute('aria-valuenow', 100);
+            progressBar.innerText = '';
+            form.submit();
+        } else {
+            width++;
+            progressBar.style.width = width + '%';
+            progressBar.setAttribute('aria-valuenow', width);
+            progressBar.innerText = '';
+        }
+    }, 30);
+});
    
     function setStatus(status) {
         document.getElementById('statusInput').value = status;

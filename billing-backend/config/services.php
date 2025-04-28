@@ -36,5 +36,10 @@ return [
     'sms_from' => env('TWILIO_SMS_FROM'),
     'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
 ],
+    'stripe' => [
+        'key'    => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 
 ];

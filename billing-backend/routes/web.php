@@ -12,6 +12,7 @@ use App\Http\Controllers\Billing\OccupantDetailController;
 use App\Http\Controllers\Billing\HouseDetailController;
 use App\Http\Controllers\PerUnitRateWebController;
 use App\Http\Controllers\TaxChargeController;
+use App\Http\Controllers\StripeController;
 
 
 
@@ -138,7 +139,13 @@ Route::middleware(['role:superadmin'])->group(function () {
         Route::delete('/{tax_charge}', [TaxChargeController::class, 'destroy'])->name('destroy');
         Route::patch('/tax-charges/{id}/status', [TaxChargeController::class, 'toggleStatus'])->name('toggleStatus');
     });
-
+    
+    Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
+    Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession'])->name('create.checkout.session');
+    Route::get('/payment/success', [StripeController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/payment/cancel', [StripeController::class, 'paymentCancel'])->name('payment.cancel');
+    
+    
 
 });
 require __DIR__ . '/auth.php';

@@ -35,6 +35,7 @@ class BillingDetailController extends Controller
     {
         $occupants = OccupantDetail::all();
         $billingDetails = BillingDetail::all();
+        // dd( $billingDetails);
         $unitRate = PerUnitRate::where('status', 1)->value('unit_rate');
         $taxation = TaxCharge::where('status', 1)->get();
         return view('billing.billing_details.create', compact('billingDetails','occupants', 'unitRate', 'taxation'));
@@ -121,6 +122,8 @@ class BillingDetailController extends Controller
                 $unitAfterRemission = $totalUnits - $remission;
                 $validated['unit_after_remission'] = $unitAfterRemission;
                 $billingDetail->update($validated);
+                // $paymentLink = $this->generatePaymentLink($billingDetail);
+                // $this->sendPaymentLinkToPhone($billingDetail->occupant->phone, $paymentLink);
                 return redirect()->route('billing_details.index')->with('success', 'Billing Detail updated successfully!');
             } catch (\Exception $e) {
                 \Log::error('BillingDetailController@update: Failed to update.', ['error' => $e->getMessage()]);

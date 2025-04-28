@@ -1,35 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<style>
-/* Button animation */
-#approveBtn:active {
-    transform: scale(0.95);
-    transition: transform 0.2s ease;
-}
 
-/* Progress bar styling */
-.progress {
-    height: 20px;
-    width: 100%;
-    background-color: #f3f3f3;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-
-.progress-bar {
-    height: 100%;
-    width: 0;
-    background-color: #28a745;
-    transition: width 0.5s ease-in-out;
-}
-.progress-bar {
-    height: 100%;
-    width: 0;
-    background-color: #28a745;
-    transition: width 0.5s ease-in-out;
-}
-</style>
 <div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
@@ -231,6 +203,8 @@
                 $('#hidden_occupant_id').val(occupant.id); 
 
                 const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
+                console.log(billingDetail);
+                
                 if (billingDetail) {
                     $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
                     $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
