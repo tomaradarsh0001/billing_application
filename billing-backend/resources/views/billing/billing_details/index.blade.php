@@ -49,6 +49,7 @@
                                         <th>Outstanding Dues</th>
                                         <th>Current Reading</th>
                                         <th>Status</th>
+                                        <th>Payment Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -75,7 +76,26 @@
                                                     {{ ucfirst($detail->status) }}
                                                 </span>
                                             </td>
+                                            <td>
+                                                @php
+                                                $paymentStatus = (string) $detail->payment_status;
+                                                   $badgeClass2 = match($paymentStatus) {
+                                                        '0' => 'danger', 
+                                                        '1' => 'success', 
+                                                        default => 'light' 
+                                                    };
                                             
+                                                    $statusText = match($paymentStatus) {
+                                                        '0' => 'Unpaid',
+                                                        '1' => 'Paid',
+                                                        default => 'Unknown'
+                                                    };
+                                                @endphp
+                                            
+                                                <span class="badge bg-{{ $badgeClass2 }}">
+                                                    {{ $statusText }}
+                                                </span>
+                                            </td>
                                             <td>
                                                 {{-- <a href="{{ route('billing_details.show', $detail->id) }}" class="btn btn-primary rounded-pill mb-2">View</a> --}}
                                                 <a href="{{ route('billing_details.edit', $detail->id) }}" class="btn btn-warning rounded-pill mb-2">Update</a>

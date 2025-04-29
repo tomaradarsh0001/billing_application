@@ -21,7 +21,8 @@ class BillingDetail extends Model
         'remission',
         'unit_after_remission',
         'status',
-        'pdf_path'
+        'pdf_path',
+        'payment_status'
     ];
     
 
@@ -42,6 +43,10 @@ class BillingDetail extends Model
     public function house()
     {
         return $this->belongsTo(HouseDetail::class, 'house_id'); // Explicit foreign key
+    }
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'billing_detail_id');
     }
     
 }

@@ -83,6 +83,11 @@
                         <form id="myForm" action="{{ route('billing_details.update', $billingDetail->id) }}" method="POST">
                             @csrf
                             @method('PUT')
+                            @php
+                            $paymentId = $billingDetail->id;
+                        @endphp
+                        
+                            <input type="hidden" id="paymentId" value="{{ $paymentId }}">
 
                             <div class="row">
                                 {{-- Left Column --}}
@@ -175,7 +180,7 @@
                                 </div>
                                 <div class="col-md-3 mb-3 d-flex flex-column">
                                     <!-- PDF Download Button -->
-                                    @if($billingDetail->status == 'Approved') 
+                                    @if($billingDetail->status == 'Approved' || $billingDetail->status == 'Generated') 
                                         <a href="{{ asset('storage/billing_pdfs/' . $billingDetail->pdf_path) }}" class="btn material-btn d-flex align-items-center justify-content-center p-4 mb-3 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all" target="_blank">
                                             <i class="fas fa-file-pdf fa-2x mr-3 text-white"></i> 
                                             <span class="fw-bold mx-3">Download PDF</span>
@@ -183,7 +188,7 @@
                                     @endif
                                     
                                     <!-- Send Payment Link Button -->
-                                    <a href="" class="btn material-btn-green d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all bg-success" target="_blank">
+                                    <a href="" id="sendPaymentLinkBtn" class="btn material-btn-green d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all bg-success">
                                         <i class="fas fa-link fa-2x mr-3 text-white"></i> 
                                         <span class="fw-bold mx-3">Send Payment Link</span>
                                     </a>
@@ -408,5 +413,46 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
     function setStatus(status) {
         document.getElementById('statusInput').value = status;
   }
+
+  document.getElementById('sendPaymentLinkBtn').addEventListener('click', function () {
+    let amountText = $('#total_bill_with_tax').text().replace(/[^\d.-]/g, '');
+    let amount = parseFloat(amountText);
+    
+    let paymentId = $('#paymentId').val(); 
+    console.log(paymentId);
+    
+    if (isNaN(amount) || amount <= 0) {
+        alert('Invalid or zero amount. Please calculate bill before proceeding.');
+        return;
+    }
+
+    let stripeAmount = Math.round(amount * 100);
+
+    fetch("{{ route('create.checkout.session') }}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+        },
+        body: JSON.stringify({
+            amount: stripeAmount,
+            id: paymentId 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert('Error creating payment session.');
+        }
+    })
+    .catch(error => {
+        console.error('Stripe session creation failed:', error);
+        alert('Something went wrong while processing the payment.');
+    });
+});
+
+
 </script>
 @endsection

@@ -13,6 +13,7 @@ use App\Http\Controllers\Billing\HouseDetailController;
 use App\Http\Controllers\PerUnitRateWebController;
 use App\Http\Controllers\TaxChargeController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TransactionController;
 
 
 
@@ -142,10 +143,12 @@ Route::middleware(['role:superadmin'])->group(function () {
     
     Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
     Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession'])->name('create.checkout.session');
+    
     Route::get('/payment/success', [StripeController::class, 'paymentSuccess'])->name('payment.success');
     Route::get('/payment/cancel', [StripeController::class, 'paymentCancel'])->name('payment.cancel');
     
-    
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+
 
 });
 require __DIR__ . '/auth.php';

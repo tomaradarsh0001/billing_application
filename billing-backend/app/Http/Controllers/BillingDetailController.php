@@ -27,7 +27,7 @@ class BillingDetailController extends Controller
         'occupantHouseStatus.house', 
         'occupantHouseStatus.occupant'
     ])->get();
-    
+
     return view('billing.billing_details.index', compact('billingDetails'));
 }
 
