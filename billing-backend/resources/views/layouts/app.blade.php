@@ -147,6 +147,18 @@
                     <li><a href="{{ route('billing_details.index') }}">View Billings</a></li>
                 </ul>
             </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/6.svg')}}" alt="">
+                    </div>
+                    <span>Transactions</span>
+                </a>
+                <ul>
+                    {{-- <li><a href="{{ route('transactions.index') }}">Add Billings</a></li> --}}
+                    <li><a href="{{ route('transactions.index') }}">View Transactions</a></li>
+                </ul>
+            </li>
         </ul>
     </nav>
 

@@ -42,25 +42,23 @@
                             <tbody>
                                 @foreach($transactions as $transaction)
                                 <tr>
-                                    {{-- <td>{{ \Illuminate\Support\Str::limit($transaction->payment_id, 30) }}</td> --}}
                                     <td>{{ $transaction->id }}</td>
-                                    <td>{{ $transaction->billing_detail_id }}</td>
+                                    <td>
+                                        {{-- Accessing the occupant full name from the $occ_name variable --}}
+                                        {{ $occ_name->firstWhere('transaction_id', $transaction->id)['occupant_full_name'] }}
+                                    </td>
                                     <td>{{ $transaction->status }}</td>
-                                    <td>${{ $transaction->amount  }}</td>
+                                    <td>${{ $transaction->amount }}</td>
                                     <td>{{ $transaction->gateway_transaction_id }}</td>
                                     <td>{{ $transaction->gateway_name }}</td>
                                     <td>{{ $transaction->created_at->format('Y-m-d H:i:s') }}</td>
                                     <td>
                                         <a href="" class="btn btn-info rounded-pill mb-2">View</a>
-                                        {{-- <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('transaction', {{ $transaction->id }})">Delete</button> --}}
-                                        {{-- <form method="POST" action="{{ route('transactions.destroy', $transaction->id) }}" class="d-inline" id="deleteForm-{{ $transaction->id }}">
-                                            @csrf
-                                            @method('DELETE')
-                                        </form> --}}
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            
                         </table>
                         @else
                         <p class="text-muted text-center">No transactions found.</p>

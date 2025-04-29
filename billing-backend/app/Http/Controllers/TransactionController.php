@@ -11,8 +11,12 @@ class TransactionController extends Controller
     {
         // Fetch all transactions from the database
         $transactions = Transaction::all();
-
-        // Pass transactions to the view
-        return view('transactions.index', compact('transactions'));
+        $occ_name = $transactions->map(function($transaction) {
+            return [
+                'transaction_id' => $transaction->id,
+                'occupant_full_name' => $transaction->billingDetail->occupant->first_name . ' ' . $transaction->billingDetail->occupant->last_name,
+            ];
+        });
+                return view('transactions.index', compact('transactions', 'occ_name'));
     }
 }
