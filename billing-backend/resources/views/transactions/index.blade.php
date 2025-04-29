@@ -51,7 +51,7 @@
                                     <td>${{ $transaction->amount }}</td>
                                     <td>{{ $transaction->gateway_transaction_id }}</td>
                                     <td>{{ $transaction->gateway_name }}</td>
-                                    <td>{{ $transaction->created_at->format('Y-m-d H:i:s') }}</td>
+                                    <td>{{ $transaction->created_at->diffForHumans() }}</td>
                                     <td>
                                         <a href="" class="btn btn-info rounded-pill mb-2">View</a>
                                     </td>
