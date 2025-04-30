@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Transaction;  // Assuming your transaction model is named "Transaction"
+use App\Models\Transaction; 
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
     public function index()
     {
-        // Fetch all transactions from the database
         $transactions = Transaction::all();
         $occ_name = $transactions->map(function($transaction) {
             return [

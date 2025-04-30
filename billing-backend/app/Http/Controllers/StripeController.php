@@ -28,15 +28,15 @@ class StripeController extends Controller
                     'price_data' => [
                         'currency' => 'usd',
                         'product_data' => [
-                            'name' => 'Your Product Name',
+                            'name' => 'Billing',
                         ],
-                        'unit_amount' => $request->amount, // amount in cents
+                        'unit_amount' => $request->amount, 
                     ],
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
                 'metadata' => [
-                    'billing_detail_id' => $request->id, // Store the billing_detail_id (paymentId) in metadata
+                    'billing_detail_id' => $request->id, 
                 ],
                 'success_url' => route('payment.success') . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('payment.cancel'),
@@ -91,7 +91,7 @@ class StripeController extends Controller
                     'billing_detail_id' => $billing->id,
                     'gateway_name' => 'stripe',
                     'gateway_transaction_id' => $session->payment_intent,
-                    'amount' => $session->amount_total / 100,  // Convert from cents to dollars
+                    'amount' => $session->amount_total / 100, 
                     'status' => 'success',
                 ]);
             } else {
@@ -106,18 +106,34 @@ class StripeController extends Controller
         return view('payment.success', ['session' => $session]);
 
     } catch (ApiErrorException $e) {
-        // Log the exception from Stripe API
         \Log::error('Stripe API Error: ' . $e->getMessage());
         return redirect()->route('payment.cancel')->with('error', 'Failed to retrieve payment details from Stripe.');
     } catch (\Exception $e) {
-        // Log any other exceptions
         \Log::error('General Error: ' . $e->getMessage());
         return redirect()->route('payment.cancel')->with('error', 'An error occurred while processing your payment.');
     }
 }
 
-    public function paymentCancel()
+    public function paymentCancel(Request $request)
     {
+        $billingDetailId = $request->query('billing_id');
+
+        if ($billingDetailId) {
+            $billing = BillingDetail::find($billingDetailId);
+    
+            if ($billing) {
+                $billing->payment_status = 0; 
+                $billing->save();
+    
+                Transaction::create([
+                    'billing_detail_id' => $billing->id,
+                    'gateway_name' => 'stripe',
+                    'gateway_transaction_id' => null,
+                    'amount' => $billing->amount,
+                    'status' => 'cancelled',
+                ]);
+            }
+        }
         return view('payment.cancel');
     }
 }

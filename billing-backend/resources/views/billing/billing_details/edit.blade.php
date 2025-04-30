@@ -384,7 +384,7 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
     const progressBarWrapper = document.getElementById('progress');
     const progressBar = document.getElementById('progress-bar');
 
-    button.innerHTML = 'Generating...';
+    button.innerHTML = 'Approving...';
     button.disabled = true;
 
     progressBarWrapper.style.display = 'block';
@@ -396,7 +396,7 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
     const interval = setInterval(function () {
         if (width >= 100) {
             clearInterval(interval);
-            button.innerHTML = 'Generated';
+            button.innerHTML = 'Approved';
             progressBar.style.width = '100%';
             progressBar.setAttribute('aria-valuenow', 100);
             progressBar.innerText = '';
@@ -452,7 +452,5 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
         alert('Something went wrong while processing the payment.');
     });
 });
-
-
 </script>
 @endsection
