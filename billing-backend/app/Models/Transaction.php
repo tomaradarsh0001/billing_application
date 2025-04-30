@@ -12,6 +12,7 @@ class Transaction extends Model
         'gateway_transaction_id',
         'amount',
         'status',
+        'payment_link'
     ];
 
     /**

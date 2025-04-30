@@ -26,6 +26,10 @@
                             <td style="padding: 8px; border: 1px solid #ddd;">Amount Payable</td>
                             <td style="padding: 8px; border: 1px solid #ddd;">₹{{ number_format($data['grossTotal'], 2) }}</td>
                         </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Payment Link</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">{{ $data['payment_link'] }}</td>
+                        </tr>
                     </table>
                     <p style="margin-top: 30px;">If you have any questions regarding your bill, feel free to reach out.</p>
                     <p>Thanks,<br><strong>Billing Team</strong></p>

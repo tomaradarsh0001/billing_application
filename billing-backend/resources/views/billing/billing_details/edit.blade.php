@@ -47,7 +47,95 @@
 .fa-2x {
     font-size: 1.5em !important;
 }
+.checkbox-wrapper-9 .tgl {
+    display: none;
+  }
+  .checkbox-wrapper-9 .tgl,
+  .checkbox-wrapper-9 .tgl:after,
+  .checkbox-wrapper-9 .tgl:before,
+  .checkbox-wrapper-9 .tgl *,
+  .checkbox-wrapper-9 .tgl *:after,
+  .checkbox-wrapper-9 .tgl *:before,
+  .checkbox-wrapper-9 .tgl + .tgl-btn {
+    box-sizing: border-box;
+  }
+  .checkbox-wrapper-9 .tgl::-moz-selection,
+  .checkbox-wrapper-9 .tgl:after::-moz-selection,
+  .checkbox-wrapper-9 .tgl:before::-moz-selection,
+  .checkbox-wrapper-9 .tgl *::-moz-selection,
+  .checkbox-wrapper-9 .tgl *:after::-moz-selection,
+  .checkbox-wrapper-9 .tgl *:before::-moz-selection,
+  .checkbox-wrapper-9 .tgl + .tgl-btn::-moz-selection,
+  .checkbox-wrapper-9 .tgl::selection,
+  .checkbox-wrapper-9 .tgl:after::selection,
+  .checkbox-wrapper-9 .tgl:before::selection,
+  .checkbox-wrapper-9 .tgl *::selection,
+  .checkbox-wrapper-9 .tgl *:after::selection,
+  .checkbox-wrapper-9 .tgl *:before::selection,
+  .checkbox-wrapper-9 .tgl + .tgl-btn::selection {
+    background: none;
+  }
+  .checkbox-wrapper-9 .tgl + .tgl-btn {
+    outline: 0;
+    display: block;
+    width: 4em;
+    height: 2em;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+  .checkbox-wrapper-9 .tgl + .tgl-btn:after,
+  .checkbox-wrapper-9 .tgl + .tgl-btn:before {
+    position: relative;
+    display: block;
+    content: "";
+    width: 50%;
+    height: 100%;
+  }
+  .checkbox-wrapper-9 .tgl + .tgl-btn:after {
+    left: 0;
+  }
+  .checkbox-wrapper-9 .tgl + .tgl-btn:before {
+    display: none;
+  }
+  .checkbox-wrapper-9 .tgl:checked + .tgl-btn:after {
+    left: 50%;
+  }
 
+  .checkbox-wrapper-9 .tgl-flat + .tgl-btn {
+    padding: 2px;
+    transition: all 0.2s ease;
+    background: #fff;
+    border: 4px solid #f2f2f2;
+    border-radius: 2em;
+  }
+  .checkbox-wrapper-9 .tgl-flat + .tgl-btn:after {
+    transition: all 0.2s ease;
+    background: #f2f2f2;
+    content: "";
+    border-radius: 1em;
+  }
+  .checkbox-wrapper-9 .tgl-flat:checked + .tgl-btn {
+    border: 4px solid #7FC6A6;
+  }
+  .checkbox-wrapper-9 .tgl-flat:checked + .tgl-btn:after {
+    left: 50%;
+    background: #7FC6A6;
+  }
+  .toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-label {
+  margin: 0;
+  cursor: pointer;
+  font-size: 1rem;
+}
 </style>
 <div class="main_content_iner">
     <div class="col-lg-12">
@@ -188,10 +276,20 @@
                                     @endif
                                     
                                     <!-- Send Payment Link Button -->
-                                    <a href="" id="sendPaymentLinkBtn" class="btn material-btn-green d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all bg-success">
+                                    {{-- <a href="" id="sendPaymentLinkBtn" class="btn material-btn-green d-flex align-items-center justify-content-center p-4 w-100 rounded-lg border-0 text-white shadow-lg hover-shadow transition-all bg-success">
                                         <i class="fas fa-link fa-2x mr-3 text-white"></i> 
                                         <span class="fw-bold mx-3">Send Payment Link</span>
-                                    </a>
+                                    </a> --}}
+                                    <div class="checkbox-wrapper-9">
+                                        <div class="toggle-row">
+                                          <input class="tgl tgl-flat" id="sendPaymentCheckbox" type="checkbox"/>
+                                          <label class="tgl-btn" for="sendPaymentCheckbox"></label>
+                                          <label class="toggle-label" for="sendPaymentCheckbox">Send payment link via email</label>
+                                        </div>
+                                      </div>
+                                      
+                                      
+                                    
                                 </div>
                                                       
                             </div>
@@ -414,15 +512,56 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
         document.getElementById('statusInput').value = status;
   }
 
-  document.getElementById('sendPaymentLinkBtn').addEventListener('click', function () {
+//   document.getElementById('sendPaymentLinkBtn').addEventListener('click', function () {
+//     let amountText = $('#total_bill_with_tax').text().replace(/[^\d.-]/g, '');
+//     let amount = parseFloat(amountText);
+    
+//     let paymentId = $('#paymentId').val(); 
+//     console.log(paymentId);
+    
+//     if (isNaN(amount) || amount <= 0) {
+//         alert('Invalid or zero amount. Please calculate bill before proceeding.');
+//         return;
+//     }
+
+//     let stripeAmount = Math.round(amount * 100);
+
+//     fetch("{{ route('create.checkout.session') }}", {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+//         },
+//         body: JSON.stringify({
+//             amount: stripeAmount,
+//             id: paymentId 
+//         })
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         if (data.session_id) {
+//             // Background success message (no redirect)
+//             console.log('Payment link created successfully and recorded in the system.');
+//             console.log('Stripe Session ID:', data.session_id);
+//         } else {
+//             alert('Error creating payment session.');
+//         }
+//     })
+//     .catch(error => {
+//         console.error('Stripe session creation failed:', error);
+//         alert('Something went wrong while processing the payment.');
+//     });
+// });
+document.getElementById('sendPaymentCheckbox').addEventListener('change', function () {
+    if (!this.checked) return; // Only trigger if checkbox is checked
+
     let amountText = $('#total_bill_with_tax').text().replace(/[^\d.-]/g, '');
     let amount = parseFloat(amountText);
-    
-    let paymentId = $('#paymentId').val(); 
-    console.log(paymentId);
-    
+    let paymentId = $('#paymentId').val();
+
     if (isNaN(amount) || amount <= 0) {
         alert('Invalid or zero amount. Please calculate bill before proceeding.');
+        this.checked = false; // Uncheck the box if invalid
         return;
     }
 
@@ -432,17 +571,19 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}' 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
         body: JSON.stringify({
             amount: stripeAmount,
-            id: paymentId 
+            id: paymentId,
+            send_email: 1
         })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.url) {
-            window.location.href = data.url;
+        if (data.session_id) {
+            console.log('Payment link created and email sent if enabled.');
+            console.log('Session ID:', data.session_id);
         } else {
             alert('Error creating payment session.');
         }
@@ -452,5 +593,6 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
         alert('Something went wrong while processing the payment.');
     });
 });
+
 </script>
 @endsection

@@ -9,6 +9,7 @@ use App\Models\HouseDetail;
 use App\Models\TaxCharge;
 use App\Models\OccupantDetail;
 use App\Models\PerUnitRate;
+use App\Models\Transaction;
 use App\Models\OccupantHouseStatus;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
@@ -164,7 +165,6 @@ class BillingDetailController extends Controller
         $occupant = OccupantDetail::where('h_id', $request->house_id)->first();
         $houses = HouseDetail::where('id', $request->house_id)->first();
         $sum = $currentReading - $remission;
-       
         $totalSum = $sum * $currentCharges;
         $grossTotal = $totalSum + $outstandingDues + $totalTax;
         $data = [
@@ -189,6 +189,10 @@ class BillingDetailController extends Controller
             'taxes' => $taxDetails,
             'grossTotal' => $grossTotal
         ];
+        $payment_link = Transaction::where('amount', $data['grossTotal'])
+        ->where('billing_detail_id', $request->billingDetails['id'])
+        ->value('payment_link');
+        $data['payment_link'] = $payment_link;
         $pdf = Pdf::loadView('generatepdf', $data);
         $fileName = 'billing_summary_' . now()->format('Ymd_His') . '_' . Str::random(5) . '.pdf';
         $filePath = 'public/billing_pdfs/' . $fileName;
