@@ -36,7 +36,7 @@ class _BillingPageState extends State<BillingPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing-details";
+  final String baseUrl = "http://13.39.111.189:100/api/billing/occupants";
   bool? _isDarkMode;
   bool _showGeneratedContent = false;
   double _estCharges = 0.0;
@@ -78,7 +78,7 @@ class _BillingPageState extends State<BillingPage> {
   }
 
   Future<void> fetchUnitRate() async {
-    final url = Uri.parse('http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/per-unit-rate');
+    final url = Uri.parse('http://13.39.111.189:100/api/per-unit-rate');
 
     try {
       final response = await http.get(url);
@@ -105,7 +105,7 @@ class _BillingPageState extends State<BillingPage> {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
-          _billingDetails = data['data'];
+          _billingDetails = data;
           _isLoading = false;
         });
       } else {
@@ -467,7 +467,7 @@ class _BillingPageState extends State<BillingPage> {
                         const SizedBox(height: 6),
                         // House and Locality Info
                         Text(
-                          "Occupant Name :- ${billing['occupant']['first_name']} ${billing['occupant']['last_name']}",
+                          "Occupant Name :- ${billing['first_name']} ${billing['last_name']}",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 15,
@@ -484,14 +484,13 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         Text(
-                          "Last Reading :- ${billing['last_reading']} ",
+                          "Mobile :- ${billing['mobile']} ",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
                             color: Colors.black87,
                           ),
                         ),
-
                         const SizedBox(height: 2),
                         // Buttons Row
                         Padding(
@@ -552,22 +551,22 @@ class _BillingPageState extends State<BillingPage> {
                                                 ListTile(
                                                   dense: true,
                                                   leading: const Icon(Icons.home, color: Colors.blueGrey),
-                                                  title: Text("House"),
-                                                  subtitle: Text("${billing['house']['hno']} ${billing['house']['area']}"),
+                                                  title: Text("Occupant Name"),
+                                                  subtitle: Text("${billing['first_name']} ${billing['last_name']}"),
                                                 ),
                                                 const Divider(),
                                                 ListTile(
                                                   dense: true,
                                                   leading: const Icon(Icons.person, color: Colors.deepPurple),
-                                                  title: Text("Occupant"),
-                                                  subtitle: Text("${billing['occupant']['first_name']} ${billing['occupant']['last_name']}"),
+                                                  title: Text("Bunglaw Number"),
+                                                  subtitle: Text("${billing['house']['hno']}"),
                                                 ),
                                                 const Divider(),
                                                 ListTile(
                                                   dense: true,
                                                   leading: const Icon(Icons.speed, color: Colors.redAccent),
-                                                  title: Text("Last Reading"),
-                                                  subtitle: Text("${billing['last_reading']}"),
+                                                  title: Text("Mobile"),
+                                                  subtitle: Text("${billing['mobile']}"),
                                                 ),
                                               ],
                                             ),
@@ -687,11 +686,11 @@ class _BillingPageState extends State<BillingPage> {
                                               double currentCharges = currentReading * unitCharge!;
 
                                               final response = await http.post(
-                                                Uri.parse("http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing-details"),
+                                                Uri.parse("http://13.39.111.189:100/api/billing-details"),
                                                 headers: {'Content-Type': 'application/json'},
                                                 body: jsonEncode({
-                                                  "house_id": billing['house']['id'],
-                                                  "occupant_id": billing['occupant']['id'],
+                                                  "house_id": billing['h_id'],
+                                                  "occupant_id": billing['id'],
                                                   "current_reading": currentReading,
                                                   "current_charges": currentCharges,
                                                 }),
@@ -796,33 +795,32 @@ class _BillingPageState extends State<BillingPage> {
                                 ),
                               );
                             },
-                            child: _estCharges > 0
-                                ? Card(
-                              key: ValueKey("bill_info_${billing['id']}"),
-                              margin: const EdgeInsets.symmetric(horizontal: 0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              color: secondaryLight,
-                              elevation: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Text(
-                                  "Outstanding Dues + Current bill is = Rs.${billing['outstanding_dues']} + ${_estCharges.toStringAsFixed(2)} = Rs.${(double.parse(billing['outstanding_dues'].toString()) + _estCharges).toStringAsFixed(2)}/-",
-                                  style: GoogleFonts.getFont(
-                                    secondaryFont ?? 'Roboto',
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.brown.shade900,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            )
-                                : const SizedBox.shrink(),
+                            // child: _estCharges > 0
+                            //     ? Card(
+                            //   key: ValueKey("bill_info_${billing['id']}"),
+                            //   margin: const EdgeInsets.symmetric(horizontal: 0),
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(12),
+                            //   ),
+                            //   color: secondaryLight,
+                            //   elevation: 2,
+                            //   child: Padding(
+                            //     padding: const EdgeInsets.all(12.0),
+                            //     child: Text(
+                            //       "Outstanding Dues + Current bill is = Rs.${billing['outstanding_dues']} + ${_estCharges.toStringAsFixed(2)} = Rs.${(double.parse(billing['outstanding_dues'].toString()) + _estCharges).toStringAsFixed(2)}/-",
+                            //       style: GoogleFonts.getFont(
+                            //         secondaryFont ?? 'Roboto',
+                            //         fontSize: 12,
+                            //         fontWeight: FontWeight.w400,
+                            //         color: Colors.brown.shade900,
+                            //       ),
+                            //       textAlign: TextAlign.center,
+                            //     ),
+                            //   ),
+                            // )
+                            //     : const SizedBox.shrink(),
                           ),
                         ],
-
                       ],
                     ),
                   );

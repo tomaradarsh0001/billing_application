@@ -67,7 +67,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
 
   Future<void> fetchOccupantData() async {
     final url = Uri.parse(
-        'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/billing/occupants/${widget.id}');
+        'http://13.39.111.189:100/api/billing/occupants/${widget.id}');
     try {
       final response = await http.get(url);
 

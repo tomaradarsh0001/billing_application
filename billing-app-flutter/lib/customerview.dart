@@ -38,7 +38,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
+  final String baseUrl = "http://13.39.111.189:100/api/customers/";
   bool? _isDarkMode;
   List<int> _selectedItems = [];
 
@@ -143,7 +143,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   }
 
   Future<void> _fetchCustomers() async {
-    const String apiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers';
+    const String apiUrl = 'http://13.39.111.189:100/api/customers';
     try {
       final response = await http.get(Uri.parse(apiUrl));
       print('Status Code: ${response.statusCode}');
@@ -230,7 +230,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
   }
   // Delete selected customers
   Future<void> _deleteSelectedItems() async {
-    final deleteApiUrl = 'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers'; // Replace with your delete API URL
+    final deleteApiUrl = 'http://13.39.111.189:100/api/customers'; // Replace with your delete API URL
 
     try {
       // Navigate to the success page first

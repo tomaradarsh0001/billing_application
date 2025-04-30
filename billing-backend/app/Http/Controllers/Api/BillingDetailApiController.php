@@ -14,8 +14,8 @@ class BillingDetailApiController extends Controller
 {
     public function index(): JsonResponse
     {
+        $occupants = OccupantDetail::all();
         $billingDetails = BillingDetail::with(['house', 'occupant'])->get();
-
         $billingDetails->transform(function ($detail) {
             return [
                 'id' => $detail->id,
@@ -55,7 +55,6 @@ class BillingDetailApiController extends Controller
             'current_reading' => 'required|numeric',
             'current_charges' => 'nullable|numeric',
             'pay_date' => 'nullable|date',
-            // 'status' => 'required|in:partially,paid,unpaid',
         ]);
     
         try {

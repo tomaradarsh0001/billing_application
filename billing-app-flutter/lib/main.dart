@@ -19,9 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Billing Application',
-      theme: ThemeData.light(),  // Default Light Mode
-      darkTheme: ThemeData.dark(), // Dark Mode
-      themeMode: ThemeMode.system, // Follows system theme
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       home: const SplashScreen(),
     );
@@ -37,8 +37,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Future<Map<String, dynamic>> configurationData;
-  bool _isDarkMode = false; // Move _isDarkMode inside State
-  // String? fontPrimary = 'Sedgwick Ave Display'; // from config or API
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -46,26 +45,22 @@ class _SplashScreenState extends State<SplashScreen> {
     _loadThemePreference();
     configurationData = fetchConfiguration();
 
-    // Wait for 3 seconds before checking login status
     Future.delayed(const Duration(seconds: 3), () async {
       await AppColors.loadColorsFromPrefs();
-      _checkLoginStatus(); // Now check login status AFTER 3 seconds
+      _checkLoginStatus();
     });
   }
 
-// Function to check if user is logged in
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('auth_token');
 
     if (token != null) {
-      // User is logged in, navigate to Dashboard
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => DashboardPage()),
       );
     } else {
-      // User is NOT logged in, navigate to Login Page
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -78,7 +73,6 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-// Load Dark Mode preference
   Future<void> _loadThemePreference() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -86,10 +80,9 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-
   Future<Map<String, dynamic>> fetchConfiguration() async {
     final response = await http.get(Uri.parse(
-        'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/configuration/1'));
+        'http://13.39.111.189:100/api/configuration/1'));
 
     if (response.statusCode == 200) {
       return json.decode(response.body)['data'];
@@ -200,15 +193,19 @@ class AppColors {
 
   static Future<void> fetchColorsAndSave() async {
     final response = await http.get(Uri.parse(
-        'http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/configuration/1'));
+        'http://13.39.111.189:100/api/configuration/1'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body)['data'];
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       data.forEach((key, value) {
-        if (key.contains('app_theme') || key == 'app_font_primary' || key == 'app_font_secondary' || key == 'app_purpose') {
-          prefs.setString(key, value);
+        if ((key.contains('app_theme') ||
+            key == 'app_font_primary' ||
+            key == 'app_font_secondary' ||
+            key == 'app_purpose') &&
+            value != null) {
+          prefs.setString(key, value.toString());
         }
       });
     } else {

@@ -141,14 +141,15 @@ Route::middleware(['role:superadmin'])->group(function () {
         Route::patch('/tax-charges/{id}/status', [TaxChargeController::class, 'toggleStatus'])->name('toggleStatus');
     });
     
-    Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
-    Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession'])->name('create.checkout.session');
-    
-    Route::get('/payment/success', [StripeController::class, 'paymentSuccess'])->name('payment.success');
-    Route::get('/payment/cancel', [StripeController::class, 'paymentCancel'])->name('payment.cancel');
-    
-    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+   
 
 
 });
+Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
+Route::post('/create-checkout-session', [StripeController::class, 'createCheckoutSession'])->name('create.checkout.session');
+
+Route::get('/payment/success', [StripeController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/cancel', [StripeController::class, 'paymentCancel'])->name('payment.cancel');
+
+Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
 require __DIR__ . '/auth.php';

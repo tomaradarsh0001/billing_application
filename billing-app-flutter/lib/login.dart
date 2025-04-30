@@ -159,7 +159,7 @@ class _LoginPageState extends State<LoginPage> {
       _isLoading = true;
     });
 
-    var url = Uri.parse("http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/login");
+    var url = Uri.parse("http://13.39.111.189:100/api/login");
 
     try {
       var response = await http.post(

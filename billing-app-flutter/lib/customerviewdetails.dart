@@ -23,7 +23,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
 
   bool _isAnimationComplete = false;
   Map<String, dynamic>? _customerDetails;
-  final String baseUrl = "http://ec2-13-39-111-189.eu-west-3.compute.amazonaws.com:100/api/customers/";
+  final String baseUrl = "http://13.39.111.189:100/api/customers/";
   String svgString = '';
   String svgStringIcon = '';
   Color? primaryLight;
