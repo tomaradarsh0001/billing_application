@@ -95,9 +95,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="last_reading">Last Reading</label>
-                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', 0) }}" readonly>
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control"
+                                           value="{{ old('last_reading', 0) }}" readonly>
                                     @error('last_reading') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
+                                
 
                                 <div class="col-md-6 mb-3">
                                     <label for="pay_date">Pay Date</label>
@@ -163,6 +165,7 @@
                                     <div class="d-flex justify-content-center mt-3">
                                           <!-- Hidden input to store the status -->
                                             <input type="hidden" name="status" id="statusInput">
+                                            <input type="hidden" name="grossamount" id="grossamount">
                                             <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
                                             {{-- <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button> --}}
                                     </div>
@@ -196,32 +199,54 @@
         $('#last_pay_date').val(0).prop('hidden', false);
 
         $('#house_id').on('change', function () {
-            const selectedHouseId = $(this).val();
-            const occupant = occupants.find(occ => occ.h_id == selectedHouseId);
-            if (occupant) {
-                $('#occupant_id').val(occupant.id).prop('disabled', true).prop('hidden', false);
-                $('#hidden_occupant_id').val(occupant.id); 
+        const selectedHouseId = $(this).val();
+        const occupant = occupants.find(occ => occ.h_id == selectedHouseId);
+        
+    if (occupant) {
+        // Setting the occupant id
+        $('#occupant_id').val(occupant.id).prop('disabled', true).prop('hidden', false);
+        $('#hidden_occupant_id').val(occupant.id);
 
-                const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
-                console.log(billingDetail);
-                
-                if (billingDetail) {
-                    $('#outstanding_dues').val(billingDetail.outstanding_dues).prop('hidden', false);
-                    $('#last_reading').val(billingDetail.last_reading).prop('hidden', false);
-                    $('#last_pay_date').val(billingDetail.last_reading).prop('hidden', false);
-                } else {
-                    $('#outstanding_dues').val(0).prop('hidden', false);
-                    $('#last_reading').val(0).prop('hidden', false);
-                    $('#last_pay_date').val(0).prop('hidden', false);
-                }
-            } else {
-                $('#occupant_id').val('').prop('disabled', false).prop('hidden', false);
-                $('#hidden_occupant_id').val('');
-                $('#outstanding_dues').val(0).prop('hidden', false);
-                $('#last_reading').val(0).prop('hidden', false);
-                $('#last_pay_date').val(0).prop('hidden', false);
-            }
-        });
+        const billingDetail = billingDetails.find(bill => bill.house_id == selectedHouseId);
+        // const filteredBillingDetails = billingDetails.filter(bill => bill.house_id == selectedHouseId);
+        
+        if (billingDetail) {
+            const withOutRemission = billingDetail.current_reading - billingDetail.remission;
+            const mainunits = withOutRemission * billingDetail.current_charges;
+            let taxesInclude = 0;
+
+            // Calculate the total taxes
+            taxes.forEach(tax => {
+                let taxAmount = (mainunits * parseFloat(tax.tax_percentage)) / 100;
+                $(`#tax_${tax.id}`).text('₹ ' + taxAmount.toFixed(2));
+                taxesInclude += taxAmount;
+            });
+
+            // Total amount including taxes
+            const withtaxes = mainunits + taxesInclude;
+            // console.log(withtaxes);
+            let reading = billingDetail.current_reading + billingDetail.last_reading;
+            console.log(reading);
+            // Set the calculated values to the fields
+            $('#last_reading').val(billingDetail.current_reading).prop('hidden', false);
+            $('#outstanding_dues').val(withtaxes.toFixed(2)).prop('hidden', false); // Updated here
+            $('#last_pay_date').val(billingDetail.last_reading).prop('hidden', false);
+        } else {
+            // Reset values if no billing details are found
+            $('#outstanding_dues').val(0).prop('hidden', false);
+            $('#last_reading').val(0).prop('hidden', false);
+            $('#last_pay_date').val(0).prop('hidden', false);
+        }
+    } else {
+        // Reset fields if no occupant is found
+        $('#occupant_id').val('').prop('disabled', false).prop('hidden', false);
+        $('#hidden_occupant_id').val('');
+        $('#outstanding_dues').val(0).prop('hidden', false);
+        $('#last_reading').val(0).prop('hidden', false);
+        $('#last_pay_date').val(0).prop('hidden', false);
+    }
+});
+
 
         $('#current_reading, #last_reading, #remission').on('input', function () {
             let currentReading = parseFloat($('#current_reading').val()) || 0;
@@ -244,6 +269,7 @@
             });
 
             let totalWithTax = totalBill + totalTax;
+            
             $('#total_units').text(totalUnits.toFixed(2));
             $('#last_units').text(lastReading.toFixed(2));
             $('#total_after_remission').text(totalAfterRemission.toFixed(2));
@@ -336,7 +362,6 @@
         billingDetails: billingDetails,
         occupants: occupants
     };
-    // console.log(data);
     
     fetch("{{ route('generate-billing-pdf') }}", {
         method: 'POST',
@@ -356,5 +381,6 @@
     function setStatus(status) {
         document.getElementById('statusInput').value = status;
   }
+  
 </script>
 @endsection

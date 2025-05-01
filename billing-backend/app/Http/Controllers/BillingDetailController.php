@@ -36,6 +36,7 @@ class BillingDetailController extends Controller
     {
         $occupants = OccupantDetail::all();
         $billingDetails = BillingDetail::all();
+
         $unitRate = PerUnitRate::where('status', 1)->value('unit_rate');
         $taxation = TaxCharge::where('status', 1)->get();
         return view('billing.billing_details.create', compact('billingDetails','occupants', 'unitRate', 'taxation'));
@@ -62,6 +63,7 @@ class BillingDetailController extends Controller
                 'pay_date' => $request->pay_date,
                 'remission' => $request->remission,
                 'unit_after_remission' => $unitAfterRemission,
+                'grossamount' => $request->grossamount,
                 'status' => $request->status,
             ]);
             if ($billingDetail) {

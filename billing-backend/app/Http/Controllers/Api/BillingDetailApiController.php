@@ -14,38 +14,13 @@ class BillingDetailApiController extends Controller
 {
     public function index(): JsonResponse
     {
-        $occupants = OccupantDetail::all();
         $billingDetails = BillingDetail::with(['house', 'occupant'])->get();
-        $billingDetails->transform(function ($detail) {
-            return [
-                'id' => $detail->id,
-                'house' => [
-                    'id' => $detail->house->id ?? null,
-                    'hno' => $detail->house->hno ?? 'N/A',
-                    'area' => $detail->house->area ?? 'N/A',
-                ],
-                'occupant' => [
-                    'id' => $detail->occupant->id ?? null,
-                    'first_name' => $detail->occupant->first_name ?? 'N/A',
-                    'last_name' => $detail->occupant->last_name ?? 'N/A',
-                ],
-                'last_pay_date' => $detail->last_pay_date,
-                'last_reading' => $detail->last_reading,
-                'outstanding_dues' => $detail->outstanding_dues,
-                'current_reading' => $detail->current_reading,
-                'current_charges' => $detail->current_charges,
-                'pay_date' => $detail->pay_date,
-                // 'status' => $detail->status,
-            ];
-        });
-
         return response()->json(['success' => true, 'data' => $billingDetails], 200);
     }
 
 
     public function store(Request $request): JsonResponse
     {
-    
         $validated = $request->validate([
             'house_id' => 'required|exists:house_details,id',
             'occupant_id' => 'required|exists:occupant_details,id',
@@ -58,13 +33,42 @@ class BillingDetailApiController extends Controller
         ]);
     
         try {
+            $existing = BillingDetail::where('house_id', $validated['house_id'])
+                ->orderBy('created_at', 'desc')
+                ->first();
+    
+            if ($existing) {
+                $validated['outstanding_dues'] = 
+                    ($validated['outstanding_dues'] ?? 0) + 
+                    ($existing->outstanding_dues ?? 0) + 
+                    ($existing->current_charges ?? 0);
+    
+                $validated['last_reading'] = 
+                    ($existing->last_reading ?? 0) + 
+                    ($existing->current_reading ?? 0);
+            } else {
+                $validated['last_reading'] = 0;
+            }
+    
             $billingDetail = BillingDetail::create($validated);
-            return response()->json(['success' => true, 'message' => 'Billing detail added successfully', 'data' => $billingDetail], 201);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Billing detail added successfully',
+                'data' => $billingDetail
+            ], 201);
         } catch (\Exception $e) {
-            Log::error('BillingDetailApiController@store: Exception occurred.', ['error' => $e->getMessage()]);
-            return response()->json(['success' => false, 'message' => 'Failed to add billing detail'], 500);
+            Log::error('BillingDetailApiController@store: Exception occurred.', [
+                'error' => $e->getMessage()
+            ]);
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to add billing detail'
+            ], 500);
         }
     }
+    
 
     public function show($id): JsonResponse
     {

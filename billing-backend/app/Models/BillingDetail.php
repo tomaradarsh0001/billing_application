@@ -22,7 +22,8 @@ class BillingDetail extends Model
         'unit_after_remission',
         'status',
         'pdf_path',
-        'payment_status'
+        'payment_status',
+        'grossamount'
     ];
     
 

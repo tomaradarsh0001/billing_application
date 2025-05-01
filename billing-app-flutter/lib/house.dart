@@ -89,7 +89,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
 
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
-      String svg = await rootBundle.loadString('assets/billing_upper_shape.svg');
+      String svg = await rootBundle.loadString('assets/bg_uncut.svg');
 
       setState(() {
         // If Dark Mode is enabled, use white (#FFFFFF), otherwise use stored colors
@@ -381,7 +381,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                         svgString,
                         semanticsLabel: 'Animated and Colored SVG',
                         fit: BoxFit.fill,
-                        height: 300,
+                        height: 530,
                       ),
                     ),
                     Column(
@@ -650,7 +650,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "House: ${customer['house']['hno']}, ${customer['house']['area']}, ${customer['house']['city']}, ${customer['house']['state']}",
+                                      "House: ${customer['house']['hno']}",
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -712,7 +712,6 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                         ),
                                       );
                                     },
-
                                   ),
                                 ),
                               ),
@@ -742,8 +741,6 @@ class _HouseViewPageState extends State<HouseViewPage> {
                       ),
                     ),
                   );
-
-
                     },
                 childCount: _isLoading
                     ? 5 // number of shimmer placeholders
@@ -751,8 +748,6 @@ class _HouseViewPageState extends State<HouseViewPage> {
                     .length),
               ),
             ),
-
-
           ],
         ),
       ),

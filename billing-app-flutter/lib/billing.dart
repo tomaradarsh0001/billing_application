@@ -20,11 +20,14 @@ class _BillingPageState extends State<BillingPage> {
   bool _isAnimationComplete = false;
   List<dynamic> _billingDetails = [];
   bool _isLoading = true;
+  bool _isLoadingConfirm = false;
+
   int _currentIndex = 0;
   double _scrollOffset = 0;
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
   final TextEditingController _readingController = TextEditingController();
+  Map<int, double> houseChargesMap = {};
 
   bool _isSearchActive = false;
   String svgString = '';
@@ -48,9 +51,13 @@ class _BillingPageState extends State<BillingPage> {
   String? appPurpose;
 
   @override
+  @override
   void initState() {
     super.initState();
+
     _loadThemePreference();
+
+    // Load theme and other preferences
     AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
@@ -64,18 +71,74 @@ class _BillingPageState extends State<BillingPage> {
         secondaryFont = AppColors.secondaryFont;
         appPurpose = AppColors.appPurpose;
       });
+
       loadSvg();
       loadSvgIcon();
       fetchUnitRate();
     });
+
+    // Fetch billing map (house_id to total charges)
+    fetchBillingChargesMap().then((map) {
+      setState(() {
+        houseChargesMap = map;
+      });
+    });
+
+    // Other initial logic
     _scrollController.addListener(_scrollListener);
+
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _isAnimationComplete = true;
       });
     });
-    fetchBillingDetails(); // Fetch billing data when the page loads
+
+    // Fetch billing details
+    fetchBillingDetails();
   }
+
+  Future<Map<int, double>> fetchBillingChargesMap() async {
+    final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
+    final Map<int, double> resultMap = {};
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          final List<dynamic> billingData = data['data'];
+
+          billingData.sort((a, b) {
+            DateTime createdAtA = DateTime.parse(a['created_at']);
+            DateTime createdAtB = DateTime.parse(b['created_at']);
+            return createdAtB.compareTo(createdAtA);
+          });
+
+          var latestBill = billingData.isNotEmpty ? billingData[0] : null;
+
+          if (latestBill != null) {
+            final int houseId = latestBill['house_id'];
+            if (houseId == 3) {  // Check for house_id 3
+              final double currentCharges = double.tryParse(latestBill['current_charges']?.toString() ?? '0') ?? 0.0;
+              final double outstandingDues = double.tryParse(latestBill['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+
+              // Sum the charges and dues for the matching houseId
+              if (resultMap.containsKey(houseId)) {
+                resultMap[houseId] = resultMap[houseId]! + currentCharges + outstandingDues;
+              } else {
+                resultMap[houseId] = currentCharges + outstandingDues;
+              }
+            }
+          }
+        }
+      } else {
+        print('API error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Fetch error: $e');
+    }
+    return resultMap;
+  }
+
 
   Future<void> fetchUnitRate() async {
     final url = Uri.parse('http://13.39.111.189:100/api/per-unit-rate');
@@ -96,6 +159,35 @@ class _BillingPageState extends State<BillingPage> {
       }
     } catch (e) {
       print('Error occurred: $e');
+    }
+  }
+  Future<void> fetchBillingrecords() async {
+    final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        if (data['success'] == true) {
+          final List<dynamic> billingDetails = data['data'];
+
+          for (var detail in billingDetails) {
+            print('Billing ID: ${detail['id']}');
+            print('House No: ${detail['house']['hno']}');
+            print('Occupant Name: ${detail['occupant']['first_name']} ${detail['occupant']['last_name']}');
+            print('Current Reading: ${detail['current_reading']}');
+            print('Current Charges: ${detail['current_charges']}');
+          }
+        } else {
+          print('API call succeeded, but data is not marked as success.');
+        }
+      } else {
+        print('Failed to load billing records. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching billing records: $e');
     }
   }
 
@@ -124,7 +216,7 @@ class _BillingPageState extends State<BillingPage> {
 
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
-      String svg = await rootBundle.loadString('assets/billing_upper_shape.svg');
+      String svg = await rootBundle.loadString('assets/bg_uncut.svg');
       setState(() {
         svgString = svg.replaceAll(
           'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
@@ -195,7 +287,7 @@ class _BillingPageState extends State<BillingPage> {
                         svgString,
                         semanticsLabel: 'Animated and Colored SVG',
                         fit: BoxFit.fill,
-                        height: 300,
+                        height: 530,
                       ),
                     ),
                     Column(
@@ -504,9 +596,12 @@ class _BillingPageState extends State<BillingPage> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       setState(() {
                                         _openIds.add(billing['id']);
+                                      });
+                                      await fetchBillingDetails(); // Assuming you have a function that fetches the latest data.
+                                      setState(() {
                                       });
                                     },
                                     icon: const Icon(Icons.read_more, color: Colors.indigo),
@@ -518,7 +613,6 @@ class _BillingPageState extends State<BillingPage> {
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.indigo.shade50,
                                       elevation: 0,
@@ -684,6 +778,12 @@ class _BillingPageState extends State<BillingPage> {
                                             final double? currentReading = double.tryParse(_readingController.text);
                                             if (currentReading != null) {
                                               double currentCharges = currentReading * unitCharge!;
+                                              final newValue = houseChargesMap[billing['h_id']] ?? 0.0;
+                                              final outstandingAdv = newValue + _estCharges;
+                                              final outstandingDues = outstandingAdv - currentCharges;
+                                              setState(() {
+                                                _isLoadingConfirm = true;  // Set the flag to true when the request starts
+                                              });
 
                                               final response = await http.post(
                                                 Uri.parse("http://13.39.111.189:100/api/billing-details"),
@@ -693,8 +793,14 @@ class _BillingPageState extends State<BillingPage> {
                                                   "occupant_id": billing['id'],
                                                   "current_reading": currentReading,
                                                   "current_charges": currentCharges,
+                                                  "outstanding_dues":  outstandingDues,
+                                                  "last_reading":  currentReading,
                                                 }),
                                               );
+
+                                              setState(() {
+                                                _isLoadingConfirm = false;  // Reset the flag after the request is done
+                                              });
 
                                               if (response.statusCode == 200 || response.statusCode == 201) {
                                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -731,7 +837,13 @@ class _BillingPageState extends State<BillingPage> {
                                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                             minimumSize: const Size(40, 40),
                                           ),
-                                          child: const Icon(Icons.check, color: Colors.white, size: 20),
+                                          child: _isLoadingConfirm
+                                              ? SizedBox(
+                                            height: 20, // Set the height of the spinner
+                                            width: 20, // Set the width of the spinner
+                                            child: CircularProgressIndicator(color: Colors.white),
+                                          )  // Smaller spinner
+                                              : const Icon(Icons.check, color: Colors.white, size: 20),  // Show check icon when not loading
                                         ),
                                       ),
                                       const SizedBox(height: 4),
@@ -795,32 +907,50 @@ class _BillingPageState extends State<BillingPage> {
                                 ),
                               );
                             },
-                            // child: _estCharges > 0
-                            //     ? Card(
-                            //   key: ValueKey("bill_info_${billing['id']}"),
-                            //   margin: const EdgeInsets.symmetric(horizontal: 0),
-                            //   shape: RoundedRectangleBorder(
-                            //     borderRadius: BorderRadius.circular(12),
-                            //   ),
-                            //   color: secondaryLight,
-                            //   elevation: 2,
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.all(12.0),
-                            //     child: Text(
-                            //       "Outstanding Dues + Current bill is = Rs.${billing['outstanding_dues']} + ${_estCharges.toStringAsFixed(2)} = Rs.${(double.parse(billing['outstanding_dues'].toString()) + _estCharges).toStringAsFixed(2)}/-",
-                            //       style: GoogleFonts.getFont(
-                            //         secondaryFont ?? 'Roboto',
-                            //         fontSize: 12,
-                            //         fontWeight: FontWeight.w400,
-                            //         color: Colors.brown.shade900,
-                            //       ),
-                            //       textAlign: TextAlign.center,
-                            //     ),
-                            //   ),
-                            // )
-                            //     : const SizedBox.shrink(),
+                            child: _estCharges > 0
+                                ? Builder(builder: (context) {
+                              // Compute newValue from houseChargesMap using billing['h_id']
+                              final newValue = houseChargesMap[billing['h_id']] ?? 0.0;
+                              final total = newValue + _estCharges;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "Billing ID: ${billing['id']}, House ID: ${billing['h_id']}, Total: Rs. ${total.toStringAsFixed(2)}",
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Card(
+                                  key: ValueKey("bill_info_${billing['id']}"),
+                                  margin: const EdgeInsets.symmetric(horizontal: 0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  color: secondaryLight,
+                                  elevation: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Text(
+                                      "Outstanding Dues + Current bill is = Rs.${newValue.toStringAsFixed(2)} + ${_estCharges.toStringAsFixed(2)} = Rs.${total.toStringAsFixed(2)}/-",
+                                      style: GoogleFonts.getFont(
+                                        secondaryFont ?? 'Roboto',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                        color: Colors.brown.shade900,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            })
+                                : const SizedBox.shrink(),
                           ),
                         ],
+
                       ],
                     ),
                   );

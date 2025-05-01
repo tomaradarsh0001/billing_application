@@ -43,6 +43,7 @@ dependencies:
   shimmer: ^3.0.0
   lottie: ^3.3.0
   shared_preferences: ^2.2.0
+  timeago: ^3.2.2
 
 dev_dependencies:
   flutter_test:
