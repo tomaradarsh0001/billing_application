@@ -30,7 +30,7 @@
                     {{ \Carbon\Carbon::parse($occupant->occupation_date)->format('d M, Y') }}
                 </div>
                 <div class="mb-3">
-                    <strong>House:</strong> {{ $occupant->house->hno ?? 'N/A' }}
+                    <strong>Bungalow No:</strong> {{ $occupant->house->hno ?? 'N/A' }}
                 </div>
                 <div class="mb-3">
                     <strong>Created At:</strong> {{ $occupant->created_at->diffForHumans() }}

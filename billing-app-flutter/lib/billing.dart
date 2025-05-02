@@ -78,7 +78,7 @@ class _BillingPageState extends State<BillingPage> {
     });
 
     // Fetch billing map (house_id to total charges)
-    fetchBillingChargesMap().then((map) {
+    fetchLatestOutstandingDuesPerHouse().then((map) {
       setState(() {
         houseChargesMap = map;
       });
@@ -96,10 +96,10 @@ class _BillingPageState extends State<BillingPage> {
     // Fetch billing details
     fetchBillingDetails();
   }
-
-  Future<Map<int, double>> fetchBillingChargesMap() async {
+  Future<Map<int, double>> fetchLatestOutstandingDuesPerHouse() async {
     final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
-    final Map<int, double> resultMap = {};
+    final Map<int, List<Map<String, dynamic>>> recordsPerHouse = {};
+
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -107,28 +107,34 @@ class _BillingPageState extends State<BillingPage> {
         if (data['success'] == true) {
           final List<dynamic> billingData = data['data'];
 
-          billingData.sort((a, b) {
-            DateTime createdAtA = DateTime.parse(a['created_at']);
-            DateTime createdAtB = DateTime.parse(b['created_at']);
-            return createdAtB.compareTo(createdAtA);
+          // Group records by house_id
+          for (var record in billingData) {
+            int houseId = record['house_id'];
+            if (!recordsPerHouse.containsKey(houseId)) {
+              recordsPerHouse[houseId] = [];
+            }
+            recordsPerHouse[houseId]!.add(record);
+          }
+
+          // Process each house_id
+          Map<int, double> resultMap = {};
+          recordsPerHouse.forEach((houseId, records) {
+            if (records.length == 1) {
+              var rec = records.first;
+              double dues = double.tryParse(rec['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+              double charges = double.tryParse(rec['current_charges']?.toString() ?? '0') ?? 0.0;
+              resultMap[houseId] = dues + charges;
+            } else {
+              records.sort((a, b) => DateTime.parse(b['created_at'])
+                  .compareTo(DateTime.parse(a['created_at'])));
+              var latestRecord = records.first;
+              double dues = double.tryParse(latestRecord['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+              double charges = double.tryParse(latestRecord['current_charges']?.toString() ?? '0') ?? 0.0;
+              resultMap[houseId] = dues + charges;
+            }
           });
 
-          var latestBill = billingData.isNotEmpty ? billingData[0] : null;
-
-          if (latestBill != null) {
-            final int houseId = latestBill['house_id'];
-            if (houseId == 3) {  // Check for house_id 3
-              final double currentCharges = double.tryParse(latestBill['current_charges']?.toString() ?? '0') ?? 0.0;
-              final double outstandingDues = double.tryParse(latestBill['outstanding_dues']?.toString() ?? '0') ?? 0.0;
-
-              // Sum the charges and dues for the matching houseId
-              if (resultMap.containsKey(houseId)) {
-                resultMap[houseId] = resultMap[houseId]! + currentCharges + outstandingDues;
-              } else {
-                resultMap[houseId] = currentCharges + outstandingDues;
-              }
-            }
-          }
+          return resultMap;
         }
       } else {
         print('API error: ${response.statusCode}');
@@ -136,8 +142,10 @@ class _BillingPageState extends State<BillingPage> {
     } catch (e) {
       print('Fetch error: $e');
     }
-    return resultMap;
+
+    return {}; // Return empty map on failure
   }
+
 
 
   Future<void> fetchUnitRate() async {
@@ -367,6 +375,7 @@ class _BillingPageState extends State<BillingPage> {
                                     TextField(
                                       controller: _searchController,
                                       autofocus: true,
+
                                       decoration: InputDecoration(
                                         hintText: 'Search by name...',
                                         border: InputBorder.none,

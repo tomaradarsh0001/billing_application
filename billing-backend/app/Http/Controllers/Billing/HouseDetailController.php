@@ -22,13 +22,16 @@ class HouseDetailController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'hno' => 'required',
-            'area' => 'required',
-            'city' => 'required',
-            'state' => 'required',
-            'country' => 'required',
-            'pincode' => 'required',
+        $validated = $request->validate([
+            'hno' => 'required|string',
+            'house_type' => 'nullable|string',
+            'meter_number' => 'nullable|string',
+            'ews_qtr' => 'nullable|string',
+            'area' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'country' => 'nullable|string',
+            'pincode' => 'nullable|string',
         ]);
 
         HouseDetail::create($request->all());
@@ -36,6 +39,32 @@ class HouseDetailController extends Controller
         return redirect()->route('houses.index')->with('success', 'House details added successfully!');
     }
 
+    public function edit($id)
+    {
+        $house = HouseDetail::findOrFail($id);
+        return view('billing.house_details.edit', compact('house'));
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'hno' => 'required|string',
+            'house_type' => 'nullable|string',
+            'meter_number' => 'nullable|string',
+            'ews_qtr' => 'nullable|string',
+            'area' => 'nullable|string',
+            'city' => 'nullable|string',
+            'state' => 'nullable|string',
+            'country' => 'nullable|string',
+            'pincode' => 'nullable|string',
+        ]);
+    
+        $house = HouseDetail::findOrFail($id);
+        $house->update($validated);
+    
+        return redirect()->route('houses.index')->with('success', 'House details updated successfully!');
+    }
+    
     public function destroy($id)
     {
         $house = HouseDetail::findOrFail($id);

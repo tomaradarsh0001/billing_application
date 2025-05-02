@@ -37,7 +37,7 @@
                                     <select name="house_id" id="house_id" class="form-control-select" required>
                                         <option value="">-- Select House --</option>
                                         @foreach($occupants as $occ)
-                                            <option value="{{ $occ->h_id }}">{{ $occ->house->hno }} - {{ $occ->house->area }}</option>
+                                            <option value="{{ $occ->h_id }}">Bungalow No: {{ $occ->house->hno }}</option>
                                         @endforeach
                                     </select>
                                     @error('house_id') <div class="text-danger">{{ $message }}</div> @enderror
@@ -165,7 +165,6 @@
                                     <div class="d-flex justify-content-center mt-3">
                                           <!-- Hidden input to store the status -->
                                             <input type="hidden" name="status" id="statusInput">
-                                            <input type="hidden" name="grossamount" id="grossamount">
                                             <button type="submit" class="btn btn-primary mx-2" id="generateBtn" onclick="setStatus('Generated')">Generate</button>
                                             {{-- <button type="submit" class="btn btn-success mx-2" id="approveBtn" onclick="setStatus('Approved')">Approve</button> --}}
                                     </div>

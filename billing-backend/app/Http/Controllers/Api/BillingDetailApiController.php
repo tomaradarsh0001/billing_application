@@ -36,16 +36,20 @@ class BillingDetailApiController extends Controller
             $existing = BillingDetail::where('house_id', $validated['house_id'])
                 ->orderBy('created_at', 'desc')
                 ->first();
-    
+
             if ($existing) {
-                $validated['outstanding_dues'] = 
-                    ($validated['outstanding_dues'] ?? 0) + 
-                    ($existing->outstanding_dues ?? 0) + 
-                    ($existing->current_charges ?? 0);
-    
-                $validated['last_reading'] = 
-                    ($existing->last_reading ?? 0) + 
-                    ($existing->current_reading ?? 0);
+                if ($existing->payment_status == 0) {
+                    $validated['outstanding_dues'] = 
+                        ($validated['outstanding_dues'] ?? 0) + 
+                        ($existing->outstanding_dues ?? 0) + 
+                        ($existing->current_charges ?? 0);
+
+                    $validated['last_reading'] = 
+                        ($existing->last_reading ?? 0) + 
+                        ($existing->current_reading ?? 0);
+                } else {
+                    $validated['last_reading'] = $validated['last_reading'] ?? 0;
+                }
             } else {
                 $validated['last_reading'] = 0;
             }

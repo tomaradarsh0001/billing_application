@@ -62,7 +62,7 @@
 
                                 <!-- House Selection -->
                                 <div class="form-group">
-                                    <label for="h_id" class="form-label mb-0">House No</label>
+                                    <label for="h_id" class="form-label mb-0">Bungalow No</label>
                                     <select name="h_id" id="h_id" class="form-control-select" required>
                                         <option value="">Select House</option>
                                         @foreach($houses as $house)

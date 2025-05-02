@@ -63,7 +63,6 @@ class BillingDetailController extends Controller
                 'pay_date' => $request->pay_date,
                 'remission' => $request->remission,
                 'unit_after_remission' => $unitAfterRemission,
-                'grossamount' => $request->grossamount,
                 'status' => $request->status,
             ]);
             if ($billingDetail) {
