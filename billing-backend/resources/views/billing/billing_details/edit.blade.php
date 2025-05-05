@@ -136,7 +136,42 @@
   cursor: pointer;
   font-size: 1rem;
 }
+    /* Full-screen overlay */
+    #loader-overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Circular spinner */
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide content initially */
+        #main-content {
+            display: none;
+        }
 </style>
+<!-- Loader -->
+<div id="loader-overlay">
+    <div class="spinner"></div>
+</div>
 <div class="main_content_iner">
     <div class="col-lg-12">
         <div class="white_card card_height_100 p-4">
@@ -371,6 +406,21 @@
 
 {{-- Scripts --}}
 <script>
+    // JavaScript logic that should execute during loader
+    console.log('Page JavaScript is running...');
+
+    // Simulate 3-second loader
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.getElementById('loader-overlay').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+
+            // You can execute more JS here if needed
+            console.log('Loader hidden, content shown');
+        }, 3000);
+    });
+</script>
+<script>
     const billingDetails = @json($billingDetail);
     const amout = @json($unitRate);
     const taxes = @json($taxation);
@@ -515,12 +565,15 @@ document.getElementById('approveBtn').addEventListener('click', function (event)
         document.getElementById('statusInput').value = status;
   }
 
-window.addEventListener('load', function () {
-    const checkbox = document.getElementById('sendPaymentCheckbox');
-    if (checkbox.checked) {
-        checkbox.dispatchEvent(new Event('change'));
-    }
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+        const checkbox = document.getElementById('sendPaymentCheckbox');
+        if (checkbox && checkbox.checked) {
+            checkbox.dispatchEvent(new Event('change'));
+        }
+    }, 3000); // 3000 milliseconds = 3 seconds
 });
+
 
 document.getElementById('sendPaymentCheckbox').addEventListener('change', function () {
     if (!this.checked) return; // Only trigger if checkbox is checked
@@ -528,7 +581,11 @@ document.getElementById('sendPaymentCheckbox').addEventListener('change', functi
     let amountText = $('#total_bill_with_tax').text().replace(/[^\d.-]/g, '');
     let amount = parseFloat(amountText);
     let paymentId = $('#paymentId').val();
-
+    // console.log("AmountText", amountText);
+    // console.log("Amount", amount);
+    // console.log("paymentid", paymentId);
+    
+  
     if (isNaN(amount) || amount <= 0) {
         alert('Invalid or zero amount. Please calculate bill before proceeding.');
         this.checked = false; // Uncheck the box if invalid

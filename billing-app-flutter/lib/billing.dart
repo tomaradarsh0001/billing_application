@@ -96,6 +96,55 @@ class _BillingPageState extends State<BillingPage> {
     // Fetch billing details
     fetchBillingDetails();
   }
+  // Future<Map<int, double>> fetchLatestOutstandingDuesPerHouse() async {
+  //   final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
+  //   final Map<int, List<Map<String, dynamic>>> recordsPerHouse = {};
+  //
+  //   try {
+  //     final response = await http.get(url);
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       if (data['success'] == true) {
+  //         final List<dynamic> billingData = data['data'];
+  //
+  //         // Group records by house_id
+  //         for (var record in billingData) {
+  //           int houseId = record['house_id'];
+  //           if (!recordsPerHouse.containsKey(houseId)) {
+  //             recordsPerHouse[houseId] = [];
+  //           }
+  //           recordsPerHouse[houseId]!.add(record);
+  //         }
+  //
+  //         // Process each house_id
+  //         Map<int, double> resultMap = {};
+  //         recordsPerHouse.forEach((houseId, records) {
+  //           if (records.length == 1) {
+  //             var rec = records.first;
+  //             double dues = double.tryParse(rec['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+  //             double charges = double.tryParse(rec['current_charges']?.toString() ?? '0') ?? 0.0;
+  //             resultMap[houseId] = dues + charges;
+  //           } else {
+  //             records.sort((a, b) => DateTime.parse(b['created_at'])
+  //                 .compareTo(DateTime.parse(a['created_at'])));
+  //             var latestRecord = records.first;
+  //             double dues = double.tryParse(latestRecord['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+  //             double charges = double.tryParse(latestRecord['current_charges']?.toString() ?? '0') ?? 0.0;
+  //             resultMap[houseId] = dues + charges;
+  //           }
+  //         });
+  //
+  //         return resultMap;
+  //       }
+  //     } else {
+  //       print('API error: ${response.statusCode}');
+  //     }
+  //   } catch (e) {
+  //     print('Fetch error: $e');
+  //   }
+  //
+  //   return {}; // Return empty map on failure
+  // }
   Future<Map<int, double>> fetchLatestOutstandingDuesPerHouse() async {
     final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
     final Map<int, List<Map<String, dynamic>>> recordsPerHouse = {};
@@ -121,15 +170,29 @@ class _BillingPageState extends State<BillingPage> {
           recordsPerHouse.forEach((houseId, records) {
             if (records.length == 1) {
               var rec = records.first;
-              double dues = double.tryParse(rec['outstanding_dues']?.toString() ?? '0') ?? 0.0;
-              double charges = double.tryParse(rec['current_charges']?.toString() ?? '0') ?? 0.0;
+              int paymentStatus = rec['payment_status'] ?? 0;
+              double dues = 0.0;
+              double charges = 0.0;
+
+              if (paymentStatus == 0) {
+                dues = double.tryParse(rec['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+                charges = double.tryParse(rec['current_charges']?.toString() ?? '0') ?? 0.0;
+              }
+
               resultMap[houseId] = dues + charges;
             } else {
-              records.sort((a, b) => DateTime.parse(b['created_at'])
-                  .compareTo(DateTime.parse(a['created_at'])));
+              records.sort((a, b) =>
+                  DateTime.parse(b['created_at']).compareTo(DateTime.parse(a['created_at'])));
               var latestRecord = records.first;
-              double dues = double.tryParse(latestRecord['outstanding_dues']?.toString() ?? '0') ?? 0.0;
-              double charges = double.tryParse(latestRecord['current_charges']?.toString() ?? '0') ?? 0.0;
+              int paymentStatus = latestRecord['payment_status'] ?? 0;
+              double dues = 0.0;
+              double charges = 0.0;
+
+              if (paymentStatus == 0) {
+                dues = double.tryParse(latestRecord['outstanding_dues']?.toString() ?? '0') ?? 0.0;
+                charges = double.tryParse(latestRecord['current_charges']?.toString() ?? '0') ?? 0.0;
+              }
+
               resultMap[houseId] = dues + charges;
             }
           });
@@ -145,6 +208,7 @@ class _BillingPageState extends State<BillingPage> {
 
     return {}; // Return empty map on failure
   }
+
 
 
 
@@ -802,8 +866,8 @@ class _BillingPageState extends State<BillingPage> {
                                                   "occupant_id": billing['id'],
                                                   "current_reading": currentReading,
                                                   "current_charges": currentCharges,
-                                                  "outstanding_dues":  outstandingDues,
-                                                  "last_reading":  currentReading,
+                                                  // "outstanding_dues":  outstandingDues,
+                                                  // "last_reading":  currentReading,
                                                 }),
                                               );
 

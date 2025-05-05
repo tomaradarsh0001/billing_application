@@ -243,10 +243,10 @@ class _DashboardPageState extends State<DashboardPage>
                         children: [
                           _buildDashboardTile("Profile", Icons.person, CustomerViewPage()),
                           _buildDashboardTile("Houses", Icons.house_rounded, HouseViewPage()),
-                          _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, DashboardPage()),
+                          // _buildDashboardTile("Configurations", Icons.dashboard_customize_outlined, DashboardPage()),
                           _buildDashboardTile("History", Icons.history_rounded, HistoryPage()),
                           _buildDashboardTileWithSvg(appPurpose ?? "Meter Readings", svgString2, BillingPage()),
-                          _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
+                          // _buildDashboardTile("Settings", Icons.settings, SettingsPage()),
                         ],
                       ),
                     ),
