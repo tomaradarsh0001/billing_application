@@ -6,7 +6,7 @@
 
 
     <application
-        android:label="US Polo Billing"
+        android:label="Water Billing"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

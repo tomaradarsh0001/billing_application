@@ -108,11 +108,11 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
         svgStringIcon = svg.replaceAll(
             'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
               ).replaceAll(
-                'PLACEHOLDER_2', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+                'PLACEHOLDER_2', _isDarkMode == true ? '#7E7E7EFF' : _colorToHex(svgLogin ?? Colors.black),
               ).replaceAll(
-              'PLACEHOLDER_3', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+              'PLACEHOLDER_3', _isDarkMode == true ? '#838383FF' : _colorToHex(svgLogin ?? Colors.black),
               ).replaceAll(
-          'PLACEHOLDER_4', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+          'PLACEHOLDER_4', _isDarkMode == true ? '#4F4E4EFF' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -629,7 +629,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                       child: Card(
                         margin: EdgeInsets.fromLTRB(15, index == 0 ? 10 : 0, 15, 10),
                         elevation: 2,
-                         color: _isDarkMode == true ? Colors.black : Colors.white,
+                         color: _isDarkMode == true ? Colors.white : Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -637,7 +637,7 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                           contentPadding: const EdgeInsets.all(8),
                           leading: CircleAvatar(
                             radius: 30,
-                            backgroundColor:  _isDarkMode == true ? Colors.black : secondaryDark,
+                            backgroundColor:  _isDarkMode == true ? Colors.grey : secondaryDark,
                             child: Text(
                               "${customer['first_name'][0]}${customer['last_name'][0]}",
                               style: GoogleFonts.signika(
@@ -670,14 +670,14 @@ class _CustomerViewPageState extends State<CustomerViewPage> {
                             width: 24,
                             height: 24,
                             decoration: BoxDecoration(
-                              color: _isDarkMode == true ? Colors.black : primaryDark,
+                              color: _isDarkMode == true ? Colors.grey : primaryDark,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: IconButton(
                               padding: EdgeInsets.zero,
                               icon: Icon(
                                 Icons.arrow_forward_ios,
-                                color: _isDarkMode == true ? Colors.black : AppColors.background,
+                                color: _isDarkMode == true ? Colors.white : AppColors.background,
                                 size: 12,
                               ),
                               onPressed: () {

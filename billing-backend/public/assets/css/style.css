@@ -418,3 +418,6 @@ select {
   font-weight: 700;
 }
 
+.readonly-grey {
+    background-color: #e9ecef;
+}

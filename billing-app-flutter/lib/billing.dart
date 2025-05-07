@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'main.dart';
 import 'dashboard.dart';
 
-
 class BillingPage extends StatefulWidget {
   @override
   _BillingPageState createState() => _BillingPageState();
@@ -18,18 +17,20 @@ class BillingPage extends StatefulWidget {
 
 class _BillingPageState extends State<BillingPage> {
   bool _isAnimationComplete = false;
-  List<dynamic> _billingDetails = [];
   bool _isLoading = true;
   bool _isLoadingConfirm = false;
-
   int _currentIndex = 0;
   double _scrollOffset = 0;
-  ScrollController _scrollController = ScrollController();
+  List<dynamic> _billings = [];
+  List<dynamic> _billingDetails = [];
+  List<dynamic> _filteredbillings = [];
   TextEditingController _searchController = TextEditingController();
+  ScrollController _scrollController = ScrollController();
   final TextEditingController _readingController = TextEditingController();
-  Map<int, double> houseChargesMap = {};
-
+  List<dynamic> _filteredBillingDetails = [];
   bool _isSearchActive = false;
+  List<dynamic> _filteredOccupants = [];
+  Map<int, double> houseChargesMap = {};
   String svgString = '';
   String svgStringIcon = '';
   Color? primaryLight;
@@ -43,21 +44,22 @@ class _BillingPageState extends State<BillingPage> {
   bool? _isDarkMode;
   bool _showGeneratedContent = false;
   double _estCharges = 0.0;
-  // double unitCharge = 10;
   double? unitCharge;
   Set<int> _openIds = {};
   String? primaryFont;
   String? secondaryFont;
   String? appPurpose;
+  String? _readingError;
+  List<dynamic> _occupants = [];
+  bool _isShimmer = true;
 
-  @override
   @override
   void initState() {
     super.initState();
 
+    // Load theme and other preferences
     _loadThemePreference();
 
-    // Load theme and other preferences
     AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
@@ -75,7 +77,25 @@ class _BillingPageState extends State<BillingPage> {
       loadSvg();
       loadSvgIcon();
       fetchUnitRate();
+      _fetchBillings(); // Fetch the billing data
+      fetchBillingDetails();
+
+      _searchController.addListener(_onSearchChanged); // Listener for search changes
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onSearchChanged(); // Trigger initial filtering
+      });
     });
+    setState(() {
+      _isShimmer = true;
+    });
+
+    _fetchBillings().then((_) {
+      setState(() {
+        _isShimmer = false;
+      });
+    });
+
 
     // Fetch billing map (house_id to total charges)
     fetchLatestOutstandingDuesPerHouse().then((map) {
@@ -84,67 +104,102 @@ class _BillingPageState extends State<BillingPage> {
       });
     });
 
-    // Other initial logic
-    _scrollController.addListener(_scrollListener);
+    _scrollController.addListener(_scrollListener); // Scroll listener
 
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
-        _isAnimationComplete = true;
+        _isAnimationComplete = true; // Animation complete logic
       });
     });
-
-    // Fetch billing details
-    fetchBillingDetails();
   }
-  // Future<Map<int, double>> fetchLatestOutstandingDuesPerHouse() async {
-  //   final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
-  //   final Map<int, List<Map<String, dynamic>>> recordsPerHouse = {};
-  //
-  //   try {
-  //     final response = await http.get(url);
-  //     if (response.statusCode == 200) {
-  //       final data = jsonDecode(response.body);
-  //       if (data['success'] == true) {
-  //         final List<dynamic> billingData = data['data'];
-  //
-  //         // Group records by house_id
-  //         for (var record in billingData) {
-  //           int houseId = record['house_id'];
-  //           if (!recordsPerHouse.containsKey(houseId)) {
-  //             recordsPerHouse[houseId] = [];
-  //           }
-  //           recordsPerHouse[houseId]!.add(record);
-  //         }
-  //
-  //         // Process each house_id
-  //         Map<int, double> resultMap = {};
-  //         recordsPerHouse.forEach((houseId, records) {
-  //           if (records.length == 1) {
-  //             var rec = records.first;
-  //             double dues = double.tryParse(rec['outstanding_dues']?.toString() ?? '0') ?? 0.0;
-  //             double charges = double.tryParse(rec['current_charges']?.toString() ?? '0') ?? 0.0;
-  //             resultMap[houseId] = dues + charges;
-  //           } else {
-  //             records.sort((a, b) => DateTime.parse(b['created_at'])
-  //                 .compareTo(DateTime.parse(a['created_at'])));
-  //             var latestRecord = records.first;
-  //             double dues = double.tryParse(latestRecord['outstanding_dues']?.toString() ?? '0') ?? 0.0;
-  //             double charges = double.tryParse(latestRecord['current_charges']?.toString() ?? '0') ?? 0.0;
-  //             resultMap[houseId] = dues + charges;
-  //           }
-  //         });
-  //
-  //         return resultMap;
-  //       }
-  //     } else {
-  //       print('API error: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print('Fetch error: $e');
-  //   }
-  //
-  //   return {}; // Return empty map on failure
-  // }
+
+
+  Future<void> fetchOccupants() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await http.get(
+        Uri.parse('http://13.39.111.189:100/api/billing/occupants'),
+        headers: {'Accept': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _billingDetails = List.from(data); // Create a new list to avoid reference issues
+          _filteredOccupants = List.from(data); // Create a copy
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load occupants: ${response.statusCode}');
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _billingDetails = [];
+        _filteredOccupants = [];
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        _filteredOccupants = List.from(_occupants); // Restore full list when search is empty
+      } else {
+        // Filter occupants based on first name, last name, or house number match
+        _filteredOccupants = _occupants.where((item) =>
+        (item['first_name'] != null && item['first_name'].toLowerCase().contains(query)) ||
+            (item['last_name'] != null && item['last_name'].toLowerCase().contains(query)) ||
+            (item['house'] != null && item['house']['hno'] != null && item['house']['hno'].toLowerCase().contains(query)) // Searching by hno
+        ).toList();
+      }
+    });
+  }
+
+
+  // Method to fetch billing data
+  Future<void> _fetchBillings() async {
+    const String apiUrl = 'http://13.39.111.189:100/api/billing/occupants';
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      print('Status Code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
+        setState(() {
+          _occupants = decoded;
+          _filteredOccupants = List.from(_occupants); // Initialize filtered list
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load customers');
+      }
+    } catch (e) {
+      print('Error: $e');
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching customers: $e')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose(); // Always dispose controllers
+    _scrollController.dispose(); // Dispose of scroll controller if used
+    super.dispose();
+  }
+
   Future<Map<int, double>> fetchLatestOutstandingDuesPerHouse() async {
     final url = Uri.parse('http://13.39.111.189:100/api/billing-details');
     final Map<int, List<Map<String, dynamic>>> recordsPerHouse = {};
@@ -208,8 +263,6 @@ class _BillingPageState extends State<BillingPage> {
 
     return {}; // Return empty map on failure
   }
-
-
 
 
   Future<void> fetchUnitRate() async {
@@ -328,6 +381,56 @@ class _BillingPageState extends State<BillingPage> {
     });
   }
 
+  Widget buildShimmerCard() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1.5),
+      ),
+      child: Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(height: 18, width: 250, color: Colors.white), // Title
+            const SizedBox(height: 10),
+            Container(height: 14, width: 180, color: Colors.white), // Bungalow No.
+            const SizedBox(height: 10),
+            Container(height: 14, width: 200, color: Colors.white), // Mobile
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -336,11 +439,12 @@ class _BillingPageState extends State<BillingPage> {
         child: CustomScrollView(
           controller: _scrollController,
           slivers: [
+
             SliverAppBar(
               backgroundColor: _scrollOffset <= 300
                   ? Colors.white
                   : primaryDark,
-              expandedHeight: 280,
+              expandedHeight: 300,
               automaticallyImplyLeading: false,
               floating: true,
               elevation: 0,
@@ -364,7 +468,6 @@ class _BillingPageState extends State<BillingPage> {
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      // Align to the bottom
                       children: [
                         const SizedBox(height: 100),
                         AnimatedOpacity(
@@ -384,7 +487,6 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 10),
                         Row(
                           children: [
@@ -439,38 +541,36 @@ class _BillingPageState extends State<BillingPage> {
                                     TextField(
                                       controller: _searchController,
                                       autofocus: true,
-
+                                      onChanged: (value) => _onSearchChanged(),
                                       decoration: InputDecoration(
                                         hintText: 'Search by name...',
                                         border: InputBorder.none,
                                         filled: true,
                                         fillColor: Colors.white,
-                                        contentPadding: const EdgeInsets
-                                            .symmetric(horizontal: 8),
+                                        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              25.0),
+                                          borderRadius: BorderRadius.circular(25.0),
                                           borderSide: BorderSide.none,
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                              25.0),
+                                          borderRadius: BorderRadius.circular(25.0),
                                           borderSide: BorderSide.none,
                                         ),
                                       ),
                                     ),
+                                    // Close Button inside search bar when search is active
                                     Positioned(
-                                      right: 8,
+                                      right: 0,
                                       child: IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.close,
-                                          size: 24,
-                                          color: Colors.grey,
+                                          color: Colors.black,
                                         ),
                                         onPressed: () {
                                           setState(() {
-                                            _searchController.clear();
                                             _isSearchActive = false;
+                                            _searchController.clear(); // Clear the search text
+                                            _onSearchChanged(); // Reset the filter
                                           });
                                         },
                                       ),
@@ -497,8 +597,7 @@ class _BillingPageState extends State<BillingPage> {
                             onPressed: () {
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(
-                                    builder: (context) => DashboardPage()),
+                                MaterialPageRoute(builder: (context) => DashboardPage()),
                               );
                             },
                           ),
@@ -508,9 +607,7 @@ class _BillingPageState extends State<BillingPage> {
                               "$appPurpose" ?? 'Billing Details',
                               style: GoogleFonts.getFont(
                                 primaryFont ?? 'Signika',
-                                color: _scrollOffset <= 270
-                                    ? Colors.white
-                                    : Colors.white,
+                                color: _scrollOffset <= 270 ? Colors.white : Colors.white,
                                 fontSize: 29,
                                 fontWeight: FontWeight.normal,
                               ),
@@ -541,33 +638,11 @@ class _BillingPageState extends State<BillingPage> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  if (_isLoading) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 1),
-                      child: Shimmer.fromColors(
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade100,
-                        child: Card(
-                          elevation: 5,
-                          color: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Container(
-                            height: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                  // State variable
-
-
+                    (context, index) {
+                      if (_isShimmer) {
+                        return buildShimmerCard(); // your shimmer skeleton
+                      }
+                  final occupant = _filteredOccupants[index];
                   final billing = _billingDetails[index];
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
@@ -575,64 +650,17 @@ class _BillingPageState extends State<BillingPage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.grey.shade300,
-                        width: 1.5,
-                      ),
+                      border: Border.all(color: Colors.grey.shade300, width: 1.5),
                       boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 4,
-                          offset: Offset(0, 2),
-                        )
+                        BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
                       ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Status and Index Number Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Index as badge
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: secondaryDark,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.2),
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.receipt_long,
-                                    size: 16,
-                                    color: AppColors.background,
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    (index + 1).toString(),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.background,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
                         const SizedBox(height: 6),
-                        // House and Locality Info
                         Text(
-                          "Occupant Name :- ${billing['first_name']} ${billing['last_name']}",
+                          "Occupant Name :- ${occupant['first_name']  ?? 'N/A'} ${occupant['last_name']  ?? ''}",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 15,
@@ -641,7 +669,7 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         Text(
-                          "Bungalow No. :- #${billing['house']['hno']}",
+                          "Bungalow No. : #${occupant['house']['hno']  ?? 'N/A'}",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
@@ -649,7 +677,7 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         Text(
-                          "Mobile :- ${billing['mobile']} ",
+                          "Mobile :- ${occupant['mobile']  ?? 'N/A'} ",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
@@ -657,12 +685,11 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                         ),
                         const SizedBox(height: 2),
-                        // Buttons Row
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: AnimatedCrossFade(
                             duration: const Duration(milliseconds: 300),
-                            crossFadeState: _openIds.contains(billing['id'])
+                            crossFadeState: _openIds.contains(occupant['id'])
                                 ? CrossFadeState.showSecond
                                 : CrossFadeState.showFirst,
                             firstChild: Row(
@@ -671,7 +698,7 @@ class _BillingPageState extends State<BillingPage> {
                                   child: ElevatedButton.icon(
                                     onPressed: () async {
                                       setState(() {
-                                        _openIds.add(billing['id']);
+                                        _openIds.add(occupant['id']);
                                       });
                                       await fetchBillingDetails(); // Assuming you have a function that fetches the latest data.
                                       setState(() {
@@ -719,23 +746,31 @@ class _BillingPageState extends State<BillingPage> {
                                                   dense: true,
                                                   leading: const Icon(Icons.home, color: Colors.blueGrey),
                                                   title: Text("Occupant Name"),
-                                                  subtitle: Text("${billing['first_name']} ${billing['last_name']}"),
+                                                  subtitle: Text(
+                                                    "${occupant['first_name'] ?? 'N/A'} ${occupant['last_name'] ?? 'N/A'}",
+                                                  ),
                                                 ),
                                                 const Divider(),
                                                 ListTile(
                                                   dense: true,
                                                   leading: const Icon(Icons.person, color: Colors.deepPurple),
                                                   title: Text("Bunglaw Number"),
-                                                  subtitle: Text("${billing['house']['hno']}"),
+                                                  subtitle: Text(
+                                                    "${occupant['house']?['hno'] ?? 'N/A'}",
+                                                  ),
                                                 ),
                                                 const Divider(),
                                                 ListTile(
                                                   dense: true,
                                                   leading: const Icon(Icons.speed, color: Colors.redAccent),
                                                   title: Text("Mobile"),
-                                                  subtitle: Text("${billing['mobile']}"),
+                                                  subtitle: Text(
+                                                    "${occupant['mobile'] ?? 'N/A'}",
+                                                  ),
                                                 ),
                                               ],
+
+
                                             ),
                                             actions: [
                                               TextButton.icon(
@@ -775,7 +810,6 @@ class _BillingPageState extends State<BillingPage> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // 🔢 New Reading Input
                                   Column(
                                     children: [
                                       SizedBox(
@@ -785,14 +819,31 @@ class _BillingPageState extends State<BillingPage> {
                                           onChanged: (value) {
                                             setState(() {
                                               double? reading = double.tryParse(value);
-                                              _estCharges = (reading ?? 0) * unitCharge!;
+
+                                              if (reading == null) {
+                                                _readingError = 'Enter a valid number';
+                                                _estCharges = 0;
+                                              } else if (reading < 0) {
+                                                _readingError = 'Cannot be negative';
+                                                _estCharges = 0;
+                                              } else if (reading > 99999) {
+                                                _readingError = 'Max Limit Reached';
+                                                _estCharges = 0;
+                                              } else {
+                                                _readingError = null;
+                                                _estCharges = reading * unitCharge!;
+                                              }
                                             });
                                           },
                                           keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.digitsOnly,
+                                          ],
                                           style: GoogleFonts.getFont(secondaryFont ?? 'Roboto', fontSize: 13),
                                           decoration: InputDecoration(
                                             hintText: "Reading",
                                             hintStyle: const TextStyle(fontSize: 12),
+                                            errorText: _readingError,
                                             isDense: true,
                                             filled: true,
                                             fillColor: Colors.grey.shade100,
@@ -805,13 +856,15 @@ class _BillingPageState extends State<BillingPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 4),
-                                      const Text("New Reading", style: TextStyle(fontSize: 11, color: Colors.grey), textAlign: TextAlign.center),
+                                      const Text(
+                                        "New Reading",
+                                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ],
                                   ),
 
                                   const SizedBox(width: 10),
-
-                                  // 💸 Estimated Charges
                                   Column(
                                     children: [
                                       SizedBox(
@@ -840,8 +893,6 @@ class _BillingPageState extends State<BillingPage> {
                                   ),
 
                                   const SizedBox(width: 10),
-
-                                  // ✅ Confirm Button
                                   Column(
                                     children: [
                                       SizedBox(
@@ -851,7 +902,7 @@ class _BillingPageState extends State<BillingPage> {
                                             final double? currentReading = double.tryParse(_readingController.text);
                                             if (currentReading != null) {
                                               double currentCharges = currentReading * unitCharge!;
-                                              final newValue = houseChargesMap[billing['h_id']] ?? 0.0;
+                                              final newValue = houseChargesMap[occupant['h_id']] ?? 0.0;
                                               final outstandingAdv = newValue + _estCharges;
                                               final outstandingDues = outstandingAdv - currentCharges;
                                               setState(() {
@@ -862,15 +913,14 @@ class _BillingPageState extends State<BillingPage> {
                                                 Uri.parse("http://13.39.111.189:100/api/billing-details"),
                                                 headers: {'Content-Type': 'application/json'},
                                                 body: jsonEncode({
-                                                  "house_id": billing['h_id'],
-                                                  "occupant_id": billing['id'],
+                                                  "house_id": occupant['h_id'],
+                                                  "occupant_id": occupant['id'],
                                                   "current_reading": currentReading,
                                                   "current_charges": currentCharges,
                                                   // "outstanding_dues":  outstandingDues,
                                                   // "last_reading":  currentReading,
                                                 }),
                                               );
-
                                               setState(() {
                                                 _isLoadingConfirm = false;  // Reset the flag after the request is done
                                               });
@@ -923,12 +973,7 @@ class _BillingPageState extends State<BillingPage> {
                                       const Text("Confirm", style: TextStyle(fontSize: 11, color: Colors.grey), textAlign: TextAlign.center),
                                     ],
                                   ),
-
-
                                   const SizedBox(width: 6),
-
-                                  // ❌ Cancel Button
-                                  // ❌ Cancel Button
                                   Column(
                                     children: [
                                       SizedBox(
@@ -1023,12 +1068,11 @@ class _BillingPageState extends State<BillingPage> {
                                 : const SizedBox.shrink(),
                           ),
                         ],
-
                       ],
                     ),
                   );
                 },
-                childCount: _billingDetails.length,
+                childCount: _isShimmer ? 6 : _filteredOccupants.length,
               ),
             ),
           ],

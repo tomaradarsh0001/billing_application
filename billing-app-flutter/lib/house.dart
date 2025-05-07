@@ -361,7 +361,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
             SliverAppBar(
               backgroundColor: _scrollOffset <= 300
                   ? Colors.white
-                  : primaryDark,
+                  : (_isDarkMode == true ? Colors.grey.shade800 : primaryDark),
               expandedHeight: 280,
               automaticallyImplyLeading: false,
               floating: true,
@@ -418,9 +418,9 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                 fontSize: 14,
                               ),
                             ),
-                            const SizedBox(width: 60),
+                            const SizedBox(width: 40),
                             Text(
-                              "House Details",
+                              "Bungalow Details",
                               style: GoogleFonts.signika(
                                 color: Color(0xFFAFB0B1),
                                 fontSize: 22,
@@ -517,7 +517,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                         if (!_isSearchActive)
                           Expanded(
                             child: Text(
-                              "Houses",
+                              "Bungalows",
                               style: GoogleFonts.signika(
                                 color: _scrollOffset <= 270
                                     ? Colors.white
@@ -650,11 +650,11 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "House: ${customer['house']['hno']}",
+                                      "Bungalow No: ${customer['house']['hno']}",
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: _isDarkMode == true ? Colors.white : Colors.black,
+                                        color: _isDarkMode == true ? Colors.black87 : Colors.black,
                                       ),
                                     ),
                                     // Text(
@@ -671,7 +671,8 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: _isDarkMode == true
-                                            ? Colors.white70
+                                            ? Colors.
+                                        black54
                                             : Colors.black87,
                                       ),
                                     ),
@@ -680,7 +681,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: _isDarkMode == true
-                                            ? Colors.white70
+                                            ? Colors.black54
                                             : Colors.black87,
                                       ),
                                     ),
@@ -691,7 +692,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                   height: 24,
                                   decoration: BoxDecoration(
                                     color: _isDarkMode == true
-                                        ? Colors.white
+                                        ? Colors.black38
                                         : (primaryDark ?? Colors.blue),
                                     borderRadius: BorderRadius.circular(50),
                                   ),
@@ -699,7 +700,7 @@ class _HouseViewPageState extends State<HouseViewPage> {
                                     padding: EdgeInsets.zero,
                                     icon: Icon(
                                       Icons.arrow_forward_ios,
-                                      color: _isDarkMode == true ? Colors.black : Colors.white,
+                                      color: _isDarkMode == true ? Colors.white : Colors.white,
                                       size: 12,
                                     ),
                                     onPressed: () {
@@ -724,14 +725,14 @@ class _HouseViewPageState extends State<HouseViewPage> {
                             child: Container(
                               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Colors.green.shade700,
+                                color: Colors.transparent,
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
                                 customer['unique_id'],
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 9,
+                                  color: Colors.grey,
+                                  fontSize: 6,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),

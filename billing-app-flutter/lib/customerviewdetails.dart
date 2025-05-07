@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'main.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CustomerDetailsPage extends StatefulWidget {
   final int customerId;
@@ -48,7 +50,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
       });
-
+      _loadThemePreference();
       // Load SVG after colors are fetched
       loadSvg();
       _fetchCustomerDetails();
@@ -61,15 +63,24 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       });
     });
   }
+
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
+    });
+  }
+
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/screen_upper_shape.svg');
       setState(() {
         // Replace placeholders with actual colors in hex format
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -81,11 +92,11 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
         svgStringIcon = svg.replaceAll(
           'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_2', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+          'PLACEHOLDER_2', _isDarkMode == true ? '#7E7E7EFF' : _colorToHex(svgLogin ?? Colors.black),
         ).replaceAll(
-          'PLACEHOLDER_3', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+          'PLACEHOLDER_3', _isDarkMode == true ? '#838383FF' : _colorToHex(svgLogin ?? Colors.black),
         ).replaceAll(
-          'PLACEHOLDER_4', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+          'PLACEHOLDER_4', _isDarkMode == true ? '#4F4E4EFF' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }

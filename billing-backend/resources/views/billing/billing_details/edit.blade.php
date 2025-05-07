@@ -243,7 +243,7 @@
                     
                                 <div class="col-md-6 mb-3">
                                     <label for="last_reading" class="form-label">Last Reading</label>
-                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', $billingDetail->last_reading) }}">
+                                    <input type="number" name="last_reading" id="last_reading" class="form-control" value="{{ old('last_reading', $billingDetail->last_reading) }}" readonly style="background-color: #e9ecef;">
                                     @error('last_reading') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
@@ -255,7 +255,7 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="outstanding_dues" class="form-label">Outstanding Dues</label>
-                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', $billingDetail->outstanding_dues) }}">
+                                    <input type="number" name="outstanding_dues" id="outstanding_dues" class="form-control" value="{{ old('outstanding_dues', $billingDetail->outstanding_dues) }}" readonly style="background-color: #e9ecef;">
                                     @error('outstanding_dues') <div class="text-danger">{{ $message }}</div> @enderror
                                 </div>
 
@@ -264,6 +264,7 @@
                                     <label for="current_reading" class="form-label">Current Reading</label>
                                     <input type="number" name="current_reading" id="current_reading" class="form-control" value="{{ old('current_reading', $billingDetail->current_reading) }}" required>
                                     @error('current_reading') <div class="text-danger">{{ $message }}</div> @enderror
+                                    <div id="current_reading_error" class="text-danger small mt-1"></div>
                                 </div>
 
                                 <div class="col-md-6 mb-3">
@@ -280,9 +281,11 @@
 
                                 <div class="col-md-6 mb-3">
                                     <label for="remission" class="form-label">Remission</label>
-                                    <input type="number" name="remission" id="remission" class="form-control" value="{{ old('remission', $billingDetail->remission) }}">
+                                    <input type="number" name="remission" id="remission" class="form-control" value="{{ old('remission', $billingDetail->remission ?? 0) }}">
                                     @error('remission') <div class="text-danger">{{ $message }}</div> @enderror
+                                    <div id="remission_error" class="text-danger small mt-1"></div>
                                 </div>
+
                                 <div class="col-md-3 mb-3">
                                     <div class="border p-2 rounded shadow-sm">
                                         <label for="status" class="form-label mb-1">Status</label> {{-- Reduced bottom margin --}}
@@ -621,5 +624,45 @@ document.getElementById('sendPaymentCheckbox').addEventListener('change', functi
     });
 });
 
+
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        function validateFields() {
+            let currentReading = $('#current_reading').val();
+            let remission = $('#remission').val();
+            let isValid = true;
+
+            if (currentReading === '' || parseFloat(currentReading) < 0) {
+                $('#current_reading_error').text(
+                    currentReading === '' ? 'Current Reading is required.' : 'Current Reading cannot be negative.'
+                );
+                $('#current_reading').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#current_reading_error').text('');
+                $('#current_reading').removeClass('is-invalid');
+            }
+
+            if (remission === '' || parseFloat(remission) < 0) {
+                $('#remission_error').text(
+                    remission === '' ? 'Remission is required.' : 'Remission cannot be negative.'
+                );
+                $('#remission').addClass('is-invalid');
+                isValid = false;
+            } else {
+                $('#remission_error').text('');
+                $('#remission').removeClass('is-invalid');
+            }
+
+            $('#approveBtn, #generateBtn').prop('disabled', !isValid);
+        }
+
+        $('#current_reading, #remission').on('input', validateFields);
+        validateFields(); 
+    });
+</script>
+
 @endsection

@@ -52,6 +52,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
       });
+      _loadThemePreference();
 
       // Load SVG after colors are fetched
       loadSvg();
@@ -62,6 +63,14 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
       setState(() {
         _isAnimationComplete = true;
       });
+    });
+  }
+
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
     });
   }
 
@@ -96,9 +105,9 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
       setState(() {
         // Replace placeholders with actual colors in hex format
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_1',  _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -115,11 +124,11 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
         svgStringIcon = svg.replaceAll(
           'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_2', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+          'PLACEHOLDER_2', _isDarkMode == true ? '#7E7E7EFF' : _colorToHex(svgLogin ?? Colors.black),
         ).replaceAll(
-          'PLACEHOLDER_3', _isDarkMode == true ? '#000000' : _colorToHex(svgLogin ?? Colors.black),
+          'PLACEHOLDER_3', _isDarkMode == true ? '#838383FF' : _colorToHex(svgLogin ?? Colors.black),
         ).replaceAll(
-          'PLACEHOLDER_4', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+          'PLACEHOLDER_4', _isDarkMode == true ? '#4F4E4EFF' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -157,7 +166,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
                 padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 20),
                     Row(
                       children: [
                         IconButton(
@@ -173,7 +182,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
                         ),
                         Expanded(
                           child: Text(
-                            "Houses",
+                            "Bungalows",
                             style: GoogleFonts.signika(
                               color: Colors.white,
                               fontSize: 29,
@@ -184,7 +193,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 115),
+                    const SizedBox(height: 145),
                     AnimatedOpacity(
                       opacity: _isAnimationComplete ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 700),
@@ -207,7 +216,7 @@ class _HouseViewDetailsState extends State<HouseViewDetails> {
                       children: [
                         const SizedBox(width: 5),
                         Text(
-                          "House Information",
+                          "Bungalow Information",
                           style: GoogleFonts.signika(
                             color: Color(0xFFAFB0B1),
                             fontSize: 20,
