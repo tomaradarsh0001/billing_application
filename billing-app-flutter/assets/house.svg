@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+	<!-- Perfect blue circular background with thin white border -->
+	<circle cx="24" cy="24" r="23.5" fill="PLACEHOLDER_COLOR_3" stroke="white" stroke-width="1" />
+
+	<!-- Centered and scaled house icon -->
+	<g transform="translate(10,10) scale(0.6)">
+		<!-- House base (yellow) -->
+		<polygon fill="PLACEHOLDER_COLOR_1" points="42,43 6,43 6,15.056 24,1.453 42,15.025" />
+
+		<!-- Roof (pink) -->
+		<polygon fill="PLACEHOLDER_COLOR_2" points="3.675,24.333 0.042,19.559 24,1.453 47.958,19.518 44.378,24.333 24.021,8.926" />
+
+		<!-- Roof shadow (red) -->
+		<polygon fill="PLACEHOLDER_COLOR_2" points="6,22.573 24.021,8.926 42,22.533 42,15.025 24,1.453 6,15.056" />
+
+		<!-- Door (orange) -->
+		<rect width="12" height="16" x="18" y="27" fill="#ffffff" />
+	</g>
+</svg>

@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
   // Function to fetch configuration data
   Future<Map<String, dynamic>> fetchConfiguration() async {
 
-    final response = await http.get(Uri.parse('http://16.171.136.239/api/configuration/3'));
+    final response = await http.get(Uri.parse('http://13.39.111.189:100/api/configuration/3'));
 
     if (response.statusCode == 200) {
       // If the server returns a 200 OK response, parse the JSON

@@ -12,17 +12,13 @@ class HouseDetail extends Model
     protected $table = 'house_details';
 
     protected $fillable = [
-        'hno', 
-        'area', 
-        'landmark', 
-        'city', 
-        'state', 
-        'country', 
-        'pincode',
+        'hno', 'house_type', 'meter_number', 'ews_qtr',
+        'area', 'city', 'state', 'country', 'pincode'
     ];
 
     public function occupants()
     {
-        return $this->hasMany(OccupantDetail::class, 'h_id');
+        return $this->hasOne(OccupantDetail::class, 'h_id');
     }
+  
 }

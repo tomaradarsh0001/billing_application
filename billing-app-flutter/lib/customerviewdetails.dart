@@ -6,8 +6,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class CustomerDetailsPage extends StatefulWidget {
   final int customerId;
@@ -23,8 +25,9 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
 
   bool _isAnimationComplete = false;
   Map<String, dynamic>? _customerDetails;
-  final String baseUrl = "http://16.171.136.239/api/customers/";
+  final String baseUrl = "http://13.39.111.189:100/api/customers/";
   String svgString = '';
+  String svgStringIcon = '';
   Color? primaryLight;
   Color? secondaryLight; // Assuming color2 is also a dynamic color
   Color? secondaryDark; // Assuming color2 is also a dynamic color
@@ -32,12 +35,12 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
-
+  bool? _isDarkMode;
 
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
@@ -47,10 +50,11 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
       });
-
+      _loadThemePreference();
       // Load SVG after colors are fetched
       loadSvg();
       _fetchCustomerDetails();
+      loadSvgIcon();
 
     });
     Future.delayed(Duration(milliseconds: 200), () {
@@ -59,15 +63,40 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       });
     });
   }
+
+  Future<void> _loadThemePreference() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isDark = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _isDarkMode = isDark;
+    });
+  }
+
   Future<void> loadSvg() async {
     if (secondaryLight != null && primaryLight != null && primaryDark != null) {
       String svg = await rootBundle.loadString('assets/screen_upper_shape.svg');
       setState(() {
         // Replace placeholders with actual colors in hex format
         svgString = svg.replaceAll(
-          'PLACEHOLDER_COLOR_1', _colorToHex(primaryLight!),
+          'PLACEHOLDER_COLOR_1', _isDarkMode == true ? '#666564' : _colorToHex(primaryLight ?? Colors.grey),
         ).replaceAll(
-          'PLACEHOLDER_COLOR_2', _colorToHex(primaryDark!),
+          'PLACEHOLDER_COLOR_2', _isDarkMode == true ? '#000000' : _colorToHex(primaryDark ?? Colors.black),
+        );
+      });
+    }
+  }
+  Future<void> loadSvgIcon() async {
+    if (secondaryLight != null && primaryLight != null && primaryDark != null) {
+      String svg = await rootBundle.loadString('assets/customer_icon.svg');
+      setState(() {
+        svgStringIcon = svg.replaceAll(
+          'PLACEHOLDER_1', _isDarkMode == true ? '#666564' : _colorToHex(secondaryLight ?? Colors.grey),
+        ).replaceAll(
+          'PLACEHOLDER_2', _isDarkMode == true ? '#7E7E7EFF' : _colorToHex(svgLogin ?? Colors.black),
+        ).replaceAll(
+          'PLACEHOLDER_3', _isDarkMode == true ? '#838383FF' : _colorToHex(svgLogin ?? Colors.black),
+        ).replaceAll(
+          'PLACEHOLDER_4', _isDarkMode == true ? '#4F4E4EFF' : _colorToHex(primaryDark ?? Colors.black),
         );
       });
     }
@@ -78,17 +107,24 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   // Fetch customer details from the API
   Future<void> _fetchCustomerDetails() async {
     final String apiUrl = '$baseUrl${widget.customerId}';
+    print('API URL: $apiUrl');
+
     try {
       final response = await http.get(Uri.parse(apiUrl));
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
       if (response.statusCode == 200) {
+        final decoded = json.decode(response.body);
         setState(() {
-          _customerDetails = json.decode(response.body);
+          _customerDetails = decoded['data']; // adjust if your structure is different
           _isLoading = false;
         });
       } else {
         throw Exception('Failed to load customer details');
       }
     } catch (e) {
+      print('Fetch Error: $e');
       setState(() {
         _isLoading = false;
       });
@@ -97,6 +133,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
       );
     }
   }
+
 
   // Delete customer from the API
   Future<void> deleteCustomer(int customerId) async {
@@ -230,7 +267,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
   }
   // Format date of birth
   String formattedDob(String? dob) {
-    if (dob == null || dob.isEmpty) return "Not Available";
+    if (dob == null || dob.isEmpty) return "";
     try {
       final DateTime date = DateTime.parse(dob);
       final DateFormat formatter = DateFormat('dd MMM yyyy');
@@ -242,7 +279,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
 
   // Format Aadhar number
   String formatAadharNumber(String? aadhar) {
-    if (aadhar == null || aadhar.isEmpty) return "Not Available";
+    if (aadhar == null || aadhar.isEmpty) return "";
     final regExp = RegExp(r'(\d{4})(\d{4})(\d{4})');
     final match = regExp.firstMatch(aadhar);
     if (match != null) {
@@ -306,16 +343,21 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 90),
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.white,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'assets/dashboard_user.png', // Replace with your PNG file path
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
+                    const SizedBox(height: 115),
+                    AnimatedOpacity(
+                      opacity: _isAnimationComplete ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 700),
+                      curve: Curves.easeIn,
+                      child: CircleAvatar(
+                        radius: 60,
+                        child: ClipOval(
+                          child: SvgPicture.string(
+                            svgStringIcon,
+                            semanticsLabel: 'Icon SVG',
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
@@ -378,7 +420,7 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
                           )
                         else
                         // Show actual data when loading is complete
-                          _buildDetailField("First Name", _customerDetails?['first_name']?.toString()),
+                        _buildDetailField("First Name", _customerDetails?['first_name']?.toString()),
                         _buildDetailField("Last Name", _customerDetails?['last_name']?.toString()),_buildDetailField("Gender", _customerDetails?['gender']?.toString()),
                         _buildDetailField("Date of Birth", formattedDob(_customerDetails?['dob']?.toString())),
                         _buildDetailField("Email Address", _customerDetails?['email']?.toString()),
@@ -450,17 +492,17 @@ class _CustomerDetailsPageState extends State<CustomerDetailsPage> {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.bold,
               color: Color(0xFFAFB0B1),
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            value ?? "Not Available", // Fallback text for null values
+            value ?? "", // Fallback text for null values
             style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              fontWeight: FontWeight.w400,
               color: Colors.black,
             ),
           ),

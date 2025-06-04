@@ -96,7 +96,7 @@
                     <span>Dashboard</span>
                 </a>
                 <ul>
-                    <li><a class="active" href="/dashboard">Sales</a></li>
+                    <li><a class="active" href="/dashboard">Dashboard</a></li>
                 </ul>
             </li>
             <li class="">
@@ -135,10 +135,32 @@
                     <li><a href="{{ route('occupants.index') }}">View Occupants</a></li>
                 </ul>
             </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/5.svg')}}" alt="">
+                    </div>
+                    <span>Billings</span>
+                </a>
+                <ul>
+                    <li><a href="{{ route('billing_details.create') }}">Add Billings</a></li>
+                    <li><a href="{{ route('billing_details.index') }}">View Billings</a></li>
+                </ul>
+            </li>
+            <li class="">
+                <a class="has-arrow" href="#" aria-expanded="false">
+                    <div class="icon_menu">
+                        <img src="{{ asset('assets/img/menu-icon/6.svg')}}" alt="">
+                    </div>
+                    <span>Transactions</span>
+                </a>
+                <ul>
+                    {{-- <li><a href="{{ route('transactions.index') }}">Add Billings</a></li> --}}
+                    <li><a href="{{ route('transactions.index') }}">View Transactions</a></li>
+                </ul>
+            </li>
         </ul>
     </nav>
-
-
 
     <section class="main_content dashboard_part large_header_bg">
         <div class="container-fluid g-0">
@@ -191,12 +213,14 @@
                                                                 <ul class="nav-links">
                                                                     <li><a href="{{ route('configuration.index') }}"><i class='fab fa-reddit-alien'></i> Config</a></li>
                                                                     <li><a href="{{ route('customers.index') }}"><i class='fab fa-fort-awesome'></i> Customers</a></li>
+                                                                    <li><a href="{{ route('per_unit_rates.index') }}"><i class="fas fa-user-edit"></i> Unit Rate</a></li>
+                                                                    <li><a href="{{ route('tax-charges.index') }}"><i class="fas fa-spider"></i> Tax & Charges</a></li>
                                                                 </ul>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                </li>
+                                            </li>
                                 <li>
                                     <a class="bell_notification_clicker nav-link-notify" href="#">
                                         <img src="{{ asset('assets/img/icon/bell.svg') }}" alt="Bell">
@@ -429,6 +453,7 @@
     </div>
     <!-- Scripts -->
     <script src="{{ asset('assets/js/jquery1-3.4.1.min.js') }}"></script>
+    <script src="{{ asset('assets/js/script.js') }}"></script>
     <script src="{{ asset('assets/js/popper1.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/metisMenu.js') }}"></script>

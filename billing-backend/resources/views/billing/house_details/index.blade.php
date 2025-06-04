@@ -40,28 +40,26 @@
                             <table class="table table-striped" id="usersTable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>House No</th>
+                                        <th>Bungalow No</th>
+                                        <th>House Type</th>
+                                        <th>Meter Number</th>
                                         <th>Area</th>
-                                        <th>Landmark</th>
                                         <th>City</th>
-                                        <th>State</th>
                                         <th>Country</th>
-                                        <th>Pincode</th>
+                                        <th>EWS QTR.</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($houses as $house)
                                         <tr>
-                                            <td>{{ $house->id }}</td>
                                             <td>{{ $house->hno }}</td>
+                                            <td>{{ $house->house_type }}</td>
+                                            <td>{{ $house->meter_number }}</td>
                                             <td>{{ $house->area }}</td>
-                                            <td>{{ $house->landmark }}</td>
                                             <td>{{ $house->city }}</td>
-                                            <td>{{ $house->state }}</td>
                                             <td>{{ $house->country }}</td>
-                                            <td>{{ $house->pincode }}</td>
+                                            <td>{{ $house->ews_qtr }}</td>
                                             <td>
                                                 <a href="{{ route('houses.edit', $house->id) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
                                                 <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('house', {{ $house->id }})">Delete</button>

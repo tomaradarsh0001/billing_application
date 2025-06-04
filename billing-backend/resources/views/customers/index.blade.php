@@ -56,11 +56,7 @@
                                     <td>
                                         <a href="{{ route('customers.show', $customer) }}" class="btn btn-primary rounded-pill mb-2">View</a>
                                         <a href="{{ route('customers.edit', $customer) }}" class="btn btn-warning rounded-pill mb-2">Edit</a>
-                                        <!-- <form action="{{ route('customers.destroy', $customer) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger rounded-pill mb-2">Delete</button>
-                                        </form> -->
+                                      
                                         <button type="button" class="btn btn-danger rounded-pill mb-2" onclick="confirmDelete('customer', {{ $customer->id }})">Delete</button>
                                         <form method="POST" action="{{ route('customers.destroy', $customer) }}" class="d-inline" id="deleteForm-{{ $customer->id }}">
                                             @csrf

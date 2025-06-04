@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
-import 'colors.dart';
+import 'main.dart';
 
 class Resetpassword extends StatefulWidget {
   @override
@@ -21,11 +21,13 @@ class _ResetpasswordState extends State<Resetpassword> {
   Color? svgLogin;
   Color? links;
   Color? textPrimary;
+  String? primaryFont;
+  String? secondaryFont;
 
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
@@ -34,6 +36,8 @@ class _ResetpasswordState extends State<Resetpassword> {
         secondaryDark = AppColors.secondaryDark; // Replace with actual dynamic color
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
       });
 
       // Load SVG after colors are fetched
@@ -127,7 +131,8 @@ class _ResetpasswordState extends State<Resetpassword> {
                         children: [
                           TextSpan(
                             text: 'Reset\n',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -136,7 +141,8 @@ class _ResetpasswordState extends State<Resetpassword> {
                           ),
                           TextSpan(
                             text: 'Password',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -167,7 +173,8 @@ class _ResetpasswordState extends State<Resetpassword> {
                               )
                             ),
                             labelText: 'Email',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -217,7 +224,8 @@ class _ResetpasswordState extends State<Resetpassword> {
                             },
                             child: Text(
                               'Back to Login?',
-                              style: TextStyle(
+                              style: GoogleFonts.getFont(
+                                 secondaryFont ?? 'Roboto',
                                 fontSize: 16,
                                 color: links,
                                 fontWeight: FontWeight.w500,

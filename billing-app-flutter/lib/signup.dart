@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'login.dart';
-import 'colors.dart';
+import 'main.dart';
 import 'package:flutter/services.dart';  // To load the SVG as a string
 
 class SignupPage extends StatefulWidget {
@@ -23,6 +23,8 @@ class _SignupPageState extends State<SignupPage> {
   Color? svgSignup;
   Color? links;
   Color? textPrimary;
+  String? primaryFont;
+  String? secondaryFont;
 
   void _togglePasswordVisibility() {
     setState(() {
@@ -33,7 +35,7 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
-    AppColors.fetchColors().then((_) {
+    AppColors.loadColorsFromPrefs().then((_) {
       setState(() {
         secondaryLight = AppColors.secondaryLight;
         primaryLight = AppColors.primaryLight; // Replace with actual dynamic color
@@ -42,6 +44,8 @@ class _SignupPageState extends State<SignupPage> {
         secondaryDark = AppColors.secondaryDark; // Replace with actual dynamic color
         links = AppColors.links; // Replace with actual dynamic color
         textPrimary = AppColors.textPrimary;
+        primaryFont = AppColors.primaryFont;
+        secondaryFont = AppColors.secondaryFont;
       });
 
       // Load SVG after colors are fetched
@@ -151,7 +155,7 @@ class _SignupPageState extends State<SignupPage> {
           ),
           // Main Content
           Padding(
-            padding: const EdgeInsets.only(top: 230),
+            padding: const EdgeInsets.only(top: 250),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -164,7 +168,8 @@ class _SignupPageState extends State<SignupPage> {
                         children: [
                           TextSpan(
                             text: 'Create\n',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -173,7 +178,8 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           TextSpan(
                             text: 'Account',
-                            style: GoogleFonts.signika(
+                            style: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 43,
                               fontWeight: FontWeight.normal,
                               color: textPrimary,
@@ -205,7 +211,8 @@ class _SignupPageState extends State<SignupPage> {
                               // Show loading indicator until the SVG is ready
                             ),
                             labelText: 'Name',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -237,7 +244,7 @@ class _SignupPageState extends State<SignupPage> {
 
                             ),
                             labelText: 'Email',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -280,7 +287,8 @@ class _SignupPageState extends State<SignupPage> {
                               onPressed: _togglePasswordVisibility,
                             ),
                             labelText: 'Password',
-                            labelStyle: GoogleFonts.signika(
+                            labelStyle: GoogleFonts.getFont(
+                              primaryFont ?? 'Signika',
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
                               color: Color.fromRGBO(93, 98, 105, 0.7),
@@ -316,68 +324,68 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 5),
+                        // const SizedBox(height: 5),
                         // Continue with Text
-                        Center(
-                          child: Text(
-                            'or Continue with',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: textPrimary,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
+                        // Center(
+                        //   child: Text(
+                        //     'or Continue with',
+                        //     style: TextStyle(
+                        //       fontSize: 16,
+                        //       color: textPrimary,
+                        //       fontWeight: FontWeight.w500,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF2B48AA),
-                          side: const BorderSide(color: Color(0xFF2B48AA)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(140, 48),
-                        ),
-                        label: const Text(
-                          'Facebook',
-                          style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/facebook.svg',
-                          width: 28,
-                          height: 28,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(color: Color.fromRGBO(44, 49, 57, 0.5)),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                          minimumSize: const Size(154, 48),
-                        ),
-                        label: const Text(
-                          'Google',
-                          style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
-                        ),
-                        icon: SvgPicture.asset(
-                          'assets/google.svg',
-                          width: 24,
-                          height: 24,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // const SizedBox(height: 20),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     ElevatedButton.icon(
+                  //       onPressed: () {},
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor: Color(0xFF2B48AA),
+                  //         side: const BorderSide(color: Color(0xFF2B48AA)),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(7),
+                  //         ),
+                  //         minimumSize: const Size(140, 48),
+                  //       ),
+                  //       label: const Text(
+                  //         'Facebook',
+                  //         style: TextStyle(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w400),
+                  //       ),
+                  //       icon: SvgPicture.asset(
+                  //         'assets/facebook.svg',
+                  //         width: 28,
+                  //         height: 28,
+                  //       ),
+                  //     ),
+                  //     const SizedBox(width: 20),
+                  //     ElevatedButton.icon(
+                  //       onPressed: () {},
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor: Colors.white,
+                  //         side: const BorderSide(color: Color.fromRGBO(44, 49, 57, 0.5)),
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.circular(7),
+                  //         ),
+                  //         minimumSize: const Size(154, 48),
+                  //       ),
+                  //       label: const Text(
+                  //         'Google',
+                  //         style: TextStyle(fontSize: 19, fontWeight: FontWeight.w400),
+                  //       ),
+                  //       icon: SvgPicture.asset(
+                  //         'assets/google.svg',
+                  //         width: 24,
+                  //         height: 24,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   const SizedBox(height: 30),
                   Center(
                     child: GestureDetector(
@@ -403,7 +411,8 @@ class _SignupPageState extends State<SignupPage> {
                       },
                       child: Text(
                         'Are you already a User? Login',
-                        style: TextStyle(
+                        style: GoogleFonts.getFont(
+                          secondaryFont ?? 'Roboto',
                           color: textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
