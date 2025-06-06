@@ -901,10 +901,10 @@ class _BillingPageState extends State<BillingPage> {
                                           onPressed: () async {
                                             final double? currentReading = double.tryParse(_readingController.text);
                                             if (currentReading != null) {
-                                              double currentCharges = currentReading * unitCharge!;
+                                              // double currentCharges = currentReading * unitCharge!;
                                               final newValue = houseChargesMap[occupant['h_id']] ?? 0.0;
                                               final outstandingAdv = newValue + _estCharges;
-                                              final outstandingDues = outstandingAdv - currentCharges;
+                                              // final outstandingDues = outstandingAdv - currentCharges;
                                               setState(() {
                                                 _isLoadingConfirm = true;  // Set the flag to true when the request starts
                                               });
@@ -915,10 +915,8 @@ class _BillingPageState extends State<BillingPage> {
                                                 body: jsonEncode({
                                                   "house_id": occupant['h_id'],
                                                   "occupant_id": occupant['id'],
-                                                  "current_reading": currentReading,
-                                                  "current_charges": currentCharges,
-                                                  // "outstanding_dues":  outstandingDues,
-                                                  // "last_reading":  currentReading,
+                                                  "curr_meter_reading": currentReading,
+                                                  // "current_charges": currentCharges,
                                                 }),
                                               );
                                               setState(() {

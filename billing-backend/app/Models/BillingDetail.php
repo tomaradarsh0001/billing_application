@@ -10,19 +10,21 @@ class BillingDetail extends Model
     use HasFactory;
 
    protected $fillable = [
-        'house_id',
-        'occupant_id',
-        'reading_date',
-        'last_meter_reading',
-        'current_meter_reading',
-        'current_units',
-        'rate_per_unit',
-        'current_charges',
-        'outstanding_dues',
-        'payment_status',
-        'pay_date',
-        'payment_method',
-        'transaction_id'
+         'house_id',
+    'occupant_id',
+    'last_pay_date',
+    'last_reading',
+    'last_meter_reading',
+    'curr_meter_reading',
+    'outstanding_dues',
+    'current_reading',
+    'current_charges',
+    'pay_date',
+    'status',
+    'payment_status',
+    'pdf_path',
+    'remission',
+    'unit_after_remission',
     ];
 
     protected $casts = [

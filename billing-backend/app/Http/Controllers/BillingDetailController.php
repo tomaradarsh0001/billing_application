@@ -47,8 +47,8 @@ class BillingDetailController extends Controller
         Log::info('BillingDetailController@store: Received request data.', ['request_data' => $request->all()]);
     
         try {
-            $lastReading = $request->last_reading;
-            $currentReading = $request->current_reading;
+            $lastReading = $request->last_units;
+            $currentReading = $request->current_units;
             $remission = $request->remission;
             $totalUnits = $lastReading + $currentReading;
             $unitAfterRemission = $totalUnits - $remission;
@@ -56,9 +56,9 @@ class BillingDetailController extends Controller
                 'house_id' => $request->house_id,
                 'occupant_id' => $request->occupant_id,
                 'last_pay_date' => $request->last_pay_date,
-                'last_reading' => $request->last_reading,
+                'last_units' => $request->last_units,
                 'outstanding_dues' => $request->outstanding_dues,
-                'current_reading' => $request->current_reading,
+                'current_units' => $request->current_units,
                 'current_charges' => $request->current_charges,
                 'pay_date' => $request->pay_date,
                 'remission' => $request->remission,
