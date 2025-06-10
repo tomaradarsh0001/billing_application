@@ -114,39 +114,6 @@ class _BillingPageState extends State<BillingPage> {
   }
 
 
-  Future<void> fetchOccupants() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final response = await http.get(
-        Uri.parse('http://13.39.111.189:100/api/billing/occupants'),
-        headers: {'Accept': 'application/json'},
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        setState(() {
-          _billingDetails = List.from(data); // Create a new list to avoid reference issues
-          _filteredOccupants = List.from(data); // Create a copy
-          _isLoading = false;
-        });
-      } else {
-        throw Exception('Failed to load occupants: ${response.statusCode}');
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _billingDetails = [];
-        _filteredOccupants = [];
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
-    }
-  }
-
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -165,6 +132,8 @@ class _BillingPageState extends State<BillingPage> {
 
 
   // Method to fetch billing data
+  Map<int, String> meterReadings = {};
+
   Future<void> _fetchBillings() async {
     const String apiUrl = 'http://13.39.111.189:100/api/billing/occupants';
     try {
@@ -174,11 +143,26 @@ class _BillingPageState extends State<BillingPage> {
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body);
+
+        // Extract curr_meter_reading for each occupant
+        for (var occupant in decoded) {
+          int id = occupant['id'];
+          var billing = occupant['latest_billing_detail'];
+
+          if (billing != null && billing['curr_meter_reading'] != null) {
+            meterReadings[id] = billing['curr_meter_reading'].toString();
+          } else {
+            meterReadings[id] = 'N/A'; // Or null, if preferred
+          }
+        }
+
         setState(() {
           _occupants = decoded;
-          _filteredOccupants = List.from(_occupants); // Initialize filtered list
+          _filteredOccupants = List.from(_occupants);
           _isLoading = false;
         });
+
+        print("Meter Readings Map: $meterReadings");
       } else {
         throw Exception('Failed to load customers');
       }
@@ -192,6 +176,7 @@ class _BillingPageState extends State<BillingPage> {
       );
     }
   }
+
 
   @override
   void dispose() {
@@ -639,41 +624,128 @@ class _BillingPageState extends State<BillingPage> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      if (_isShimmer) {
-                        return buildShimmerCard(); // your shimmer skeleton
-                      }
+                  if (_isShimmer) {
+                    return buildShimmerCard();
+                  }
                   final occupant = _filteredOccupants[index];
                   final billing = _billingDetails[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300, width: 1.5),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 6),
-                        Text(
-                          "Occupant Name :- ${occupant['first_name']  ?? 'N/A'} ${occupant['last_name']  ?? ''}",
-                          style: GoogleFonts.getFont(
-                            secondaryFont ?? 'Roboto',
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                  final currReading = double.tryParse(billing['latest_billing_detail']?['curr_meter_reading']?.toString() ?? '0.0') ?? 0.0;
+
+                  // Check billing date and calculate days remaining
+                  final lastBillingDateStr = billing['latest_billing_detail']?['created_at'];
+                  bool isDisabled = false;
+                  int daysRemaining = 0;
+                  if (lastBillingDateStr != null) {
+                    final lastBillingDate = DateTime.parse(lastBillingDateStr);
+                    final daysSinceLastBilling = DateTime.now().difference(lastBillingDate).inDays;
+                    isDisabled = daysSinceLastBilling < 30;
+                    daysRemaining = 30 - daysSinceLastBilling;
+                  }
+
+                  return GestureDetector(
+                    onTap: isDisabled
+                        ? () {
+                      // Use the context from builder parameter, not from a nested widget
+                      ScaffoldMessenger.of(context).removeCurrentSnackBar(); // Remove any existing snackbar
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Billing for this house was done recently. Next billing available in $daysRemaining days',
+                            style: TextStyle(color: Colors.white),
                           ),
+                          backgroundColor: Colors.red[700],
+                          duration: Duration(seconds: 3),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          margin: const EdgeInsets.fromLTRB(16, 0, 16, 20), // Left, Top, Right, Bottom
                         ),
+                      );
+                    }
+                        : null,
+                    child: AbsorbPointer(
+                      absorbing: isDisabled,
+                      child: Opacity(
+                        opacity: isDisabled ? 0.6 : 1.0,
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            left: 15,
+                            right: 15,
+                            top: 10,
+                            bottom: index == _filteredOccupants.length - 1 ? 60 : 10,
+                          ),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: isDisabled ? Colors.grey : Colors.grey.shade300, width: 1.5),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black12, blurRadius: 4, offset: Offset(0, 2))
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (isDisabled) ...[
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.orange.shade100,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          "Billed recently",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.orange.shade800,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 6),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.shade100,
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          "Next bill in $daysRemaining days",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.blue.shade800,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                              ],
+                              const SizedBox(height: 6),
+                              Text(
+                                "Occupant Name :- ${occupant['first_name'] ?? 'N/A'} ${occupant['last_name'] ?? ''}",
+                                style: GoogleFonts.getFont(
+                                  secondaryFont ?? 'Roboto',
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDisabled ? Colors.grey : Colors.black,
+                                ),
+                              ),
                         Text(
                           "Bungalow No. : #${occupant['house']['hno']  ?? 'N/A'}",
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
-                            color: Colors.black87,
+                            color: isDisabled ? Colors.grey : Colors.black,
                           ),
                         ),
                         Text(
@@ -681,7 +753,7 @@ class _BillingPageState extends State<BillingPage> {
                           style: GoogleFonts.getFont(
                             secondaryFont ?? 'Roboto',
                             fontSize: 14,
-                            color: Colors.black87,
+                            color: isDisabled ? Colors.grey : Colors.black,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -829,12 +901,16 @@ class _BillingPageState extends State<BillingPage> {
                                               } else if (reading > 99999) {
                                                 _readingError = 'Max Limit Reached';
                                                 _estCharges = 0;
+                                              } else if (reading < currReading) {
+                                                _readingError = 'Cannot be less than previous reading ($currReading)';
+                                                _estCharges = 0;
                                               } else {
                                                 _readingError = null;
-                                                _estCharges = reading * unitCharge!;
+                                                _estCharges = reading - currReading;
                                               }
                                             });
                                           },
+
                                           keyboardType: TextInputType.number,
                                           inputFormatters: [
                                             FilteringTextInputFormatter.digitsOnly,
@@ -888,7 +964,7 @@ class _BillingPageState extends State<BillingPage> {
                                         ),
                                       ),
                                       const SizedBox(height: 4),
-                                      const Text("Est. Charges", style: TextStyle(fontSize: 11, color: Colors.grey), textAlign: TextAlign.center),
+                                      const Text("New Units", style: TextStyle(fontSize: 11, color: Colors.grey), textAlign: TextAlign.center),
                                     ],
                                   ),
 
@@ -926,7 +1002,7 @@ class _BillingPageState extends State<BillingPage> {
                                               if (response.statusCode == 200 || response.statusCode == 201) {
                                                 ScaffoldMessenger.of(context).showSnackBar(
                                                   const SnackBar(
-                                                    content: Text("Billing details submitted successfully"),
+                                                    content: Text("Meter Reading submitted successfully"),
                                                     backgroundColor: Colors.green,
                                                   ),
                                                 );
@@ -1028,7 +1104,9 @@ class _BillingPageState extends State<BillingPage> {
                               // Compute newValue from houseChargesMap using billing['h_id']
                               final newValue = houseChargesMap[billing['h_id']] ?? 0.0;
                               final total = newValue + _estCharges;
-
+                              final double? currentReading = double.tryParse(_readingController.text);
+                              final currReading = double.tryParse(billing['latest_billing_detail']?['curr_meter_reading']?.toString() ?? '0.0') ?? 0.0;
+                              final unitTotals = (currentReading ?? 0.0) - currReading;
                               return GestureDetector(
                                 onTap: () {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -1039,6 +1117,7 @@ class _BillingPageState extends State<BillingPage> {
                                     ),
                                   );
                                 },
+
                                 child: Card(
                                   key: ValueKey("bill_info_${billing['id']}"),
                                   margin: const EdgeInsets.symmetric(horizontal: 0),
@@ -1050,7 +1129,7 @@ class _BillingPageState extends State<BillingPage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
-                                      "Outstanding Dues + Current bill is = Rs.${newValue.toStringAsFixed(2)} + ${_estCharges.toStringAsFixed(2)} = Rs.${total.toStringAsFixed(2)}/-",
+                                      "Last Reading was ${billing['latest_billing_detail']['curr_meter_reading']} & Current Reading is $currentReading, Total New Units $unitTotals",
                                       style: GoogleFonts.getFont(
                                         secondaryFont ?? 'Roboto',
                                         fontSize: 12,
@@ -1068,6 +1147,9 @@ class _BillingPageState extends State<BillingPage> {
                         ],
                       ],
                     ),
+                      ),
+                      ),
+                      ),
                   );
                 },
                 childCount: _isShimmer ? 6 : _filteredOccupants.length,

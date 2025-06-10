@@ -410,7 +410,13 @@ class _HistoryPageState extends State<HistoryPage> {
                   final billing = billingDetails[index];
 
                   return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    margin: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 10,
+                      bottom: index == billingDetails.length - 1 ? 60 : 10,
+                    ),
+                    // margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
