@@ -10,9 +10,9 @@ A full-stack Electricity Billing Application built using **Flutter** for the fro
 
 Here are some previews of the app:
 
-<p align="center">
-  <img src="Screenshots/dashboard.png" width="300" alt="Login Screen"/>
-</p>
+
+  <img src="Screenshots/dashboard.png" alt="Login Screen"/>
+
 
 ---
 
