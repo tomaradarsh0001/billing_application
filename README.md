@@ -39,7 +39,70 @@ Here are some previews of the app:
 
 <b>Payment Success</b> :- 
 <img src="Screenshots/payment success.png"  alt="Payment Success"/>
+
+📱✨ Now the assigned person takes the reading using the mobile app! 🔋📊
+✅ No paperwork
+📷 Snap the meter
+📤 Instantly upload
+⚡ Fast, easy & accurate!
+
+## 📲 App Screenshots
+
+### 🔐 App Login Screen  
+<img src="Screenshots/login screen.png" alt="Login Screen" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
 ---
+
+### 📊 Dashboard - Light Mode  
+<img src="Screenshots/dashboard app.png" alt="Light Dashboard" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 🌙 Dashboard - Dark Mode  
+<img src="Screenshots/darkmode.png" alt="Dark Dashboard" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 💧 Billing Submission *(Dynamic Water Billing)*  
+<img src="Screenshots/water billing.png" alt="Billing" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### ✨ Shimmer Effect While Loading  
+<img src="Screenshots/shimmer.png" alt="Shimmer" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 🏠 Bungalow / Houses List  
+<img src="Screenshots/bungalow.png" alt="Bungalow List" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 🏡 Bungalow / House Details  
+<img src="Screenshots/bungalow details.png" alt="Bungalow Details" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 📜 Billing History  
+<img src="Screenshots/history.png" alt="Billing History" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### ❓ FAQ  
+<img src="Screenshots/faq.png" alt="FAQ" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 🆘 Help  
+<img src="Screenshots/help_.png" alt="Help" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
+### 🔒 Privacy Policy  
+<img src="Screenshots/privacy policy.png" alt="Privacy Policy" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
+
+---
+
 
 ## 🚀 Getting Started
 
