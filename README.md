@@ -17,7 +17,7 @@ Here are some previews of the app:
   <img src="Screenshots/dashboard.png"  alt="Dashboard"/>
 
   <b>Mobile App Dynamic Configuration</b> :- 
-  <img src="Screenshots/app configuration.png"  alt="app configuration"/>
+  <img src="Screenshots/app configurations.png"  alt="app configuration"/>
 
 <b>Occupant & Houses Tables</b> :- 
   <img src="Screenshots/occupants and houses.png"  alt="Occupants & Houses"/>
@@ -32,7 +32,7 @@ Here are some previews of the app:
 <img src="Screenshots/bill generation.png"  alt="billing Generation"/>
 
 <b>Generated Bill Email Message</b> :- 
-<img src="Screenshots/email.png"  alt="Email Message"/>
+<img src="Screenshots/email .png"  alt="Email Message"/>
 
 <b>Razorpay Payment Gateway</b> :- 
 <img src="Screenshots/razorpay payments.png"  alt="Payment gateway"/>
