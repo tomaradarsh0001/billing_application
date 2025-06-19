@@ -5,7 +5,7 @@ A full-stack Electricity Billing Application built using **Flutter** for the fro
 
 ## 📂 Project Structure
 
-billing-backend (Laravel Backend with Blade Templates)
+billing-backend (Laravel Backend with Blade Templates) <br> <br>
 billing-app-flutter (Flutter Mobile Application)
 ---
 
@@ -13,9 +13,11 @@ billing-app-flutter (Flutter Mobile Application)
 
 Here are some previews of the app:
 
+Dashboard :- 
   <img src="Screenshots/dashboard.png"  alt="Dashboard"/>
 
-
+Occupant & Houses Tables :- 
+  <img src="Screenshots/occupants and houses.png"  alt="Occupants & Houses"/>
 ---
 
 ## 🚀 Getting Started
@@ -23,9 +25,7 @@ Here are some previews of the app:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/electricity-billing-app.git
-cd electricity-billing-app
-
+git clone https://github.com/your-username/billing_application.git
 
 cd billing-backend
 
