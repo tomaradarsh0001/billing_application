@@ -39,6 +39,48 @@ Here are some previews of the app:
 
 <b>Payment Success</b> :- 
 <img src="Screenshots/payment success.png"  alt="Payment Success"/>
+
+📱✨ Now the assigned person takes the reading using the mobile app! 🔋📊
+✅ No paperwork
+📷 Snap the meter
+📤 Instantly upload
+⚡ Fast, easy & accurate!
+
+<b>App Login Screen</b> :- 
+<img src="Screenshots/login screen.png"  alt="Login Screen"/>
+
+<b>Dashboard Light mode</b> :- 
+<img src="Screenshots/dashboard app.png"  alt="Light Dashboard"/>
+
+<b>Dashboard Dark mode</b> :- 
+<img src="Screenshots/darkmode.png"  alt="Dark Dashboard"/>
+
+<b>Dashboard Dark mode</b> :- 
+<img src="Screenshots/darkmode.png"  alt="Dark Dashboard"/>
+
+<b>Billing Sumbission (Dynamically we are using Water Billing here)</b> :- 
+<img src="Screenshots/water billing.png"  alt="Billing"/>
+
+<b>Mobile App Shimmer Effect while Loading</b> :- 
+<img src="Screenshots/shimmer.png"  alt="Shimmer"/>
+
+<b>Bungalow or Houses List</b> :- 
+<img src="Screenshots/bungalow.png"  alt="Bungalow list"/>
+
+<b>Bungalow or Houses Details</b> :- 
+<img src="Screenshots/bungalow details.png"  alt="Bungalow Details"/>
+
+<b>Billing History</b> :- 
+<img src="Screenshots/history.png"  alt="History"/>
+
+<b>FAQ</b> :- 
+<img src="Screenshots/faq.png"  alt="FAQ"/>
+
+<b>Help</b> :- 
+<img src="Screenshots/help_.png"  alt="Help"/>
+
+<b>Privacy Policy</b> :- 
+<img src="Screenshots/privacy policy.png"  alt="Privacy Policy"/>
 ---
 
 ## 🚀 Getting Started
