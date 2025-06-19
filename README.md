@@ -47,13 +47,10 @@ Here are some previews of the app:
 ⚡ Fast, easy & accurate!
 
 <b>App Login Screen</b> :- 
-<img src="Screenshots/login screen.png"  alt="Login Screen"/>
+<img src="Screenshots/login screen.png" height="300"  alt="Login Screen"/>
 
 <b>Dashboard Light mode</b> :- 
 <img src="Screenshots/dashboard app.png"  alt="Light Dashboard"/>
-
-<b>Dashboard Dark mode</b> :- 
-<img src="Screenshots/darkmode.png"  alt="Dark Dashboard"/>
 
 <b>Dashboard Dark mode</b> :- 
 <img src="Screenshots/darkmode.png"  alt="Dark Dashboard"/>
