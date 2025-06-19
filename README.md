@@ -50,7 +50,7 @@ Here are some previews of the app:
 
 ### 🔐 App Login Screen  
 <img src="Screenshots/login screen.png" alt="Login Screen" width="400" style="border-radius: 16px; box-shadow: 0 0 20px rgba(0,0,0,0.2);"/>
-
+ 
 ---
 
 ### 📊 Dashboard - Light Mode  
