@@ -45,40 +45,63 @@ Here are some previews of the app:
 📷 Snap the meter
 📤 Instantly upload
 ⚡ Fast, easy & accurate!
+## 📲 App Screenshots
 
-<b>App Login Screen</b> :- 
-<img src="Screenshots/login screen.png" height="300"  alt="Login Screen"/>
+### 🔐 App Login Screen  
+<img src="Screenshots/login screen.png" alt="Login Screen" width="400"/>
 
-<b>Dashboard Light mode</b> :- 
-<img src="Screenshots/dashboard app.png"  alt="Light Dashboard"/>
-
-<b>Dashboard Dark mode</b> :- 
-<img src="Screenshots/darkmode.png"  alt="Dark Dashboard"/>
-
-<b>Billing Sumbission (Dynamically we are using Water Billing here)</b> :- 
-<img src="Screenshots/water billing.png"  alt="Billing"/>
-
-<b>Mobile App Shimmer Effect while Loading</b> :- 
-<img src="Screenshots/shimmer.png"  alt="Shimmer"/>
-
-<b>Bungalow or Houses List</b> :- 
-<img src="Screenshots/bungalow.png"  alt="Bungalow list"/>
-
-<b>Bungalow or Houses Details</b> :- 
-<img src="Screenshots/bungalow details.png"  alt="Bungalow Details"/>
-
-<b>Billing History</b> :- 
-<img src="Screenshots/history.png"  alt="History"/>
-
-<b>FAQ</b> :- 
-<img src="Screenshots/faq.png"  alt="FAQ"/>
-
-<b>Help</b> :- 
-<img src="Screenshots/help_.png"  alt="Help"/>
-
-<b>Privacy Policy</b> :- 
-<img src="Screenshots/privacy policy.png"  alt="Privacy Policy"/>
 ---
+
+### 📊 Dashboard - Light Mode  
+<img src="Screenshots/dashboard app.png" alt="Light Dashboard" width="400"/>
+
+---
+
+### 🌙 Dashboard - Dark Mode  
+<img src="Screenshots/darkmode.png" alt="Dark Dashboard" width="400"/>
+
+---
+
+### 💧 Billing Submission *(Dynamic Water Billing)*  
+<img src="Screenshots/water billing.png" alt="Billing" width="400"/>
+
+---
+
+### ✨ Shimmer Effect While Loading  
+<img src="Screenshots/shimmer.png" alt="Shimmer" width="400"/>
+
+---
+
+### 🏠 Bungalow / Houses List  
+<img src="Screenshots/bungalow.png" alt="Bungalow List" width="400"/>
+
+---
+
+### 🏡 Bungalow / House Details  
+<img src="Screenshots/bungalow details.png" alt="Bungalow Details" width="400"/>
+
+---
+
+### 📜 Billing History  
+<img src="Screenshots/history.png" alt="Billing History" width="400"/>
+
+---
+
+### ❓ FAQ  
+<img src="Screenshots/faq.png" alt="FAQ" width="400"/>
+
+---
+
+### 🆘 Help  
+<img src="Screenshots/help_.png" alt="Help" width="400"/>
+
+---
+
+### 🔒 Privacy Policy  
+<img src="Screenshots/privacy policy.png" alt="Privacy Policy" width="400"/>
+
+---
+
 
 ## 🚀 Getting Started
 
