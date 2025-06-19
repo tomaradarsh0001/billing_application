@@ -5,7 +5,7 @@ A full-stack Electricity Billing Application built using **Flutter** for the fro
 
 ## 📂 Project Structure
 
-billing-backend (Laravel Backend with Blade Templates) <br> <br>
+billing-backend (Laravel Backend with Blade Templates) <br>
 billing-app-flutter (Flutter Mobile Application)
 ---
 
@@ -13,11 +13,32 @@ billing-app-flutter (Flutter Mobile Application)
 
 Here are some previews of the app:
 
-Dashboard :- 
+<b>Dashboard</b> :- 
   <img src="Screenshots/dashboard.png"  alt="Dashboard"/>
 
-Occupant & Houses Tables :- 
+  <b>Mobile App Dynamic Configuration</b> :- 
+  <img src="Screenshots/app configuration.png"  alt="app configuration"/>
+
+<b>Occupant & Houses Tables</b> :- 
   <img src="Screenshots/occupants and houses.png"  alt="Occupants & Houses"/>
+
+<b>Unit Slabs</b> :- 
+<img src="Screenshots/unit slabs.png"  alt="Unit Slabs"/>
+
+<b>Billing Details</b> :- 
+<img src="Screenshots/billings.png"  alt="billings"/>
+
+<b>Billing Detail Generation</b> :- 
+<img src="Screenshots/bill generation.png"  alt="billing Generation"/>
+
+<b>Generated Bill Email Message</b> :- 
+<img src="Screenshots/email.png"  alt="Email Message"/>
+
+<b>Razorpay Payment Gateway</b> :- 
+<img src="Screenshots/razorpay payments.png"  alt="Payment gateway"/>
+
+<b>Payment Success</b> :- 
+<img src="Screenshots/payment success.png"  alt="Payment Success"/>
 ---
 
 ## 🚀 Getting Started
